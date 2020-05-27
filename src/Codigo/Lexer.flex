@@ -4,18 +4,27 @@ import static Codigo.Tokens.*;
 %class Lexer
 %type Tokens
 
-L=[a-zA-Z_]+
-D=[0-9]+
-espacio=[ ,\t,\r,\n]+
-simbolo_string=[\"]
+letras=[a-zA-Z_]+
+digitos=[0-9]+
+carac_espaciado= [ ,\t,\r,\n]+
+simbolos=[^a-zA-Z_0-9\n]
 
-STRING [a-zA-Z_ ]+
+espacio=[ ]+
+simbolo_string=[\"]
+simbolo_decimal=[.]
+
+simbolo_cometario_l=[@]
+simbolo_cometario_a=[@*]
+simbolo_cometario_c=[*@]
+
+salto_linea=[\n]
+
 
 %{
     public String lexemas;
 %}
 %%
-{espacio} {/*Ignore*/}
+{carac_espaciado} {/*Ignore*/}
 "#" {lexemas=yytext(); return DELIMITADOR;}
 "{" {lexemas=yytext(); return TERMINAL;}
 "}" {lexemas=yytext(); return TERMINAL;}
@@ -83,9 +92,14 @@ STRING [a-zA-Z_ ]+
 "void" {lexemas=yytext(); return RESERVADA;}
 
 
-{L}({L}|{D})* {lexemas=yytext(); return IDENTIFICADOR;}
-{simbolo_string}{L}({L}|{D})* {simbolo_string}  {lexemas=yytext(); return LITERAL;}
+{simbolo_cometario_l}({letras}|{digitos}|{simbolos}|{espacio})* {salto_linea} {lexemas=yytext(); return COMENTARIO;}
+{simbolo_cometario_a}({letras}|{digitos}|{simbolos}|{espacio})* {simbolo_cometario_c} {lexemas=yytext(); return COMENTARIO;}
 
+{letras}({letras}|{digitos})* {lexemas=yytext(); return IDENTIFICADOR;}
+{digitos} {lexemas=yytext(); return LITERAL;}
+{digitos}{simbolo_decimal}{digitos} {lexemas=yytext(); return LITERAL;}
+
+{simbolo_string}({letras}|{digitos}|{simbolos}|{espacio})*{simbolo_string}  {lexemas=yytext(); return LITERAL;}
 
 
 
