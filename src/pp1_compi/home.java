@@ -6,6 +6,7 @@
 
 package pp1_compi;
 
+import Codigo.archivo_ingresado;
 import java.awt.Color;
 import java.awt.Image;
 import java.util.logging.Level;
@@ -40,6 +41,7 @@ public class home extends javax.swing.JFrame {
         
         //se declara una instancia con la informacion del archivo que se esta trabajando
         archivoActual = new archivo_ingresado();
+        archivoActual.generarFlex();
        
         
     }
@@ -58,7 +60,7 @@ public class home extends javax.swing.JFrame {
 
         header = new javax.swing.JPanel();
         laod_button = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        compile_button = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         body = new javax.swing.JPanel();
         splitBody = new javax.swing.JSplitPane();
@@ -92,9 +94,14 @@ public class home extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(32, 34, 44));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/iconos/play.png"))); // NOI18N
-        jButton1.setBorder(null);
+        compile_button.setBackground(new java.awt.Color(32, 34, 44));
+        compile_button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/iconos/play.png"))); // NOI18N
+        compile_button.setBorder(null);
+        compile_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                compile_buttonActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(32, 34, 44));
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/iconos/settings.png"))); // NOI18N
@@ -112,7 +119,7 @@ public class home extends javax.swing.JFrame {
             .addGroup(headerLayout.createSequentialGroup()
                 .addComponent(laod_button, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(compile_button, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -120,7 +127,7 @@ public class home extends javax.swing.JFrame {
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(laod_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(compile_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
         );
 
@@ -333,6 +340,19 @@ public class home extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_laod_buttonActionPerformed
 
+    private void compile_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compile_buttonActionPerformed
+        if(archivoActual.get_Nombre_Archivo()!=null){
+            archivoActual.analizarTokens();
+            archivoActual.escribirTokensArchivo();
+            textArea_consola.setText(archivoActual.get_reporteConsola());
+        }else{
+            String errorTemporal="** ERROR: no se ha cargado nigun archivo";
+            textArea_consola.setText(errorTemporal);
+        }
+
+        
+    }//GEN-LAST:event_compile_buttonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -367,10 +387,10 @@ public class home extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel body;
     private javax.swing.JPanel code;
+    private javax.swing.JButton compile_button;
     private javax.swing.JPanel console;
     private javax.swing.JLabel file_name;
     private javax.swing.JPanel header;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
