@@ -6,7 +6,7 @@ import static Codigo.Tokens.*;
 
 letras=[a-zA-Z_]+
 digitos=[0-9]+
-carac_espaciado= [ ,\t,\r,\n]+
+carac_espaciado= [ \t \r \n]+
 simbolos=[^a-zA-Z_0-9\n]
 
 espacio=[ ]+
@@ -88,12 +88,12 @@ salto_linea=[\n]
 "bool" {lexemas=yytext(); return RESERVADA;}
 "char" {lexemas=yytext(); return RESERVADA;}
 "string" {lexemas=yytext(); return RESERVADA;}
-"array" {lexemas=yytext(); return RESERVADA;}
+    /*"array" {lexemas=yytext(); return RESERVADA;}*/
 "void" {lexemas=yytext(); return RESERVADA;}
 
 
-{simbolo_cometario_l}({letras}|{digitos}|{simbolos}|{espacio})* {salto_linea} {lexemas=yytext(); return COMENTARIO;}
-{simbolo_cometario_a}({letras}|{digitos}|{simbolos}|{espacio})* {simbolo_cometario_c} {lexemas=yytext(); return COMENTARIO;}
+{simbolo_cometario_l}({letras}|{digitos}|{simbolos}|{espacio})*  {lexemas=yytext(); return COMENTARIO;}
+{simbolo_cometario_a}({letras}|{digitos}|{simbolos}|{espacio}|{salto_linea})* {simbolo_cometario_c} {lexemas=yytext(); return COMENTARIO;}
 
 {letras}({letras}|{digitos})* {lexemas=yytext(); return IDENTIFICADOR;}
 {digitos} {lexemas=yytext(); return LITERAL;}
