@@ -4,47 +4,65 @@ import static Codigo.Tokens.*;
 %class Lexer
 %type Tokens
 
-letras=[a-zA-Z_]+
-digitos=[0-9]+
-carac_espaciado= [ \t \r \n]+
-simbolos=[^a-zA-Z_0-9\n]
+carac_espaciado= [ \t \r]+
+saltoLinea=[\n]
 
-espacio=[ ]+
-simbolo_string=[\"]
-simbolo_decimal=[.]
+letras=[a-zA-Z]+
+cero= 0
+dígitos = [0-9]
+digLim = [1-9]
 
-simbolo_cometario_l=[@]
-simbolo_cometario_a=[@*]
-simbolo_cometario_c=[*@]
 
-salto_linea=[\n]
+caracteres_string = [^\n\"]+
+caracteres_comentario_linea=[^\n]+
+caracteres_comentario_bloque= [^(\*@)]+
+simboloString=[\"]
+simboloNegativo=[\-]
+
+
+identificador= ("_" | {letras})("_"| {letras} | {dígitos})*
+string= {simboloString}{caracteres_string}{simboloString}
+
+comentario_bloque = "@*"{caracteres_comentario_bloque}"*@"
+comentario_linea = "@"{caracteres_comentario_linea}{saltoLinea}
+int= ({simboloNegativo}? {digLim}{dígitos}*) | 0
+float = {simboloNegativo}? {int}"."{dígitos}*
+
+
+
 
 
 %{
     public String lexemas;
 %}
 %%
+
+
+{saltoLinea} {/**/}
 {carac_espaciado} {/*Ignore*/}
 "#" {lexemas=yytext(); return DELIMITADOR;}
 "{" {lexemas=yytext(); return TERMINAL;}
 "}" {lexemas=yytext(); return TERMINAL;}
-"@" {lexemas=yytext(); return TERMINAL;}
-"@*" {lexemas=yytext(); return TERMINAL;}
-"*@" {lexemas=yytext(); return TERMINAL;}
+/*
+    se reconoce como comentario completo posteirormente
+    "@" {lexemas=yytext(); return TERMINAL;}
+    "@*" {lexemas=yytext(); return TERMINAL;}
+    "*@" {lexemas=yytext(); return TERMINAL;}
+*/
+
 "=" {lexemas=yytext(); return ASIGNACION;}
 "main" {lexemas=yytext(); return RESERVADA;}
 "return" {lexemas=yytext(); return RESERVADA;}
 "input" {lexemas=yytext(); return RESERVADA;}
 ">>" {lexemas=yytext(); return TERMINAL;}
 "print" {lexemas=yytext(); return RESERVADA;}
-/*
-"-" {lexemas=yytext(); return TERMINAL;}
-*/
+
 "null" {lexemas=yytext(); return RESERVADA;}
 
-"“" {lexemas=yytext(); return TERMINAL;}
-"”" {lexemas=yytext(); return TERMINAL;}
-"'" {lexemas=yytext(); return TERMINAL;}
+/*
+    se reconoce posteriormente como cadena completa
+    {simboloString} {lexemas=yytext(); return TERMINAL;}
+*/
 
 "[" {lexemas=yytext(); return TERMINAL;}
 "]" {lexemas=yytext(); return TERMINAL;}
@@ -82,26 +100,21 @@ salto_linea=[\n]
 "|" {lexemas=yytext(); return OPERADOR_RELACIONAL;}
 "!" {lexemas=yytext(); return OPERADOR_RELACIONAL;}
 
-
 "int" {lexemas=yytext(); return RESERVADA;}
 "float" {lexemas=yytext(); return RESERVADA;}
 "bool" {lexemas=yytext(); return RESERVADA;}
 "char" {lexemas=yytext(); return RESERVADA;}
 "string" {lexemas=yytext(); return RESERVADA;}
-    /*"array" {lexemas=yytext(); return RESERVADA;}*/
 "void" {lexemas=yytext(); return RESERVADA;}
 
 
-{simbolo_cometario_l}({letras}|{digitos}|{simbolos}|{espacio})*  {lexemas=yytext(); return COMENTARIO;}
-{simbolo_cometario_a}({letras}|{digitos}|{simbolos}|{espacio}|{salto_linea})* {simbolo_cometario_c} {lexemas=yytext(); return COMENTARIO;}
+{identificador} {lexemas=yytext(); return IDENTIFICADOR;}
+{string} {lexemas=yytext(); return LITERAL;}
+{comentario_bloque} {lexemas=yytext(); return COMENTARIO;}
+{comentario_linea} {lexemas=yytext(); return COMENTARIO;}
 
-{letras}({letras}|{digitos})* {lexemas=yytext(); return IDENTIFICADOR;}
-{digitos} {lexemas=yytext(); return LITERAL;}
-{digitos}{simbolo_decimal}{digitos} {lexemas=yytext(); return LITERAL;}
-
-{simbolo_string}({letras}|{digitos}|{simbolos}|{espacio})*{simbolo_string}  {lexemas=yytext(); return LITERAL;}
-
+{int} {lexemas=yytext(); return LITERAL;}
+{float} {lexemas=yytext(); return LITERAL;}
 
 
-
- . {return ERROR;} /*retorna un error en cualquier otro caso*/
+. {return ERROR;} /*retorna un error en cualquier otro caso*/
