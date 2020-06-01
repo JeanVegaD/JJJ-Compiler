@@ -29,9 +29,6 @@ int= ({simboloNegativo}? {digLim}{dígitos}*) | 0
 float = {simboloNegativo}? {int}"."{dígitos}*
 
 
-
-
-
 %{
     public String lexemas;
 %}
@@ -43,12 +40,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 "#" {lexemas=yytext(); return DELIMITADOR;}
 "{" {lexemas=yytext(); return TERMINAL;}
 "}" {lexemas=yytext(); return TERMINAL;}
-/*
-    se reconoce como comentario completo posteirormente
-    "@" {lexemas=yytext(); return TERMINAL;}
-    "@*" {lexemas=yytext(); return TERMINAL;}
-    "*@" {lexemas=yytext(); return TERMINAL;}
-*/
+
 
 "=" {lexemas=yytext(); return ASIGNACION;}
 "main" {lexemas=yytext(); return RESERVADA;}
@@ -59,10 +51,6 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 
 "null" {lexemas=yytext(); return RESERVADA;}
 
-/*
-    se reconoce posteriormente como cadena completa
-    {simboloString} {lexemas=yytext(); return TERMINAL;}
-*/
 
 "[" {lexemas=yytext(); return TERMINAL;}
 "]" {lexemas=yytext(); return TERMINAL;}
