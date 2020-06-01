@@ -82,6 +82,12 @@ non terminal INICIO,
     VARIABLES_LOGICAS,
     TIPOS_VARIABLES,
     TIPOS_ASIGNACION_VARIABLE,
+    EXP_ARITMETICA_UNA,
+    PARAM_EXP_ARITMETICA,
+    EXP_ARITMETICA_BIN,
+
+    DEC_VARIABLE,
+    FUNCION,
 
 
     
@@ -129,12 +135,41 @@ TIPOS_VARIABLES ::=
     T_string; 
     
 TIPOS_ASIGNACION_VARIABLE::=
-    String,
-    Character,
-    Int,
-    Float,
-    Null,
+    String |
+    Character |
+    Int |
+    Float |
+    Null |
     VARIABLES_LOGICAS;
     
+
+EXP_ARITMETICA_UNA ::=
+    Unario_positivo Identificador  |
+    Unario_negatico Identificador  ;
+    
+
+
+PARAM_EXP_ARITMETICA ::= 
+    Identificador |
+    Int |
+    Float |
+    PARAM_EXP_ARITMETICA |
+    FUNCION;
+
+EXP_ARITMETICA_BIN::=
+    PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS PARAM_EXP_ARITMETICA |
+    PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS EXP_ARITMETICA_BIN  |
+    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c | 
+    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  ( PARAM_EXP_ARITMETICA | EXP_ARITMETICA_BIN); 
+
+
+
+
+/* NOTAS
+    Aun no se ha hecho la declaracion de variables 
+    Ni las funciones
+*/
+
+
 
 
