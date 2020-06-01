@@ -15,12 +15,66 @@ parser code
 }
 :};
 
-terminal Linea, Comillas, T_dato, Cadena, If, Else, Do, While, For,
-    Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional,
-    Op_atribucion, Op_incremento, Op_booleano, Parentesis_a, Parentesis_c,
-    Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, Identificador,
-    Numero, ERROR;
-non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE,
+
+
+terminal Delimitador,
+        Llave_a,Lave_c,
+        Asignacion, 
+        Main,
+        Return,
+        Input,
+        Simbolo_input,
+        Print,
+        Null,
+        Char,
+        Corchete_a,
+        Corchete_c,
+        Parentesis_a,
+        Parentesis_c,
+        Coma,
+        True,
+        False,
+        If,
+        Else,
+        Do,
+        While,
+        Switch,
+        Case,
+        Break,
+        Default,
+        Dos_puntos,
+        Suma,
+        Resta,
+        Division,
+        Multiplicacion,
+        Potencia,
+        Modulo,
+        Unario_positivo,
+        Unario_negatico,
+        Menor,
+        Mayor,
+        Igual,
+        Diferente,
+        Menor_igual,
+        Mayor_igual,
+        Conjuncion,
+        Disyuncion,
+        Negacion,
+        T_int,
+        T_float,
+        T_bool,
+        T_char,
+        T_string,
+        T_void,
+        Identificador,
+        String,
+        Comentario,
+        Int,
+        Float,
+        Error;
+
+
+non terminal INICIO, SENTENCIA, DECLARACION, DECLARACION_FOR, IF, IF_ELSE, 
     WHILE, DO_WHILE, FOR, SENTENCIA_BOOLEANA, SENTENCIA_FOR;
 
 start with INICIO;
@@ -29,6 +83,8 @@ INICIO ::=
     Int Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c |
     Main Parentesis_a Parentesis_c Llave_a SENTENCIA Llave_c
 ;
+
+
 SENTENCIA ::= 
     SENTENCIA DECLARACION |
     DECLARACION |
