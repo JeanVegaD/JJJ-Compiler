@@ -9,20 +9,29 @@ import java_cup.runtime.symbol;
 %line
 %char
 
-letras=[a-zA-Z_]+
-digitos=[0-9]+
-carac_espaciado= [ \t \r \n]+
-simbolos=[^a-zA-Z_0-9\n]
+carac_espaciado= [ \t \r]+
+saltoLinea=[\n]
 
-espacio=[ ]+
-simbolo_string=[\"]
-simbolo_decimal=[.]
+letras=[a-zA-Z]+
+cero= 0
+dígitos = [0-9]
+digLim = [1-9]
 
-simbolo_cometario_l=[@]
-simbolo_cometario_a=[@*]
-simbolo_cometario_c=[*@]
 
-salto_linea=[\n]
+caracteres_string = [^\n\"]+
+caracteres_comentario_linea=[^\n]+
+caracteres_comentario_bloque= [^(\*@)]+
+simboloString=[\"]
+simboloNegativo=[\-]
+
+
+identificador= ("_" | {letras})("_"| {letras} | {dígitos})*
+string= {simboloString}{caracteres_string}{simboloString}
+
+comentario_bloque = "@*"{caracteres_comentario_bloque}"*@"
+comentario_linea = "@"{caracteres_comentario_linea}{saltoLinea}
+int= ({simboloNegativo}? {digLim}{dígitos}*) | 0
+float = {simboloNegativo}? {int}"."{dígitos}*
 
 
 %{
@@ -35,13 +44,12 @@ salto_linea=[\n]
     }
 %}
 %%
+{saltoLinea} {/**/}
 {carac_espaciado} {/*Ignore*/}
 "#" {return new Symbol(sys.Delimitador, yychar, yyline, yytext());}
 "{" {return new Symbol(sys.Llave_a, yychar, yyline, yytext());}
 "}" {return new Symbol(sys.Lave_c, yychar, yyline, yytext());}
-"@" {return new Symbol(sys.Comentario_l, yychar, yyline, yytext());}
-"@*" {return new Symbol(sys.Comentario_b_a, yychar, yyline, yytext());}
-"*@" {return new Symbol(sys.Comentario_b_c, yychar, yyline, yytext());}
+
 "=" {return new Symbol(sys.Asignacion, yychar, yyline, yytext());}
 "main" {return new Symbol(sys.Main, yychar, yyline, yytext());}
 "return" {return new Symbol(sys.Return, yychar, yyline, yytext());}
@@ -52,11 +60,7 @@ salto_linea=[\n]
 "-" {return new Symbol(sys.Resta, yychar, yyline, yytext());}
 */
 "null" {return new Symbol(sys.Null, yychar, yyline, yytext());}
-
-"“" {return new Symbol(sys.String_a, yychar, yyline, yytext());}
-"”" {return new Symbol(sys.String_c, yychar, yyline, yytext());}
 "'" {return new Symbol(sys.Char, yychar, yyline, yytext());}
-
 "[" {return new Symbol(sys.Corchete_a, yychar, yyline, yytext());}
 "]" {return new Symbol(sys.Corchete_c, yychar, yyline, yytext());}
 "(" {return new Symbol(sys.Parentesis_a, yychar, yyline, yytext());}
@@ -99,20 +103,16 @@ salto_linea=[\n]
 "bool" {return new Symbol(sys.T_bool, yychar, yyline, yytext());}
 "char" {return new Symbol(sys.T_char, yychar, yyline, yytext());}
 "string" {return new Symbol(sys.T_string, yychar, yyline, yytext());}
-    /*"array" {return new Symbol(sys.T_array, yychar, yyline, yytext());}*/
 "void" {return new Symbol(sys.T_void, yychar, yyline, yytext());}
 
 
-{simbolo_cometario_l}({letras}|{digitos}|{simbolos}|{espacio})*  {return new Symbol(sys.Comentario, yychar, yyline, yytext());}
-{simbolo_cometario_a}({letras}|{digitos}|{simbolos}|{espacio}|{salto_linea})* {return new Symbol(sys.Comentario, yychar, yyline, yytext());}
+{identificador} {return new Symbol(sys.Identificador, yychar, yyline, yytext());}
+{string} {return new Symbol(sys.String, yychar, yyline, yytext());}
+{comentario_bloque} {eturn new Symbol(sys.Comentario, yychar, yyline, yytext());}
+{comentario_linea} {eturn new Symbol(sys.Comentario, yychar, yyline, yytext());}
 
-{letras}({letras}|{digitos})* {return new Symbol(sys.Identificador, yychar, yyline, yytext());}
-
-{digitos} {return new Symbol(sys.Int, yychar, yyline, yytext());}
-{digitos}{simbolo_decimal}{digitos} {return new Symbol(sys.Float, yychar, yyline, yytext());}
-{simbolo_string}({letras}|{digitos}|{simbolos}|{espacio})*{simbolo_string}  {return new Symbol(sys.String, yychar, yyline, yytext());}
-
-
+{int} {return new Symbol(sys.Int, yychar, yyline, yytext());}
+{float} {return new Symbol(sys.Float, yychar, yyline, yytext());}
 
 
  . {return new Symbol(sys.Error, yychar, yyline, yytext());} /*retorna un error en cualquier otro caso*/
