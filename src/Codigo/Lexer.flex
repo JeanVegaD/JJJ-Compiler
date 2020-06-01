@@ -14,14 +14,17 @@ digLim = [1-9]
 
 
 caracteres_string = [^\n\"]+
+caracteres_Char = [a-zA-Z]
 caracteres_comentario_linea=[^\n]+
 caracteres_comentario_bloque= [^(\*@)]+
 simboloString=[\"]
+simboloChar=[\']
 simboloNegativo=[\-]
 
 
 identificador= ("_" | {letras})("_"| {letras} | {dígitos})*
 string= {simboloString}{caracteres_string}{simboloString}
+character = {simboloChar} {caracteres_Char} {simboloChar}
 
 comentario_bloque = "@*"{caracteres_comentario_bloque}"*@"
 comentario_linea = "@"{caracteres_comentario_linea}{saltoLinea}
@@ -98,6 +101,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 
 {identificador} {lexemas=yytext(); return IDENTIFICADOR;}
 {string} {lexemas=yytext(); return LITERAL;}
+{character} {lexemas=yytext(); return LITERAL;}
 {comentario_bloque} {lexemas=yytext(); return COMENTARIO;}
 {comentario_linea} {lexemas=yytext(); return COMENTARIO;}
 

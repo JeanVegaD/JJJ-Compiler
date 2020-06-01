@@ -1,18 +1,12 @@
-[int,RESERVADA]
-[main,RESERVADA]
-[(,TERMINAL]
-[sa,IDENTIFICADOR]
-[,,TERMINAL]
-[asd,IDENTIFICADOR]
-[),TERMINAL]
-[{,TERMINAL]
-[int,RESERVADA]
+[string,RESERVADA]
 [variable,IDENTIFICADOR]
 [=,ASIGNACION]
-[" Hola mundo asdas658 - sdasds/sad",LITERAL]
+["esto es un string",LITERAL]
 [#,DELIMITADOR]
-[@*
-		COMENTARIO
-		@DE MAS DE UNA LINEA
-	*@,COMENTARIO]
-[},TERMINAL]
+[@ comentario de linea
+,COMENTARIO]
+[int,RESERVADA]
+[var,IDENTIFICADOR]
+[#,DELIMITADOR]
+[@* comentario de bloque *@
+,COMENTARIO]
