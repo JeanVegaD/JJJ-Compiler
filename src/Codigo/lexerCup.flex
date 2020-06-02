@@ -19,14 +19,17 @@ digLim = [1-9]
 
 
 caracteres_string = [^\n\"]+
+caracteres_Char = [a-zA-Z]
 caracteres_comentario_linea=[^\n]+
 caracteres_comentario_bloque= [^(\*@)]+
 simboloString=[\"]
+simboloChar=[\']
 simboloNegativo=[\-]
 
 
 identificador= ("_" | {letras})("_"| {letras} | {dígitos})*
 string= {simboloString}{caracteres_string}{simboloString}
+character = {simboloChar} {caracteres_Char} {simboloChar}
 
 comentario_bloque = "@*"{caracteres_comentario_bloque}"*@"
 comentario_linea = "@"{caracteres_comentario_linea}{saltoLinea}
@@ -48,7 +51,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 {carac_espaciado} {/*Ignore*/}
 "#" {return new Symbol(sys.Delimitador, yychar, yyline, yytext());}
 "{" {return new Symbol(sys.Llave_a, yychar, yyline, yytext());}
-"}" {return new Symbol(sys.Lave_c, yychar, yyline, yytext());}
+"}" {return new Symbol(sys.LLave_c, yychar, yyline, yytext());}
 
 "=" {return new Symbol(sys.Asignacion, yychar, yyline, yytext());}
 "main" {return new Symbol(sys.Main, yychar, yyline, yytext());}
@@ -64,7 +67,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 "[" {return new Symbol(sys.Corchete_a, yychar, yyline, yytext());}
 "]" {return new Symbol(sys.Corchete_c, yychar, yyline, yytext());}
 "(" {return new Symbol(sys.Parentesis_a, yychar, yyline, yytext());}
-")" {return new Symbol(sys.Parentesis_b, yychar, yyline, yytext());}
+")" {return new Symbol(sys.Parentesis_c, yychar, yyline, yytext());}
 "," {return new Symbol(sys.Coma, yychar, yyline, yytext());}
 "true" {return new Symbol(sys.True, yychar, yyline, yytext());}
 "false" {return new Symbol(sys.False, yychar, yyline, yytext());}
@@ -87,7 +90,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 "--" {return new Symbol(sys.Unario_negatico, yychar, yyline, yytext());}
 
 "<" {return new Symbol(sys.Menor, yychar, yyline, yytext());}
-">" {return new Symbol(sys.Mayo, yychar, yyline, yytext());}
+">" {return new Symbol(sys.Mayor, yychar, yyline, yytext());}
 "==" {return new Symbol(sys.Igual, yychar, yyline, yytext());}
 "!=" {return new Symbol(sys.Diferente, yychar, yyline, yytext());}
 "<=" {return new Symbol(sys.Menor_igual, yychar, yyline, yytext());}
@@ -104,15 +107,18 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 "char" {return new Symbol(sys.T_char, yychar, yyline, yytext());}
 "string" {return new Symbol(sys.T_string, yychar, yyline, yytext());}
 "void" {return new Symbol(sys.T_void, yychar, yyline, yytext());}
-
+"StringToInt" {return new Symbol(sys.String_to_int, yychar, yyline, yytext());}
 
 {identificador} {return new Symbol(sys.Identificador, yychar, yyline, yytext());}
 {string} {return new Symbol(sys.String, yychar, yyline, yytext());}
+{character} {return new Symbol(sys.Character, yychar, yyline, yytext());}
 {comentario_bloque} {eturn new Symbol(sys.Comentario, yychar, yyline, yytext());}
 {comentario_linea} {eturn new Symbol(sys.Comentario, yychar, yyline, yytext());}
 
+
+
+
 {int} {return new Symbol(sys.Int, yychar, yyline, yytext());}
 {float} {return new Symbol(sys.Float, yychar, yyline, yytext());}
-
 
  . {return new Symbol(sys.Error, yychar, yyline, yytext());} /*retorna un error en cualquier otro caso*/

@@ -111,10 +111,7 @@ public class archivo_ingresado {
                         resuladoLexer +="[" + lexer.lexemas +  ","+ toks + "]\n";
                         break;
                 }
-            }
-            
-            
-            
+            }  
         } catch (FileNotFoundException ex) {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
             reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;

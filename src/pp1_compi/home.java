@@ -344,6 +344,10 @@ public class home extends javax.swing.JFrame {
         if(archivoActual.get_Nombre_Archivo()!=null){
             archivoActual.analizarTokens();
             archivoActual.escribirTokensArchivo();
+            
+            
+            
+            
             textArea_consola.setText(archivoActual.get_reporteConsola());
         }else{
             String errorTemporal="** ERROR: no se ha cargado nigun archivo";
