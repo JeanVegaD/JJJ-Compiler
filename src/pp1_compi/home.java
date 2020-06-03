@@ -9,6 +9,8 @@ package pp1_compi;
 import Codigo.archivo_ingresado;
 import java.awt.Color;
 import java.awt.Image;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -43,10 +45,14 @@ public class home extends javax.swing.JFrame {
         archivoActual = new archivo_ingresado();
         String ruta1="src/Codigo/Lexer.flex";
         String ruta2="src/Codigo/lexerCup.flex";
-        String[] rutaS = {"-parse", "Sintax", "src/Codigo/Sintactico.cup"};
+        String[] rutaS = {"-parser", "Sintax", "src/Codigo/Sintactico.cup"};
         archivoActual.generar(ruta1,ruta2,rutaS);
+        //System.err.println("Movi los archivos desde: " + System.getProperty("user.dir"));
+
         
        
+        
+        
         
     }
     

@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,7 +82,6 @@ public class archivo_ingresado {
        JFlex.Main.generate(archivoLexer);
        archivoLexer= new File(ruta2);
        JFlex.Main.generate(archivoLexer);
-       
         try {
             java_cup.Main.main(rutaS);
         } catch (IOException ex) {
@@ -89,7 +89,33 @@ public class archivo_ingresado {
         } catch (Exception ex) {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+        
+        Path rutaSyms = Paths.get("src/Codigo/sys.java");
+        Path rutaSyntax = Paths.get("src/Codigo/sys.java");
+        if(Files.exists(rutaSyms)){
+           try {
+               Files.delete(rutaSyms);
+           } catch (IOException ex) {
+               Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+           }
+        }
+        
+        if(Files.exists(rutaSyntax)){
+           try {
+               Files.delete(rutaSyntax);
+           } catch (IOException ex) {
+               Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+           }
+        }
+        try {
+            Files.move(Paths.get("C:/Users/jean0/OneDrive/Escritorio/IS 2020/Compi/PP1_compi" + "/sys.java"), Paths.get("src/Codigo/sys.java"));
+            Files.move(Paths.get("C:/Users/jean0/OneDrive/Escritorio/IS 2020/Compi/PP1_compi" + "../Syntax.java"), Paths.get("src/Codigo/Syntax.java"));
+            System.err.println("Movi los archivos desde: " + System.getProperty("user.dir"));
+        } catch (IOException ex) {
+            System.err.println("ERROR al mover los archivos: " + System.getProperty("user.dir"));
+
+            Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+        }
        
        reporte_consola+= "* Se ha generado el archvo Lexer.JAVA \n" ;
        
