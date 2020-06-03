@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package Codigo;
-
+import java_cup.runtime.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,15 +74,20 @@ public class archivo_ingresado {
     
     Se encarga de generar la clase Lexer.java necesaria para el reconocmiento de tokens 
     */
-   public void generarFlex(){
-       String rutaLexer="src/Codigo/Lexer.flex";
-       File archivoLexer = new File(rutaLexer);
-       
+   public void generar(String ruta1, String ruta2, String[] rutaS){
+       //String rutaLexer="src/Codigo/Lexer.flex";
+       File archivoLexer;
+       archivoLexer= new File(ruta1);
        JFlex.Main.generate(archivoLexer);
+       //archivoLexer= new File(ruta2);
+       //JFlex.Main.generate(archivoLexer);
+       //java_cup.Main.Main(rutaS);
+       
        
        reporte_consola+= "* Se ha generado el archvo Lexer.JAVA \n" ;
        
    }
+   
    
    /*
     E:Ruta de un archivo de texto
