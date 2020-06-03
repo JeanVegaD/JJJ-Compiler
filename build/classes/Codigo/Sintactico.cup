@@ -1,0 +1,421 @@
+package codigo;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+
+
+
+terminal Delimitador,
+        Llave_a,LLave_c,
+        Asignacion, 
+        Main,
+        Return,
+        Input,
+        Simbolo_input,
+        Print,
+        Null,
+        Char,
+        Corchete_a,
+        Corchete_c,
+        Parentesis_a,
+        Parentesis_c,
+        Coma,
+        True,
+        False,
+        If,
+        Else,
+        Do,
+        While,
+        Switch,
+        Case,
+        Break,
+        Default,
+        Dos_puntos,
+        Suma,
+        Resta,
+        Division,
+        Multiplicacion,
+        Potencia,
+        Modulo,
+        Unario_positivo,
+        Unario_negatico,
+        Menor,
+        Mayor,
+        Igual,
+        Diferente,
+        Menor_igual,
+        Mayor_igual,
+        Conjuncion,
+        Disyuncion,
+        Negacion,
+        T_int,
+        T_float,
+        T_bool,
+        T_char,
+        T_string,
+        T_void,
+        String_to_int,
+        Identificador,
+        String,
+        Character,
+        Comentario,
+        Int,
+        Float,
+        Error;
+
+
+non terminal INICIO,
+    TIPOS_ARITMETICOS,
+    TIPOS_RELACIONALES,
+    TIPOS_LOGICOS,
+    VARIABLES_LOGICAS,
+    TIPOS_VARIABLES,
+    TIPOS_ASIGNACION_VARIABLE,
+    EXP_ARITMETICA_UNA,
+    PARAM_EXP_ARITMETICA,
+    EXP_ARITMETICA_BIN,
+    PARAM_EXP_RELACIONAL,
+    EXP_RELACIONAL,
+    EXP_LOGICA_UNA,
+    EXP_LOGICA_BIN,
+    EXP_LOGICA,
+    SENTENCIA,
+    CONDICION,
+    BLOQUE,
+    IF_ELSE,
+    WHILE,
+    DO_WHILE,
+    SWITCH,
+    PARAM_SWITCH,
+    CASE_SWITCH,
+    TIPOS_RETORNO_FUNCION,
+    TIPOS_PARAMETRO_FUNCION,
+    DEC_FUNCION,
+    RETORNOS_FUNCION,
+    PARAMETROS_FUNCION_AUX,
+    PARAMETROS_FUNCION,
+    FUNCION,
+    LEER,
+    ESCRIBIR,
+    DEC_VARIABLE,
+    PARAMETROS_ARREGLO_AUX,
+    PARAMETROS_ARREGLO,
+    ASIG_VARIABLE,
+    CAST_STRING_INT;
+    
+
+    
+
+
+    
+
+
+start with INICIO;
+
+
+
+INICIO ::= 
+    Int Main Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c |
+    DEC_FUNCION INICIO;
+;
+
+
+
+TIPOS_ARITMETICOS ::= 
+    Suma |
+    Resta |
+    Division |
+    Multiplicacion |
+    Potencia |
+    Modulo ; 
+
+
+TIPOS_RELACIONALES ::=
+    Menor |
+    Mayor |
+    Igual |
+    Diferente |
+    Menor_igual |
+    Mayor_igual ;
+
+TIPOS_LOGICOS ::=
+    Conjuncion |
+    Disyuncion; 
+
+VARIABLES_LOGICAS
+    True |
+    False;
+
+
+TIPOS_VARIABLES ::=
+    T_int |
+    T_float |
+    T_bool |
+    T_char |
+    T_string; 
+    
+TIPOS_ASIGNACION_VARIABLE::=
+    String |
+    Character |
+    Int |
+    Float |
+    Null |
+    VARIABLES_LOGICAS;
+
+
+
+DEC_VARIABLE ::=
+    TIPOS_VARIABLES Identificador |
+    TIPOS_VARIABLES Identificador Asignacion TIPOS_ASIGNACION_VARIABLE |
+    TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_BIN |
+    TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_UNA|
+    TIPOS_VARIABLES Identificador Asignacion FUNCION |    
+    TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA_UNA |
+    TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA |
+    T_int Identificador Corchete_a Int Corchete_c |
+    T_int Identificador Corchete_a Int Corchete_c Asignacion Null | 
+    T_int Identificador Corchete_a Int Corchete_c Asignacion  Corchete_a Int PARAMETROS_ARREGLO_AUX  Corchete_c  ;
+
+
+PARAMETROS_ARREGLO_AUX ::=
+    Int |
+    FUNCION |
+    EXP_ARITMETICA_BIN |
+    EXP_LOGICA_UNA;
+
+PARAMETROS_ARREGLO::=
+    PARAMETROS_ARREGLO_AUX | 
+    PARAMETROS_ARREGLO_AUX Coma PARAMETROS_ARREGLO;
+
+
+
+ASIG_VARIABLE ::= 
+    Identificador Asignacion TIPOS_ASIGNACION_VARIABLE |
+    Identificador Asignacion EXP_ARITMETICA_BIN |
+    Identificador Asignacion EXP_ARITMETICA_UNA|
+    Identificador Asignacion FUNCION |    
+    Identificador Asignacion EXP_LOGICA_UNA |
+    Identificador Asignacion EXP_LOGICA |
+    Identificador Corchete_a Int Corchete_c Asignacion Int | 
+    Identificador Corchete_a Int Corchete_c Asignacion FUNCION | 
+    Identificador Corchete_a Int Corchete_c Asignacion EXP_ARITMETICA_BIN | 
+    Identificador Corchete_a Int Corchete_c Asignacion EXP_ARITMETICA_UNA ;
+
+
+CAST_STRING_INT::= 
+    String_to_int Parentesis_a String Parentesis_c |
+    String_to_int Parentesis_a FUNCION Parentesis_c |
+    String_to_int Parentesis_a Identificador Parentesis_c ;
+
+
+
+    
+
+EXP_ARITMETICA_UNA ::=
+    Unario_positivo Identificador  |
+    Unario_negatico Identificador  ;
+    
+
+
+PARAM_EXP_ARITMETICA ::= 
+    Identificador |
+    Int |
+    Float |
+    EXP_ARITMETICA_UNA |
+    FUNCION;
+
+EXP_ARITMETICA_BIN::=
+    PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS PARAM_EXP_ARITMETICA |
+    PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS EXP_ARITMETICA_BIN  |
+    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c | 
+    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  ( PARAM_EXP_ARITMETICA | EXP_ARITMETICA_BIN); 
+
+
+
+PARAM_EXP_RELACIONAL ::=
+    Identificador |
+    Int |
+    Float |
+    EXP_ARITMETICA_UNA |
+    EXP_ARITMETICA_BIN |
+    FUNCION;
+
+
+EXP_RELACIONAL ::=
+    PARAM_EXP_RELACIONAL TIPOS_RELACIONALES PARAM_EXP_RELACIONAL |
+    PARAM_EXP_RELACIONAL TIPOS_RELACIONALES EXP_RELACIONAL |
+    Parentesis_a EXP_RELACIONAL Parentesis_c | 
+    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  ( PARAM_EXP_RELACIONAL | EXP_RELACIONAL); 
+
+
+
+EXP_LOGICA_UNA ::=
+    Identificador | 
+    Negacion Identificador | 
+    FUNCION | 
+    Negacion FUNCION |
+    VARIABLES_LOGICAS | 
+    Negacion VARIABLES_LOGICAS |
+    EXP_RELACIONAL |
+    Negacion EXP_RELACIONAL;
+    
+EXP_LOGICA_BIN ::=
+    EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA_UNA;
+
+
+EXP_LOGICA ::=
+    EXP_LOGICA_BIN TIPOS_LOGICOS EXP_LOGICA_BIN |
+    EXP_LOGICA_BIN TIPOS_LOGICOS EXP_LOGICA | 
+    Parentesis_a (EXP_LOGICA | EXP_LOGICA_UNA | EXP_LOGICA_BIN ) Parentesis_c |
+    Parentesis_a (EXP_LOGICA | EXP_LOGICA_UNA | EXP_LOGICA_BIN ) Parentesis_c  EXP_LOGICA ; 
+    
+
+SENTENCIA ::=
+    COMENTARIO | 
+    DEC_VARIABLE Delimitador |
+    ASIG_VARIABLE Delimitador |
+    CAST_STRING_INT Delimitador |
+    IF_ELSE |
+    WHILE |
+    DO_WHILE Delimitador |
+    SWITCH |
+    FUNCION |
+    LEER Delimitador|
+    ESCRIBIR Delimitador;
+
+
+
+
+CONDICION ::= 
+    EXP_LOGICA;
+
+
+BLOQUE ::= 
+    SENTENCIA |
+    SENTENCIA BLOQUE |
+    RETORNOS_FUNCION ;
+    
+
+IF_ELSE::=
+    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c | 
+    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c Else Llave_a BLOQUE Lave_c;
+
+WHILE::=
+    While Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c;
+
+DO_WHILE ::=
+    Do Llave_a BLOQUE Lave_c While Parentesis_a CONDICION Parentesis_c;
+
+
+
+PARAM_SWITCH::=
+    Int |
+    Float |
+    String |
+    Character | 
+    Identificador |
+    FUNCION;
+
+CASE_SWITCH::=
+    Case PARAM_SWITCH Dos_puntos BLOQUE Break |
+    Case PARAM_SWITCH Dos_puntos BLOQUE Break CASE_SWITCH |
+    Case Default Dos_puntos BLOQUE Break |
+    Case Default Dos_puntos BLOQUE Break CASE_SWITCH;
+
+SWITCH:=
+    Switch Parentesis_a PARAM_SWITCH Parentesis_c Llave_a CASE_SWITCH Lave_c;
+
+
+TIPOS_RETORNO_FUNCION ::= 
+    T_void |
+    TIPOS_VARIABLES;
+    
+
+TIPOS_PARAMETRO_FUNCION::=
+    TIPOS_VARIABLES Identificador |
+    TIPOS_VARIABLES Identificador Coma TIPOS_PARAMETRO_FUNCION;
+
+
+
+RETORNOS_FUNCION::=
+    Return Identificador Delimitador |
+    Return EXP_ARITMETICA_BIN Delimitador |
+    Return EXP_ARITMETICA_UNA Delimitador |
+    Return FUNCION Delimitador |
+    Return EXP_LOGICA Delimitador |
+    Return EXP_LOGICA_UNA Delimitador ;
+
+
+DEC_FUNCION ::=
+    TIPOS_RETORNO_FUNCION Identificador Parentesis_a  Parentesis_c Llave_a BLOQUE Lave_c |
+    TIPOS_RETORNO_FUNCION Identificador Parentesis_a TIPOS_PARAMETRO_FUNCION Parentesis_c Llave_a BLOQUE Lave_c;
+
+PARAMETROS_FUNCION_AUX::=
+    TIPOS_ASIGNACION_VARIABLE |
+    Identificador | 
+    EXP_ARITMETICA_BIN |
+    EXP_ARITMETICA_UNA |
+    EXP_LOGICA |
+    EXP_LOGICA_UNA | 
+    FUNCION;
+    
+    
+
+PARAMETROS_FUNCION ::=
+    PARAMETROS_FUNCION_AUX |
+    PARAMETROS_FUNCION_AUX Coma PARAMETROS_FUNCION;
+
+
+FUNCION ::=
+    Identificador Parentesis_a  Parentesis_c | 
+    Identificador Parentesis_a PARAMETROS_FUNCION Parentesis_c;
+
+
+
+LEER::=
+    Input Simbolo_input Identificador;
+
+ESCRIBIR::=
+    Print Parentesis_a TIPOS_ASIGNACION_VARIABLE  Parentesis_c |
+    Print Parentesis_a Identificador Parentesis_c |
+    Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c |     
+    Print Parentesis_a EXP_LOGICA Parentesis_c | 
+    Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c |
+    Print Parentesis_a FUNCION Parentesis_c ;
+    
+
+COMENTARIO::=
+    Comentario;
+
+
+
+
+
+
+
+
+
+    
+
+
+
+/* NOTAS
+    Aun no se ha hecho la declaracion de variables 
+
+*/
+
+
+
+
