@@ -79,9 +79,15 @@ public class archivo_ingresado {
        File archivoLexer;
        archivoLexer= new File(ruta1);
        JFlex.Main.generate(archivoLexer);
-       //archivoLexer= new File(ruta2);
-       //JFlex.Main.generate(archivoLexer);
-       //java_cup.Main.Main(rutaS);
+       archivoLexer= new File(ruta2);
+       JFlex.Main.generate(archivoLexer);
+        try {
+            java_cup.Main.main(rutaS);
+        } catch (IOException ex) {
+            Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+        }
        
        
        reporte_consola+= "* Se ha generado el archvo Lexer.JAVA \n" ;
