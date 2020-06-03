@@ -81,6 +81,7 @@ public class archivo_ingresado {
        JFlex.Main.generate(archivoLexer);
        archivoLexer= new File(ruta2);
        JFlex.Main.generate(archivoLexer);
+       
         try {
             java_cup.Main.main(rutaS);
         } catch (IOException ex) {

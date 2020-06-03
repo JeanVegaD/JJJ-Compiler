@@ -42,8 +42,8 @@ public class home extends javax.swing.JFrame {
         //se declara una instancia con la informacion del archivo que se esta trabajando
         archivoActual = new archivo_ingresado();
         String ruta1="src/Codigo/Lexer.flex";
-        String ruta2="src/Codigo/Cup.flex";
-        String[] rutaS = {"-parse", "Sintax", "src/Codigo/Sintax.cup"};
+        String ruta2="src/Codigo/lexerCup.flex";
+        String[] rutaS = {"-parse", "Sintax", "src/Codigo/Sintactico.cup"};
         archivoActual.generar(ruta1,ruta2,rutaS);
         
        
