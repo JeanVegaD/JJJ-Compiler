@@ -27,7 +27,6 @@ terminal Delimitador,
         Simbolo_input,
         Print,
         Null,
-        Char,
         Corchete_a,
         Corchete_c,
         Parentesis_a,
@@ -166,7 +165,9 @@ TIPOS_VARIABLES ::=
     T_bool |
     T_char |
     T_string; 
-    
+   
+
+/*
 TIPOS_ASIGNACION_VARIABLE::=
     String |
     Character |
@@ -174,7 +175,7 @@ TIPOS_ASIGNACION_VARIABLE::=
     Float |
     Null |
     VARIABLES_LOGICAS;
-
+*/
 
 
 DEC_VARIABLE ::=
@@ -193,7 +194,7 @@ DEC_VARIABLE ::=
     
     TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c |
     TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c Asignacion Null | 
-    TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO_AUX  Corchete_c  ;
+    TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO  Corchete_c  ;
 
     
 
@@ -292,15 +293,11 @@ EXP_LOGICA_UNA ::=
 
 EXP_LOGICA ::=
     EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA_UNA |
-    EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA | 
-
+    EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA |
     Parentesis_a EXP_LOGICA  Parentesis_c |
-    Parentesis_a  EXP_LOGICA_UNA Parentesis_c | 
-
-    Parentesis_a EXP_LOGICA  Parentesis_c  EXP_LOGICA|
-    Parentesis_a  EXP_LOGICA_UNA Parentesis_c EXP_LOGICA ;
-
-
+    Parentesis_a EXP_LOGICA  Parentesis_c TIPOS_LOGICOS EXP_LOGICA_UNA |
+    Parentesis_a EXP_LOGICA  Parentesis_c TIPOS_LOGICOS EXP_LOGICA;
+   
 
 
 

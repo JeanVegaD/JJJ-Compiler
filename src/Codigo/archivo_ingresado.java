@@ -90,8 +90,8 @@ public class archivo_ingresado {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        Path rutaSyms = Paths.get("src/Codigo/sys.java");
-        Path rutaSyntax = Paths.get("src/Codigo/sys.java");
+        Path rutaSyms = Paths.get("src/Codigo/sym.java");
+        Path rutaSyntax = Paths.get("src/Codigo/Sintax.java");
         if(Files.exists(rutaSyms)){
            try {
                Files.delete(rutaSyms);
@@ -108,12 +108,9 @@ public class archivo_ingresado {
            }
         }
         try {
-            Files.move(Paths.get("C:/Users/jean0/OneDrive/Escritorio/IS 2020/Compi/PP1_compi" + "/sys.java"), Paths.get("src/Codigo/sys.java"));
-            Files.move(Paths.get("C:/Users/jean0/OneDrive/Escritorio/IS 2020/Compi/PP1_compi" + "../Syntax.java"), Paths.get("src/Codigo/Syntax.java"));
-            System.err.println("Movi los archivos desde: " + System.getProperty("user.dir"));
+            Files.move(Paths.get(System.getProperty("user.dir")+ "/sym.java"), Paths.get("src/Codigo/sym.java"));
+            Files.move(Paths.get(System.getProperty("user.dir")+  "/Sintax.java"), Paths.get("src/Codigo/Sintax.java"));
         } catch (IOException ex) {
-            System.err.println("ERROR al mover los archivos: " + System.getProperty("user.dir"));
-
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
        
