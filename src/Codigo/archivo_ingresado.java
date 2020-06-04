@@ -179,7 +179,37 @@ public class archivo_ingresado {
       
    }
    
-  
+   
+   /*
+    E:Ruta de un archivo de texto
+    S:String con los tokens encontrados en el archivo rencocidos por la gramatica 
+    R:No aplica
+    
+    Se encarga de reconocer los tokens presentes en el archivo mediante la clase Lexer.java que se creoo 
+    */
+   public void analizarSintax(){
+        try {
+            Reader lector = new BufferedReader(new FileReader(this.archivo.getPath()));
+            Sintax sin = new Sintax(new Codigo.LexerCup(lector));
+            
+            try {
+                sin.parse();
+                System.err.println("Codigo analizado");
+            } catch (Exception ex) {
+                System.err.println("Error al analizar codigo");
+                Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+            reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;
+        } catch (IOException ex) {
+            reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;
+            Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+   }
    
     /*
     E:No aplica

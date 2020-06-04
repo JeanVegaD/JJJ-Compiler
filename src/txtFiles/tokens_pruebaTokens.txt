@@ -1,12 +1,1 @@
 [string,RESERVADA]
-[variable,IDENTIFICADOR]
-[=,ASIGNACION]
-["esto es un string",LITERAL]
-[#,DELIMITADOR]
-[@ comentario de linea
-,COMENTARIO]
-[int,RESERVADA]
-[var,IDENTIFICADOR]
-[#,DELIMITADOR]
-[@* comentario de bloque *@
-,COMENTARIO]

@@ -51,7 +51,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 {carac_espaciado} {/*Ignore*/}
 "#" {return new Symbol(sym.Delimitador, yychar, yyline, yytext());}
 "{" {return new Symbol(sym.Llave_a, yychar, yyline, yytext());}
-"}" {return new Symbol(sym.LLave_c, yychar, yyline, yytext());}
+"}" {return new Symbol(sym.Llave_c, yychar, yyline, yytext());}
 
 "=" {return new Symbol(sym.Asignacion, yychar, yyline, yytext());}
 "main" {return new Symbol(sym.Main, yychar, yyline, yytext());}
@@ -63,7 +63,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 "-" {return new Symbol(sym.Resta, yychar, yyline, yytext());}
 */
 "null" {return new Symbol(sym.Null, yychar, yyline, yytext());}
-"'" {return new Symbol(sym.Char, yychar, yyline, yytext());}
+/*"'" {return new Symbol(sym.Char, yychar, yyline, yytext());}*/
 "[" {return new Symbol(sym.Corchete_a, yychar, yyline, yytext());}
 "]" {return new Symbol(sym.Corchete_c, yychar, yyline, yytext());}
 "(" {return new Symbol(sym.Parentesis_a, yychar, yyline, yytext());}

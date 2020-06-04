@@ -1,4 +1,4 @@
-package codigo;
+package Codigo;
 
 import java_cup.runtime.Symbol;
 
