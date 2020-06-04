@@ -18,7 +18,8 @@ parser code
 
 
 terminal Delimitador,
-        Llave_a,LLave_c,
+        Llave_a,
+        Llave_c,
         Asignacion, 
         Main,
         Return,
@@ -113,6 +114,7 @@ non terminal INICIO,
     PARAMETROS_ARREGLO_AUX,
     PARAMETROS_ARREGLO,
     ASIG_VARIABLE,
+    COMENTARIO,
     CAST_STRING_INT;
     
 
@@ -129,7 +131,7 @@ start with INICIO;
 INICIO ::= 
     Int Main Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c |
     DEC_FUNCION INICIO;
-;
+
 
 
 
@@ -154,7 +156,7 @@ TIPOS_LOGICOS ::=
     Conjuncion |
     Disyuncion; 
 
-VARIABLES_LOGICAS
+VARIABLES_LOGICAS::=
     True |
     False;
 
@@ -240,8 +242,8 @@ EXP_ARITMETICA_BIN::=
     PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS PARAM_EXP_ARITMETICA |
     PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS EXP_ARITMETICA_BIN  |
     Parentesis_a EXP_ARITMETICA_BIN Parentesis_c | 
-    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  ( PARAM_EXP_ARITMETICA | EXP_ARITMETICA_BIN); 
-
+    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  PARAM_EXP_ARITMETICA | 
+     Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  EXP_ARITMETICA_BIN;
 
 
 PARAM_EXP_RELACIONAL ::=
@@ -257,8 +259,8 @@ EXP_RELACIONAL ::=
     PARAM_EXP_RELACIONAL TIPOS_RELACIONALES PARAM_EXP_RELACIONAL |
     PARAM_EXP_RELACIONAL TIPOS_RELACIONALES EXP_RELACIONAL |
     Parentesis_a EXP_RELACIONAL Parentesis_c | 
-    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  ( PARAM_EXP_RELACIONAL | EXP_RELACIONAL); 
-
+    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  PARAM_EXP_RELACIONAL | 
+    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  EXP_RELACIONAL ;
 
 
 EXP_LOGICA_UNA ::=
@@ -278,9 +280,16 @@ EXP_LOGICA_BIN ::=
 EXP_LOGICA ::=
     EXP_LOGICA_BIN TIPOS_LOGICOS EXP_LOGICA_BIN |
     EXP_LOGICA_BIN TIPOS_LOGICOS EXP_LOGICA | 
-    Parentesis_a (EXP_LOGICA | EXP_LOGICA_UNA | EXP_LOGICA_BIN ) Parentesis_c |
-    Parentesis_a (EXP_LOGICA | EXP_LOGICA_UNA | EXP_LOGICA_BIN ) Parentesis_c  EXP_LOGICA ; 
-    
+    Parentesis_a EXP_LOGICA  Parentesis_c |
+    Parentesis_a  EXP_LOGICA_UNA Parentesis_c | 
+    Parentesis_a  EXP_LOGICA_BIN Parentesis_c |
+    Parentesis_a EXP_LOGICA  Parentesis_c  EXP_LOGICA|
+    Parentesis_a  EXP_LOGICA_UNA Parentesis_c EXP_LOGICA | 
+    Parentesis_a  EXP_LOGICA_BIN Parentesis_c EXP_LOGICA ;
+
+
+
+
 
 SENTENCIA ::=
     COMENTARIO | 
@@ -309,14 +318,14 @@ BLOQUE ::=
     
 
 IF_ELSE::=
-    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c | 
-    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c Else Llave_a BLOQUE Lave_c;
+    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c | 
+    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c Else Llave_a BLOQUE Llave_c;
 
 WHILE::=
-    While Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c;
+    While Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c;
 
 DO_WHILE ::=
-    Do Llave_a BLOQUE Lave_c While Parentesis_a CONDICION Parentesis_c;
+    Do Llave_a BLOQUE Llave_c While Parentesis_a CONDICION Parentesis_c;
 
 
 
@@ -334,8 +343,8 @@ CASE_SWITCH::=
     Case Default Dos_puntos BLOQUE Break |
     Case Default Dos_puntos BLOQUE Break CASE_SWITCH;
 
-SWITCH:=
-    Switch Parentesis_a PARAM_SWITCH Parentesis_c Llave_a CASE_SWITCH Lave_c;
+SWITCH::=
+    Switch Parentesis_a PARAM_SWITCH Parentesis_c Llave_a CASE_SWITCH Llave_c;
 
 
 TIPOS_RETORNO_FUNCION ::= 
@@ -359,8 +368,8 @@ RETORNOS_FUNCION::=
 
 
 DEC_FUNCION ::=
-    TIPOS_RETORNO_FUNCION Identificador Parentesis_a  Parentesis_c Llave_a BLOQUE Lave_c |
-    TIPOS_RETORNO_FUNCION Identificador Parentesis_a TIPOS_PARAMETRO_FUNCION Parentesis_c Llave_a BLOQUE Lave_c;
+    TIPOS_RETORNO_FUNCION Identificador Parentesis_a  Parentesis_c Llave_a BLOQUE Llave_c |
+    TIPOS_RETORNO_FUNCION Identificador Parentesis_a TIPOS_PARAMETRO_FUNCION Parentesis_c Llave_a BLOQUE Llave_c;
 
 PARAMETROS_FUNCION_AUX::=
     TIPOS_ASIGNACION_VARIABLE |

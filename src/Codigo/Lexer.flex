@@ -28,7 +28,7 @@ character = {simboloChar} {caracteres_Char} {simboloChar}
 
 comentario_bloque = "@*"{caracteres_comentario_bloque}"*@"
 comentario_linea = "@"{caracteres_comentario_linea}{saltoLinea}
-int= ({simboloNegativo}? {digLim}{dígitos}*) | 0
+int= ({simboloNegativo}? {digLim}{dígitos}*) | {cero}
 float = {simboloNegativo}? {int}"."{dígitos}*
 
 
