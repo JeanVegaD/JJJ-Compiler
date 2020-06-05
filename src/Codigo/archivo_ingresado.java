@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,7 +82,6 @@ public class archivo_ingresado {
        JFlex.Main.generate(archivoLexer);
        archivoLexer= new File(ruta2);
        JFlex.Main.generate(archivoLexer);
-       
         try {
             java_cup.Main.main(rutaS);
         } catch (IOException ex) {
@@ -89,7 +89,30 @@ public class archivo_ingresado {
         } catch (Exception ex) {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+        
+        Path rutaSyms = Paths.get("src/Codigo/sym.java");
+        Path rutaSyntax = Paths.get("src/Codigo/Sintax.java");
+        if(Files.exists(rutaSyms)){
+           try {
+               Files.delete(rutaSyms);
+           } catch (IOException ex) {
+               Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+           }
+        }
+        
+        if(Files.exists(rutaSyntax)){
+           try {
+               Files.delete(rutaSyntax);
+           } catch (IOException ex) {
+               Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+           }
+        }
+        try {
+            Files.move(Paths.get(System.getProperty("user.dir")+ "/sym.java"), Paths.get("src/Codigo/sym.java"));
+            Files.move(Paths.get(System.getProperty("user.dir")+  "/Sintax.java"), Paths.get("src/Codigo/Sintax.java"));
+        } catch (IOException ex) {
+            Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+        }
        
        reporte_consola+= "* Se ha generado el archvo Lexer.JAVA \n" ;
        
@@ -156,7 +179,37 @@ public class archivo_ingresado {
       
    }
    
-  
+   
+   /*
+    E:Ruta de un archivo de texto
+    S:String con los tokens encontrados en el archivo rencocidos por la gramatica 
+    R:No aplica
+    
+    Se encarga de reconocer los tokens presentes en el archivo mediante la clase Lexer.java que se creoo 
+    */
+   public void analizarSintax(){
+        try {
+            Reader lector = new BufferedReader(new FileReader(this.archivo.getPath()));
+            Sintax sin = new Sintax(new Codigo.LexerCup(lector));
+            
+            try {
+                sin.parse();
+                System.err.println("Codigo analizado");
+            } catch (Exception ex) {
+                System.err.println("Error al analizar codigo");
+                Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+            reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;
+        } catch (IOException ex) {
+            reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;
+            Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+   }
    
     /*
     E:No aplica

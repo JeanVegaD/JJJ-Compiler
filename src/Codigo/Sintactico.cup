@@ -1,4 +1,4 @@
-package codigo;
+package Codigo;
 
 import java_cup.runtime.Symbol;
 
@@ -18,7 +18,8 @@ parser code
 
 
 terminal Delimitador,
-        Llave_a,LLave_c,
+        Llave_a,
+        Llave_c,
         Asignacion, 
         Main,
         Return,
@@ -26,7 +27,6 @@ terminal Delimitador,
         Simbolo_input,
         Print,
         Null,
-        Char,
         Corchete_a,
         Corchete_c,
         Parentesis_a,
@@ -89,7 +89,6 @@ non terminal INICIO,
     PARAM_EXP_RELACIONAL,
     EXP_RELACIONAL,
     EXP_LOGICA_UNA,
-    EXP_LOGICA_BIN,
     EXP_LOGICA,
     SENTENCIA,
     CONDICION,
@@ -113,13 +112,14 @@ non terminal INICIO,
     PARAMETROS_ARREGLO_AUX,
     PARAMETROS_ARREGLO,
     ASIG_VARIABLE,
+    COMENTARIO,
     CAST_STRING_INT;
     
 
     
 
 
-    
+
 
 
 start with INICIO;
@@ -129,7 +129,7 @@ start with INICIO;
 INICIO ::= 
     Int Main Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c |
     DEC_FUNCION INICIO;
-;
+
 
 
 
@@ -154,7 +154,7 @@ TIPOS_LOGICOS ::=
     Conjuncion |
     Disyuncion; 
 
-VARIABLES_LOGICAS
+VARIABLES_LOGICAS::=
     True |
     False;
 
@@ -165,7 +165,9 @@ TIPOS_VARIABLES ::=
     T_bool |
     T_char |
     T_string; 
-    
+   
+
+/*
 TIPOS_ASIGNACION_VARIABLE::=
     String |
     Character |
@@ -173,27 +175,34 @@ TIPOS_ASIGNACION_VARIABLE::=
     Float |
     Null |
     VARIABLES_LOGICAS;
-
+*/
 
 
 DEC_VARIABLE ::=
     TIPOS_VARIABLES Identificador |
-    TIPOS_VARIABLES Identificador Asignacion TIPOS_ASIGNACION_VARIABLE |
+    TIPOS_VARIABLES Identificador Asignacion String |
+    TIPOS_VARIABLES Identificador Asignacion Character |
+    TIPOS_VARIABLES Identificador Asignacion Int |
+    TIPOS_VARIABLES Identificador Asignacion Float |
+    TIPOS_VARIABLES Identificador Asignacion Null |
+
     TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_BIN |
     TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_UNA|
-    TIPOS_VARIABLES Identificador Asignacion FUNCION |    
     TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA_UNA |
     TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA |
-    T_int Identificador Corchete_a Int Corchete_c |
-    T_int Identificador Corchete_a Int Corchete_c Asignacion Null | 
-    T_int Identificador Corchete_a Int Corchete_c Asignacion  Corchete_a Int PARAMETROS_ARREGLO_AUX  Corchete_c  ;
+    
+    
+    TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c |
+    TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c Asignacion Null | 
+    TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO  Corchete_c  ;
+
+    
 
 
 PARAMETROS_ARREGLO_AUX ::=
     Int |
-    FUNCION |
-    EXP_ARITMETICA_BIN |
-    EXP_LOGICA_UNA;
+    EXP_ARITMETICA_BIN ;
+    /*EXP_LOGICA_UNA;*/
 
 PARAMETROS_ARREGLO::=
     PARAMETROS_ARREGLO_AUX | 
@@ -202,12 +211,19 @@ PARAMETROS_ARREGLO::=
 
 
 ASIG_VARIABLE ::= 
-    Identificador Asignacion TIPOS_ASIGNACION_VARIABLE |
+
+    Identificador Asignacion String |
+    Identificador Asignacion Character |
+    Identificador Asignacion Int |
+    Identificador Asignacion Float |
+    Identificador Asignacion Null |
+
     Identificador Asignacion EXP_ARITMETICA_BIN |
     Identificador Asignacion EXP_ARITMETICA_UNA|
-    Identificador Asignacion FUNCION |    
+   
     Identificador Asignacion EXP_LOGICA_UNA |
     Identificador Asignacion EXP_LOGICA |
+
     Identificador Corchete_a Int Corchete_c Asignacion Int | 
     Identificador Corchete_a Int Corchete_c Asignacion FUNCION | 
     Identificador Corchete_a Int Corchete_c Asignacion EXP_ARITMETICA_BIN | 
@@ -221,7 +237,7 @@ CAST_STRING_INT::=
 
 
 
-    
+  
 
 EXP_ARITMETICA_UNA ::=
     Unario_positivo Identificador  |
@@ -236,11 +252,13 @@ PARAM_EXP_ARITMETICA ::=
     EXP_ARITMETICA_UNA |
     FUNCION;
 
+
 EXP_ARITMETICA_BIN::=
     PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS PARAM_EXP_ARITMETICA |
     PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS EXP_ARITMETICA_BIN  |
     Parentesis_a EXP_ARITMETICA_BIN Parentesis_c | 
-    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  ( PARAM_EXP_ARITMETICA | EXP_ARITMETICA_BIN); 
+    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  PARAM_EXP_ARITMETICA | 
+    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  EXP_ARITMETICA_BIN;
 
 
 
@@ -249,16 +267,17 @@ PARAM_EXP_RELACIONAL ::=
     Int |
     Float |
     EXP_ARITMETICA_UNA |
-    EXP_ARITMETICA_BIN |
+    EXP_ARITMETICA_BIN
     FUNCION;
+
 
 
 EXP_RELACIONAL ::=
     PARAM_EXP_RELACIONAL TIPOS_RELACIONALES PARAM_EXP_RELACIONAL |
     PARAM_EXP_RELACIONAL TIPOS_RELACIONALES EXP_RELACIONAL |
-    Parentesis_a EXP_RELACIONAL Parentesis_c | 
-    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  ( PARAM_EXP_RELACIONAL | EXP_RELACIONAL); 
-
+    Parentesis_a EXP_RELACIONAL Parentesis_c |
+    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  PARAM_EXP_RELACIONAL | 
+    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  EXP_RELACIONAL ;
 
 
 EXP_LOGICA_UNA ::=
@@ -271,16 +290,16 @@ EXP_LOGICA_UNA ::=
     EXP_RELACIONAL |
     Negacion EXP_RELACIONAL;
     
-EXP_LOGICA_BIN ::=
-    EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA_UNA;
-
 
 EXP_LOGICA ::=
-    EXP_LOGICA_BIN TIPOS_LOGICOS EXP_LOGICA_BIN |
-    EXP_LOGICA_BIN TIPOS_LOGICOS EXP_LOGICA | 
-    Parentesis_a (EXP_LOGICA | EXP_LOGICA_UNA | EXP_LOGICA_BIN ) Parentesis_c |
-    Parentesis_a (EXP_LOGICA | EXP_LOGICA_UNA | EXP_LOGICA_BIN ) Parentesis_c  EXP_LOGICA ; 
-    
+    EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA_UNA |
+    EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA |
+    Parentesis_a EXP_LOGICA  Parentesis_c |
+    Parentesis_a EXP_LOGICA  Parentesis_c TIPOS_LOGICOS EXP_LOGICA_UNA |
+    Parentesis_a EXP_LOGICA  Parentesis_c TIPOS_LOGICOS EXP_LOGICA;
+   
+
+
 
 SENTENCIA ::=
     COMENTARIO | 
@@ -296,8 +315,7 @@ SENTENCIA ::=
     ESCRIBIR Delimitador;
 
 
-
-
+ 
 CONDICION ::= 
     EXP_LOGICA;
 
@@ -306,17 +324,17 @@ BLOQUE ::=
     SENTENCIA |
     SENTENCIA BLOQUE |
     RETORNOS_FUNCION ;
-    
+
 
 IF_ELSE::=
-    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c | 
-    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c Else Llave_a BLOQUE Lave_c;
+    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c | 
+    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c Else Llave_a BLOQUE Llave_c;
 
 WHILE::=
-    While Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Lave_c;
+    While Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c;
 
 DO_WHILE ::=
-    Do Llave_a BLOQUE Lave_c While Parentesis_a CONDICION Parentesis_c;
+    Do Llave_a BLOQUE Llave_c While Parentesis_a CONDICION Parentesis_c;
 
 
 
@@ -334,8 +352,8 @@ CASE_SWITCH::=
     Case Default Dos_puntos BLOQUE Break |
     Case Default Dos_puntos BLOQUE Break CASE_SWITCH;
 
-SWITCH:=
-    Switch Parentesis_a PARAM_SWITCH Parentesis_c Llave_a CASE_SWITCH Lave_c;
+SWITCH::=
+    Switch Parentesis_a PARAM_SWITCH Parentesis_c Llave_a CASE_SWITCH Llave_c;
 
 
 TIPOS_RETORNO_FUNCION ::= 
@@ -350,27 +368,33 @@ TIPOS_PARAMETRO_FUNCION::=
 
 
 RETORNOS_FUNCION::=
-    Return Identificador Delimitador |
+    Return String Delimitador |
+    Return Character Delimitador |
+    Return Int Delimitador  |
+    Return Float Delimitador |
+    Return Null Delimitador |
     Return EXP_ARITMETICA_BIN Delimitador |
     Return EXP_ARITMETICA_UNA Delimitador |
-    Return FUNCION Delimitador |
     Return EXP_LOGICA Delimitador |
     Return EXP_LOGICA_UNA Delimitador ;
 
 
 DEC_FUNCION ::=
-    TIPOS_RETORNO_FUNCION Identificador Parentesis_a  Parentesis_c Llave_a BLOQUE Lave_c |
-    TIPOS_RETORNO_FUNCION Identificador Parentesis_a TIPOS_PARAMETRO_FUNCION Parentesis_c Llave_a BLOQUE Lave_c;
+    TIPOS_RETORNO_FUNCION Identificador Parentesis_a  Parentesis_c Llave_a BLOQUE Llave_c |
+    TIPOS_RETORNO_FUNCION Identificador Parentesis_a TIPOS_PARAMETRO_FUNCION Parentesis_c Llave_a BLOQUE Llave_c;
+
 
 PARAMETROS_FUNCION_AUX::=
-    TIPOS_ASIGNACION_VARIABLE |
-    Identificador | 
+    String |
+    Character |
+    Int |
+    Float |
+    Null |
     EXP_ARITMETICA_BIN |
     EXP_ARITMETICA_UNA |
     EXP_LOGICA |
-    EXP_LOGICA_UNA | 
-    FUNCION;
-    
+    EXP_LOGICA_UNA ;
+
     
 
 PARAMETROS_FUNCION ::=
@@ -379,7 +403,7 @@ PARAMETROS_FUNCION ::=
 
 
 FUNCION ::=
-    Identificador Parentesis_a  Parentesis_c | 
+    Identificador Parentesis_a  Parentesis_c   |
     Identificador Parentesis_a PARAMETROS_FUNCION Parentesis_c;
 
 
@@ -388,12 +412,14 @@ LEER::=
     Input Simbolo_input Identificador;
 
 ESCRIBIR::=
-    Print Parentesis_a TIPOS_ASIGNACION_VARIABLE  Parentesis_c |
-    Print Parentesis_a Identificador Parentesis_c |
+    Print Parentesis_a String  Parentesis_c |
+    Print Parentesis_a Character  Parentesis_c |
+    Print Parentesis_a Int  Parentesis_c |
+    Print Parentesis_a Float  Parentesis_c |
+    Print Parentesis_a Null  Parentesis_c |
     Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c |     
     Print Parentesis_a EXP_LOGICA Parentesis_c | 
-    Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c |
-    Print Parentesis_a FUNCION Parentesis_c ;
+    Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c ;
     
 
 COMENTARIO::=
@@ -402,19 +428,6 @@ COMENTARIO::=
 
 
 
-
-
-
-
-
-    
-
-
-
-/* NOTAS
-    Aun no se ha hecho la declaracion de variables 
-
-*/
 
 
 
