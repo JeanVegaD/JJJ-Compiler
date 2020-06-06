@@ -191,15 +191,20 @@ public class archivo_ingresado {
         try {
             Reader lector = new BufferedReader(new FileReader(this.archivo.getPath()));
             Sintax sin = new Sintax(new Codigo.LexerCup(lector));
-            
-            try {
-                sin.parse();
-                System.err.println("Codigo analizado");
-            } catch (Exception ex) {
-                System.err.println("Error al analizar codigo");
-                Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+            boolean flag = true;
+            while(flag){
+                try {
+                    sin.parse();
+                    flag = false;
+                    System.err.println("Codigo analizado");
+                } catch (Exception ex) {
+                    Symbol sym = sin.getS();
+                    if(sym.value == null){flag = false;}
+                    reporte_consola += ("X Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"\n");
+                    System.err.println("Error al analizar codigo");
+                    Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-            
             
         } catch (FileNotFoundException ex) {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
