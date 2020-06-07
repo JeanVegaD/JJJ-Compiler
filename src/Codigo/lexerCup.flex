@@ -9,7 +9,7 @@ import java_cup.runtime.Symbol;
 %line
 %char
 
-carac_espaciado= [ \t \r]+
+carac_espaciado=[ \t\r\n]*
 saltoLinea=[\n]
 
 letras=[a-zA-Z]+
@@ -39,6 +39,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 
 %{
     private Symbol symbol(int type, Object value){
+        /*System.out.println("Analizo: " + value);*/
         return new Symbol(type,yyline,yycolumn,value);
     }
 
@@ -47,8 +48,11 @@ float = {simboloNegativo}? {int}"."{dígitos}*
     }
 %}
 %%
+
+
 {saltoLinea} {/**/}
 {carac_espaciado} {/*Ignore*/}
+
 "#" {return new Symbol(sym.Delimitador, yychar, yyline, yytext());}
 "{" {return new Symbol(sym.Llave_a, yychar, yyline, yytext());}
 "}" {return new Symbol(sym.Llave_c, yychar, yyline, yytext());}
@@ -68,7 +72,7 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 "]" {return new Symbol(sym.Corchete_c, yychar, yyline, yytext());}
 "(" {return new Symbol(sym.Parentesis_a, yychar, yyline, yytext());}
 ")" {return new Symbol(sym.Parentesis_c, yychar, yyline, yytext());}
-"," {return new Symbol(sym.Coma, yychar, yyline, yytext());}
+(",") {return new Symbol(sym.Coma, yychar, yyline, yytext());}
 "true" {return new Symbol(sym.True, yychar, yyline, yytext());}
 "false" {return new Symbol(sym.False, yychar, yyline, yytext());}
 "if" {return new Symbol(sym.If, yychar, yyline, yytext());}

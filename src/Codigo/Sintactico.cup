@@ -116,19 +116,14 @@ non terminal INICIO,
     CAST_STRING_INT;
     
 
-    
-
-
-
-
 
 start with INICIO;
 
 
 
 INICIO ::= 
-    Int Main Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c |
-    DEC_FUNCION INICIO;
+    T_int Main Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c |
+    DEC_FUNCION INICIO ;
 
 
 

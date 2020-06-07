@@ -4,8 +4,10 @@ import static Codigo.Tokens.*;
 %class Lexer
 %type Tokens
 
-carac_espaciado= [ \t \r]+
+carac_espaciado=[\ ,\t,\r]+
 saltoLinea=[\n]
+
+
 
 letras=[a-zA-Z]+
 cero= 0

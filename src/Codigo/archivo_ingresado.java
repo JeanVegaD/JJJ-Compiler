@@ -192,7 +192,7 @@ public class archivo_ingresado {
             Reader lector = new BufferedReader(new FileReader(this.archivo.getPath()));
             Sintax sin = new Sintax(new Codigo.LexerCup(lector));
             boolean flag = true;
-            while(flag){
+            while(flag){ 
                 try {
                     sin.parse();
                     flag = false;
@@ -201,8 +201,8 @@ public class archivo_ingresado {
                     Symbol sym = sin.getS();
                     if(sym.value == null){flag = false;}
                     reporte_consola += ("X Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"\n");
-                    System.err.println("Error al analizar codigo");
-                    Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+                    //System.err.println("Error al analizar codigo");
+                    //Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             
@@ -250,9 +250,11 @@ public class archivo_ingresado {
     R:No aplica
     */
     public String get_reporteConsola(){
+        
         return this.reporte_consola;
+        
     }
     
-     
+    
     
 }
