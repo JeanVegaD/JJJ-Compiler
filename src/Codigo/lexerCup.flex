@@ -116,8 +116,8 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 {identificador} {return new Symbol(sym.Identificador, yychar, yyline, yytext());}
 {string} {return new Symbol(sym.String, yychar, yyline, yytext());}
 {character} {return new Symbol(sym.Character, yychar, yyline, yytext());}
-{comentario_bloque} {return new Symbol(sym.Comentario, yychar, yyline, yytext());}
-{comentario_linea} {return new Symbol(sym.Comentario, yychar, yyline, yytext());}
+{comentario_bloque} {/*ignore*/}
+{comentario_linea} {/*ignore*/}
 
 
 {int} {return new Symbol(sym.Int, yychar, yyline, yytext());}
