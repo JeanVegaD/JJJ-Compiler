@@ -1,13 +1,19 @@
 package Codigo;
 
 import java_cup.runtime.Symbol;
+import Codigo.archivo_ingresado;
 
 parser code
 {:
     private Symbol s;
     
     public void syntax_error(Symbol s){
-        this.s = s;
+        archivo_ingresado.reportarError("recuperable" ,s.left+1,s.right+1,s.value);
+        /*this.s = s;*/
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+         archivo_ingresado.reportarError("no recuperable" ,s.left+1,s.right+1,s.value);
     }
 
     public Symbol getS(){
@@ -317,7 +323,9 @@ SENTENCIA ::=
     SWITCH |
     FUNCION Delimitador|
     LEER Delimitador|
-    ESCRIBIR Delimitador;
+    ESCRIBIR Delimitador   |
+    error Delimitador |
+    error Llave_c; 
 
 
  

@@ -85,8 +85,8 @@ public class home extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        textArea_consola = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        textArea_consola = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JJJ Compiler");
@@ -254,32 +254,25 @@ public class home extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(40, 42, 54));
 
-        jScrollPane2.setBackground(new java.awt.Color(40, 42, 54));
-        jScrollPane2.setBorder(null);
-        jScrollPane2.setForeground(new java.awt.Color(245, 245, 245));
+        jScrollPane3.setBorder(null);
 
+        textArea_consola.setEditable(false);
         textArea_consola.setBackground(new java.awt.Color(40, 42, 54));
-        textArea_consola.setColumns(20);
-        textArea_consola.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
-        textArea_consola.setForeground(new java.awt.Color(245, 245, 245));
-        textArea_consola.setRows(5);
-        jScrollPane2.setViewportView(textArea_consola);
+        textArea_consola.setBorder(null);
+        textArea_consola.setContentType("text/html"); // NOI18N
+        jScrollPane3.setViewportView(textArea_consola);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane3))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout consoleLayout = new javax.swing.GroupLayout(console);
@@ -357,10 +350,12 @@ public class home extends javax.swing.JFrame {
             archivoActual.analizarSintax();
             
             
+            
     
             textArea_consola.setText(archivoActual.get_reporteConsola());
         }else{
-            String errorTemporal="** ERROR: no se ha cargado nigun archivo";
+            String errorTemporal="<h1 style='color:#f44336; font-family: Arial, Helvetica, sans-serif;'>"
+                    + "<b>Error:</b> No selecciono nigun archivo</h1>";
             textArea_consola.setText(errorTemporal);
         }
 
@@ -413,11 +408,11 @@ public class home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton laod_button;
     private javax.swing.JSplitPane splitBody;
     private javax.swing.JTextArea textArea_code;
-    private javax.swing.JTextArea textArea_consola;
+    private javax.swing.JEditorPane textArea_consola;
     // End of variables declaration//GEN-END:variables
 
 }

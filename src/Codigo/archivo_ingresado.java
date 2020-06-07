@@ -26,11 +26,31 @@ public class archivo_ingresado {
     private String nombre;
     private String data;
     private String tokens_archivo;
-    private String reporte_consola= "==Proceso de compilacion iniciada== \n\n";
+   
+    
+    private static String htmlConfig = "<style> "
+            + ".textoNormal{"
+            + "color:#fafafa;"
+            + "font-family: Arial, Helvetica, sans-serif;"
+            + "}"
+            + ".textoVerde{"
+            + "color:#27C93F;"
+            + "font-family: Arial, Helvetica, sans-serif;"
+            + "}"
+            + ".textoRojo{"
+            + "color:#f44336;"
+            + "font-family: Arial, Helvetica, sans-serif;"
+            + "}"
+            + "</style>";
+    
+    private String reporte_consola = htmlConfig;
+    private static String reporte_errores = "";
+    private boolean errores = false;
+    
     
     
     public archivo_ingresado(){
-        
+        reporte_consola+= "<h1 class='textoNormal'>Compilación iniciada</h1>";
     }
     
     /*
@@ -114,8 +134,14 @@ public class archivo_ingresado {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
        
-       reporte_consola+= "* Se ha generado el archvo Lexer.JAVA \n" ;
-       
+       reporte_consola+= "<h3 class='textoNormal'>Se han generado los siguientes archivos: </h3>"
+               + "<ul class='textoNormal'>\n" +
+                "  <li>Lexer.java</li>\n" +
+                "  <li>LexerCup.java</li>\n" +
+                "  <li>Sintax.java</li>\n" +
+                "  <li>sym.java.java</li>\n" +
+                "</ul>"; ;
+
    }
    
    
@@ -135,7 +161,7 @@ public class archivo_ingresado {
                 Tokens toks = lexer.yylex();
                 if(toks==null){
                     this.tokens_archivo=resuladoLexer;
-                    reporte_consola+= "* Analisis lexico realizado \n" ;
+                    reporte_consola+= "<h2 class='textoVerde'> Análisis léxico realizado </h2>";
                     return;
                 }
                 switch(toks){
@@ -149,9 +175,9 @@ public class archivo_ingresado {
             }  
         } catch (FileNotFoundException ex) {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
-            reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;
+            reporte_consola+= "<h3 class='textoRojo'>ERROR: Análisis léxico NO realizado </h3>";
         } catch (IOException ex) {
-            reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;
+            reporte_consola+= "<h3 class='textoRojo'>ERROR: Análisis léxico NO realizado </h3>";
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
        
@@ -171,9 +197,9 @@ public class archivo_ingresado {
             myWriter = new FileWriter("src/txtFiles/tokens_"+ archivo.getName().substring(0, archivo.getName().lastIndexOf('.')) + ".txt" );
             myWriter.write(this.tokens_archivo);
             myWriter.close();
-            reporte_consola+= "* Se ha generado el archivo con los tokens \n" ;
+            reporte_consola+= "<h3 class='textoNormal'>Se ha generado el archivo con los tokens</h3>";
         } catch (IOException ex) {
-            reporte_consola+= "* ERROR: NO se ha generado el archivo con los tokens \n" ;
+            reporte_consola+= "<h3 class='textoRojo'>ERROR: NO se ha generado el archivo con los tokens  </h3>";
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
       
@@ -191,30 +217,47 @@ public class archivo_ingresado {
         try {
             Reader lector = new BufferedReader(new FileReader(this.archivo.getPath()));
             Sintax sin = new Sintax(new Codigo.LexerCup(lector));
-            boolean flag = true;
-            while(flag){ 
-                try {
-                    sin.parse();
-                    flag = false;
-                    System.err.println("Codigo analizado");
-                } catch (Exception ex) {
-                    Symbol sym = sin.getS();
-                    if(sym.value == null){flag = false;}
-                    reporte_consola += ("X Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"\n");
-                    //System.err.println("Error al analizar codigo");
-                    //Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            try {
+                sin.parse();
+                reporte_consola+= "<h2 class='textoVerde'> Análisis sintáctico realizado </h2>";
+                reporte_consola += reporte_errores;
+                reporte_consola += "<br> <br>";
+                
+            } catch (Exception ex) {
+                //Symbol sym = sin.getS();
+                //if(sym.value == null){flag = false;}
+                //reporte_consola += ("X Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"\n");
+                //System.err.println("Error al analizar codigo");
+                //Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
             
         } catch (FileNotFoundException ex) {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
-            reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;
+            reporte_consola+= "<h3 class='textoRojo'> ERROR: Análisis sintáctico NO realizado </h3>";
         } catch (IOException ex) {
-            reporte_consola+= "* ERROR: Analisis lexico NO realizado \n" ;
+            reporte_consola+= "<h3 class='textoRojo'> ERROR: Análisis sintáctico NO realizado </h3>";
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
        
    }
+   
+   
+   /*
+    E:String con los errores encontrados 
+    S:Reportar errores en consola 
+    R:No aplica
+    */
+   public static  void reportarError(String tipo, int columna, int linea, Object valor){
+       reporte_errores += "<p class='textoRojo'> <b>Error "+tipo+ "</b>:  "
+               + " línea: " + linea +","
+               + " columna: "+columna +","
+               + " cerca de: "+valor
+               + "</p>";
+   }
+   
+   
+   
    
     /*
     E:No aplica
