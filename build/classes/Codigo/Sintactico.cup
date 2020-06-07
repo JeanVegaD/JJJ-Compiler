@@ -194,15 +194,16 @@ DEC_VARIABLE ::=
     TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA |
     
     
-    TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c |
-    TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c Asignacion Null | 
-    TIPOS_VARIABLES Identificador Corchete_a Int Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO  Corchete_c  ;
+    TIPOS_VARIABLES Identificador Corchete_a PARAMETROS_ARREGLO_AUX Corchete_c |
+    TIPOS_VARIABLES Identificador Corchete_a PARAMETROS_ARREGLO_AUX Corchete_c Asignacion Null | 
+    TIPOS_VARIABLES Identificador Corchete_a PARAMETROS_ARREGLO_AUX Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO_AUX   Corchete_c  ;
 
     
 
 
 PARAMETROS_ARREGLO_AUX ::=
     Int |
+    Identificador |
     EXP_ARITMETICA_BIN ;
     /*EXP_LOGICA_UNA;*/
 
@@ -314,7 +315,7 @@ SENTENCIA ::=
     WHILE |
     DO_WHILE |
     SWITCH |
-    FUNCION |
+    FUNCION Delimitador|
     LEER Delimitador|
     ESCRIBIR Delimitador;
 
