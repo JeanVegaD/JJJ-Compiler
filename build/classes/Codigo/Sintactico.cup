@@ -79,6 +79,7 @@ terminal Delimitador,
 non terminal INICIO,
     TIPOS_ARITMETICOS,
     TIPOS_RELACIONALES,
+    TIPO_ARREGLO,
     TIPOS_LOGICOS,
     VARIABLES_LOGICAS,
     TIPOS_VARIABLES,
@@ -100,6 +101,7 @@ non terminal INICIO,
     PARAM_SWITCH,
     CASE_SWITCH,
     TIPOS_RETORNO_FUNCION,
+    TIPOS_PARAM_FUNCION_AUX,
     TIPOS_PARAMETRO_FUNCION,
     DEC_FUNCION,
     RETORNOS_FUNCION,
@@ -172,6 +174,11 @@ TIPOS_ASIGNACION_VARIABLE::=
     VARIABLES_LOGICAS;
 */
 
+TIPO_ARREGLO::=
+    Identificador Corchete_a Int  Corchete_c|
+    Identificador Corchete_a FUNCION  Corchete_c|
+    Identificador Corchete_a Identificador  Corchete_c|
+    Identificador Corchete_a TIPO_ARREGLO  Corchete_c;
 
 DEC_VARIABLE ::=
     TIPOS_VARIABLES Identificador |
@@ -245,7 +252,8 @@ PARAM_EXP_ARITMETICA ::=
     Int |
     Float |
     EXP_ARITMETICA_UNA |
-    FUNCION;
+    FUNCION|
+    TIPO_ARREGLO;
 
 
 EXP_ARITMETICA_BIN::=
@@ -263,7 +271,8 @@ PARAM_EXP_RELACIONAL ::=
     Float |
     EXP_ARITMETICA_UNA |
     EXP_ARITMETICA_BIN
-    FUNCION;
+    FUNCION |
+    TIPO_ARREGLO;
 
 
 
@@ -297,13 +306,13 @@ EXP_LOGICA ::=
 
 
 SENTENCIA ::=
-    COMENTARIO | 
+    /*COMENTARIO | */
     DEC_VARIABLE Delimitador |
     ASIG_VARIABLE Delimitador |
     CAST_STRING_INT Delimitador |
     IF_ELSE |
     WHILE |
-    DO_WHILE Delimitador |
+    DO_WHILE |
     SWITCH |
     FUNCION |
     LEER Delimitador|
@@ -312,7 +321,8 @@ SENTENCIA ::=
 
  
 CONDICION ::= 
-    EXP_LOGICA;
+    EXP_LOGICA|
+    EXP_LOGICA_UNA;
 
 
 BLOQUE ::= 
@@ -339,13 +349,18 @@ PARAM_SWITCH::=
     String |
     Character | 
     Identificador |
-    FUNCION;
+    FUNCION |
+    TIPO_ARREGLO;
 
 CASE_SWITCH::=
-    Case PARAM_SWITCH Dos_puntos BLOQUE Break |
-    Case PARAM_SWITCH Dos_puntos BLOQUE Break CASE_SWITCH |
-    Case Default Dos_puntos BLOQUE Break |
-    Case Default Dos_puntos BLOQUE Break CASE_SWITCH;
+    Case PARAM_SWITCH Dos_puntos BLOQUE Break Delimitador |
+    Case PARAM_SWITCH Dos_puntos Break Delimitador |
+    Case PARAM_SWITCH Dos_puntos BLOQUE Break Delimitador CASE_SWITCH |
+    Case PARAM_SWITCH Dos_puntos  Break Delimitador CASE_SWITCH |
+    Default Dos_puntos Break Delimitador|
+    Default Dos_puntos BLOQUE Break Delimitador|
+    Default Dos_puntos BLOQUE Break Delimitador CASE_SWITCH |
+    Default Dos_puntos  Break Delimitador CASE_SWITCH;
 
 SWITCH::=
     Switch Parentesis_a PARAM_SWITCH Parentesis_c Llave_a CASE_SWITCH Llave_c;
@@ -356,9 +371,13 @@ TIPOS_RETORNO_FUNCION ::=
     TIPOS_VARIABLES;
     
 
-TIPOS_PARAMETRO_FUNCION::=
+TIPOS_PARAM_FUNCION_AUX::=
     TIPOS_VARIABLES Identificador |
-    TIPOS_VARIABLES Identificador Coma TIPOS_PARAMETRO_FUNCION;
+    T_int Corchete_a  Corchete_c Identificador;
+
+TIPOS_PARAMETRO_FUNCION::=
+    TIPOS_PARAM_FUNCION_AUX |
+    TIPOS_PARAM_FUNCION_AUX Coma TIPOS_PARAMETRO_FUNCION;
 
 
 
@@ -384,6 +403,7 @@ PARAMETROS_FUNCION_AUX::=
     Character |
     Int |
     Float |
+    TIPO_ARREGLO |
     Null |
     EXP_ARITMETICA_BIN |
     EXP_ARITMETICA_UNA |
@@ -412,13 +432,15 @@ ESCRIBIR::=
     Print Parentesis_a Int  Parentesis_c |
     Print Parentesis_a Float  Parentesis_c |
     Print Parentesis_a Null  Parentesis_c |
+    Print Parentesis_a TIPO_ARREGLO  Parentesis_c |
     Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c |     
     Print Parentesis_a EXP_LOGICA Parentesis_c | 
+    Print Parentesis_a EXP_LOGICA_UNA Parentesis_c | 
     Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c ;
     
-
+/*
 COMENTARIO::=
-    Comentario;
+    Comentario;*/
 
 
 
