@@ -345,6 +345,7 @@ public class home extends javax.swing.JFrame {
 
     private void compile_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compile_buttonActionPerformed
         if(archivoActual.get_Nombre_Archivo()!=null){
+            archivoActual.limpiarConsola();
             archivoActual.analizarTokens();
             archivoActual.escribirTokensArchivo();
             archivoActual.analizarSintax();

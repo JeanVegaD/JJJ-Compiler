@@ -43,14 +43,14 @@ public class archivo_ingresado {
             + "}"
             + "</style>";
     
-    private String reporte_consola = htmlConfig;
+    private String reporte_consola = "";
     private static String reporte_errores = "";
-    private boolean errores = false;
+    private static boolean errores = false;
     
     
     
     public archivo_ingresado(){
-        reporte_consola+= "<h1 class='textoNormal'>Compilación iniciada</h1>";
+        
     }
     
     /*
@@ -214,12 +214,14 @@ public class archivo_ingresado {
     Se encarga de reconocer los tokens presentes en el archivo mediante la clase Lexer.java que se creoo 
     */
    public void analizarSintax(){
+       
         try {
             Reader lector = new BufferedReader(new FileReader(this.archivo.getPath()));
             Sintax sin = new Sintax(new Codigo.LexerCup(lector));
             try {
                 sin.parse();
                 reporte_consola+= "<h2 class='textoVerde'> Análisis sintáctico realizado </h2>";
+                resultadoCompilacion();
                 reporte_consola += reporte_errores;
                 reporte_consola += "<br> <br>";
                 
@@ -229,7 +231,6 @@ public class archivo_ingresado {
                 //reporte_consola += ("X Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"\n");
                 //System.err.println("Error al analizar codigo");
                 //Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
-
         }
             
         } catch (FileNotFoundException ex) {
@@ -249,6 +250,7 @@ public class archivo_ingresado {
     R:No aplica
     */
    public static  void reportarError(String tipo, int columna, int linea, Object valor){
+       errores=true;
        reporte_errores += "<p class='textoRojo'> <b>Error "+tipo+ "</b>:  "
                + " línea: " + linea +","
                + " columna: "+columna +","
@@ -257,6 +259,28 @@ public class archivo_ingresado {
    }
    
    
+   /*
+    E:ninguna
+    S:Indica el estado de la compilacion
+    R:No aplica
+    */
+   public void resultadoCompilacion(){
+       if(!errores){
+           reporte_errores += "<h2 class='textoVerde'>Compilacíon completada</h2>";
+       }
+       else{
+           reporte_errores += "<h2 class='textoRojo'>Fallo al compilar</h2>";
+       }
+   }
+   
+   
+   public void limpiarConsola(){
+        errores=false;
+        reporte_errores="";
+        reporte_consola="";
+        reporte_consola+=htmlConfig;
+        reporte_consola+= "<h1 class='textoNormal'>Compilación iniciada</h1>";
+   }
    
    
     /*

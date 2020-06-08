@@ -404,8 +404,9 @@ RETORNOS_FUNCION::=
 
 DEC_FUNCION ::=
     TIPOS_RETORNO_FUNCION Identificador Parentesis_a  Parentesis_c Llave_a BLOQUE Llave_c |
-    TIPOS_RETORNO_FUNCION Identificador Parentesis_a TIPOS_PARAMETRO_FUNCION Parentesis_c Llave_a BLOQUE Llave_c;
-
+    TIPOS_RETORNO_FUNCION Identificador Parentesis_a TIPOS_PARAMETRO_FUNCION Parentesis_c Llave_a BLOQUE Llave_c |
+    error Parentesis_c |
+    error Llave_c ;
 
 PARAMETROS_FUNCION_AUX::=
     String |
