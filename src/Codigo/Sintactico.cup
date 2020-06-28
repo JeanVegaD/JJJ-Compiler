@@ -45,10 +45,12 @@ terminal Delimitador,
         Else,
         Do,
         While,
+        For,
         Switch,
         Case,
         Break,
         Default,
+        Sig_pregunta,
         Dos_puntos,
         Suma,
         Resta,
@@ -106,9 +108,13 @@ non terminal INICIO,
     SENTENCIA,
     CONDICION,
     BLOQUE,
+    BLOQUE_ANIDADO,
     IF_ELSE,
     WHILE,
     DO_WHILE,
+    FOR,
+    STATEMENT1,
+    STATEMENT3,
     SWITCH,
     PARAM_SWITCH,
     CASE_SWITCH,
@@ -122,6 +128,8 @@ non terminal INICIO,
     FUNCION,
     LEER,
     ESCRIBIR,
+    PARAM_OPERADOR_TERNARIO,
+    OPERADOR_TERNARIO,
     DEC_VARIABLE,
     PARAMETROS_ARREGLO_AUX,
     PARAMETROS_ARREGLO,
@@ -194,6 +202,21 @@ TIPO_ARREGLO::=
 
 /*Declaracion de variables */
 
+
+PARAM_OPERADOR_TERNARIO ::=
+    LITERAL_NUMERICO |
+    LITERAL_CADENA |
+    EXP_ARITMETICA_UNA |
+    EXP_ARITMETICA_BIN |
+    EXP_LOGICA_UNA |
+    EXP_LOGICA ;
+
+
+
+OPERADOR_TERNARIO ::=
+   Corchete_a Parentesis_a EXP_LOGICA_UNA Parentesis_c Sig_pregunta PARAM_OPERADOR_TERNARIO Dos_puntos PARAM_OPERADOR_TERNARIO Corchete_c |
+   Corchete_a Parentesis_a EXP_LOGICA Parentesis_c Sig_pregunta PARAM_OPERADOR_TERNARIO Dos_puntos PARAM_OPERADOR_TERNARIO Corchete_c ; 
+
 DEC_VARIABLE ::=
     TIPOS_VARIABLES Identificador |
     TIPOS_VARIABLES Identificador Asignacion LITERAL_NUMERICO |
@@ -204,8 +227,9 @@ DEC_VARIABLE ::=
     
     TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA_UNA |
     TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA |
-    
-    
+
+    TIPOS_VARIABLES Identificador Asignacion OPERADOR_TERNARIO  |
+
     TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c |
     TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion Null | 
     TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO Corchete_c  ;
@@ -243,6 +267,8 @@ ASIG_VARIABLE ::=
 
     Identificador Asignacion EXP_LOGICA_UNA |
     Identificador Asignacion EXP_LOGICA |
+
+    Identificador Asignacion OPERADOR_TERNARIO |
 
     Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion POSICION_ARREGLO;
 
@@ -317,6 +343,7 @@ SENTENCIA ::=
     CAST_STRING_INT Delimitador |
     IF_ELSE |
     WHILE |
+    FOR |
     DO_WHILE |
     SWITCH |
     FUNCION Delimitador|
@@ -326,12 +353,14 @@ SENTENCIA ::=
     error Llave_c; 
 
 
-
+BLOQUE_ANIDADO::=
+    SENTENCIA |
+    SENTENCIA BLOQUE_ANIDADO;
 
 BLOQUE ::= 
     SENTENCIA |
     SENTENCIA BLOQUE |
-    /*Agregar bloques anidados*/
+    Llave_a BLOQUE_ANIDADO Llave_c |
     RETORNOS_FUNCION ;
 
 
@@ -353,6 +382,22 @@ WHILE::=
 DO_WHILE ::=
     Do Llave_a BLOQUE Llave_c While Parentesis_a CONDICION Parentesis_c;
 
+
+
+STATEMENT1 ::= 
+    TIPOS_VARIABLES Identificador Asignacion LITERAL_NUMERICO |
+    TIPOS_VARIABLES Identificador Asignacion LITERAL_FUNID |
+    Identificador Asignacion LITERAL_NUMERICO |
+    Identificador Asignacion LITERAL_FUNID ;
+
+STATEMENT3 ::=
+    Identificador Asignacion LITERAL_NUMERICO |
+    Identificador Asignacion LITERAL_FUNID |
+    Identificador Asignacion EXP_ARITMETICA_UNA| 
+    Identificador Asignacion EXP_ARITMETICA_BIN ;
+
+FOR::=
+    For Parentesis_a STATEMENT1 Delimitador CONDICION Delimitador STATEMENT3 Parentesis_c Llave_a BLOQUE Llave_c ;
 
 PARAM_SWITCH::=
     Int |

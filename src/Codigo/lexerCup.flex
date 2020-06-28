@@ -80,10 +80,12 @@ float = {simboloNegativo}? {int}"."{dígitos}*
 "else" {return new Symbol(sym.Else, yychar, yyline, yytext());}
 "do" {return new Symbol(sym.Do, yychar, yyline, yytext());}
 "while" {return new Symbol(sym.While, yychar, yyline, yytext());}
+"for" {return new Symbol(sym.For, yychar, yyline, yytext());}
 "switch" {return new Symbol(sym.Switch, yychar, yyline, yytext());}
 "case" {return new Symbol(sym.Case, yychar, yyline, yytext());}
 "break" {return new Symbol(sym.Break, yychar, yyline, yytext());}
 "default" {return new Symbol(sym.Default, yychar, yyline, yytext());}
+"?" {return new Symbol(sym.Sig_pregunta, yychar, yyline, yytext());}
 ":" {return new Symbol(sym.Dos_puntos, yychar, yyline, yytext());}
 "+" {return new Symbol(sym.Suma, yychar, yyline, yytext());}
 "-" {return new Symbol(sym.Resta, yychar, yyline, yytext());}
