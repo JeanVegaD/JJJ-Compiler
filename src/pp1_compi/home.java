@@ -350,9 +350,7 @@ public class home extends javax.swing.JFrame {
             archivoActual.escribirTokensArchivo();
             archivoActual.analizarSintax();
             
-            
-            
-    
+           
             textArea_consola.setText(archivoActual.get_reporteConsola());
         }else{
             String errorTemporal="<h1 style='color:#f44336; font-family: Arial, Helvetica, sans-serif;'>"

@@ -9,6 +9,7 @@ import java_cup.runtime.Symbol;
 %line
 %char
 
+
 carac_espaciado=[ \t\r\n]*
 saltoLinea=[\n]
 
