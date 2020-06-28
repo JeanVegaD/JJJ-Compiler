@@ -23,6 +23,7 @@ parser code
 
 
 
+
 terminal Delimitador,
         Llave_a,
         Llave_c,
@@ -76,10 +77,11 @@ terminal Delimitador,
         Identificador,
         String,
         Character,
-        Comentario,
         Int,
         Float,
         Error;
+        /*Comentario,*/
+        /**/
 
 
 non terminal INICIO,
@@ -87,9 +89,13 @@ non terminal INICIO,
     TIPOS_RELACIONALES,
     TIPO_ARREGLO,
     TIPOS_LOGICOS,
-    VARIABLES_LOGICAS,
     TIPOS_VARIABLES,
-    TIPOS_ASIGNACION_VARIABLE,
+    LITERAL_NUMERICO,
+    LITERAL_CADENA,
+    LITERAL_BOOLEANO, 
+    LITERAL_FUNID,
+    POSICION_ARREGLO,
+
     EXP_ARITMETICA_UNA,
     PARAM_EXP_ARITMETICA,
     EXP_ARITMETICA_BIN,
@@ -119,9 +125,9 @@ non terminal INICIO,
     DEC_VARIABLE,
     PARAMETROS_ARREGLO_AUX,
     PARAMETROS_ARREGLO,
-    ASIG_VARIABLE,
-    COMENTARIO,
+    ASIG_VARIABLE,   
     CAST_STRING_INT;
+    /*COMENTARIO,*/
     
 
 
@@ -132,8 +138,6 @@ start with INICIO;
 INICIO ::= 
     T_int Main Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c |
     DEC_FUNCION INICIO ;
-
-
 
 
 TIPOS_ARITMETICOS ::= 
@@ -157,110 +161,108 @@ TIPOS_LOGICOS ::=
     Conjuncion |
     Disyuncion; 
 
-VARIABLES_LOGICAS::=
-    True |
-    False;
-
-
 TIPOS_VARIABLES ::=
     T_int |
     T_float |
     T_bool |
     T_char |
     T_string; 
-   
 
-/*
-TIPOS_ASIGNACION_VARIABLE::=
-    String |
-    Character |
+
+/*Literales*/
+
+LITERAL_NUMERICO ::= 
     Int |
     Float |
-    Null |
-    VARIABLES_LOGICAS;
-*/
+    TIPO_ARREGLO;
+
+LITERAL_CADENA ::= 
+    String |
+    Character ;
+
+LITERAL_BOOLEANO ::= 
+    True |
+    False ;
+
+LITERAL_FUNID ::= 
+    Identificador |
+    FUNCION;
 
 TIPO_ARREGLO::=
-    Identificador Corchete_a Int  Corchete_c|
-    Identificador Corchete_a FUNCION  Corchete_c|
-    Identificador Corchete_a Identificador  Corchete_c|
-    Identificador Corchete_a TIPO_ARREGLO  Corchete_c;
+    Identificador Corchete_a LITERAL_NUMERICO Corchete_c|
+    Identificador Corchete_a LITERAL_FUNID Corchete_c;
+
+/*Declaracion de variables */
 
 DEC_VARIABLE ::=
     TIPOS_VARIABLES Identificador |
-    TIPOS_VARIABLES Identificador Asignacion String |
-    TIPOS_VARIABLES Identificador Asignacion Character |
-    TIPOS_VARIABLES Identificador Asignacion Int |
-    TIPOS_VARIABLES Identificador Asignacion Float |
-    TIPOS_VARIABLES Identificador Asignacion Null |
+    TIPOS_VARIABLES Identificador Asignacion LITERAL_NUMERICO |
+    TIPOS_VARIABLES Identificador Asignacion LITERAL_CADENA |
 
-    TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_BIN |
     TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_UNA|
+    TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_BIN |
+    
     TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA_UNA |
     TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA |
     
     
-    TIPOS_VARIABLES Identificador Corchete_a PARAMETROS_ARREGLO_AUX Corchete_c |
-    TIPOS_VARIABLES Identificador Corchete_a PARAMETROS_ARREGLO_AUX Corchete_c Asignacion Null | 
-    TIPOS_VARIABLES Identificador Corchete_a PARAMETROS_ARREGLO_AUX Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO_AUX   Corchete_c  ;
+    TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c |
+    TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion Null | 
+    TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO Corchete_c  ;
 
-    
+
+
+/*Declaraciones necesarias para el arreglo*/
+POSICION_ARREGLO ::=
+    Int |
+    TIPO_ARREGLO |
+    LITERAL_FUNID |
+    EXP_ARITMETICA_BIN;
 
 
 PARAMETROS_ARREGLO_AUX ::=
     Int |
-    Identificador |
+    LITERAL_FUNID |
     EXP_ARITMETICA_BIN ;
-    /*EXP_LOGICA_UNA;*/
 
 PARAMETROS_ARREGLO::=
     PARAMETROS_ARREGLO_AUX | 
     PARAMETROS_ARREGLO_AUX Coma PARAMETROS_ARREGLO;
 
 
+/*Aignaciones de variables*/
 
 ASIG_VARIABLE ::= 
 
-    Identificador Asignacion String |
-    Identificador Asignacion Character |
-    Identificador Asignacion Int |
-    Identificador Asignacion Float |
+    Identificador Asignacion LITERAL_NUMERICO |
+    Identificador Asignacion LITERAL_CADENA |
     Identificador Asignacion Null |
 
+    Identificador Asignacion EXP_ARITMETICA_UNA| 
     Identificador Asignacion EXP_ARITMETICA_BIN |
-    Identificador Asignacion EXP_ARITMETICA_UNA|
-   
+
     Identificador Asignacion EXP_LOGICA_UNA |
     Identificador Asignacion EXP_LOGICA |
 
-    Identificador Corchete_a Int Corchete_c Asignacion Int | 
-    Identificador Corchete_a Int Corchete_c Asignacion FUNCION | 
-    Identificador Corchete_a Int Corchete_c Asignacion EXP_ARITMETICA_BIN | 
-    Identificador Corchete_a Int Corchete_c Asignacion EXP_ARITMETICA_UNA ;
+    Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion POSICION_ARREGLO;
 
 
+/*Casteo de string a int*/
 CAST_STRING_INT::= 
-    String_to_int Parentesis_a String Parentesis_c |
-    String_to_int Parentesis_a FUNCION Parentesis_c |
-    String_to_int Parentesis_a Identificador Parentesis_c ;
+    String_to_int Parentesis_a LITERAL_CADENA Parentesis_c |
+    String_to_int Parentesis_a LITERAL_FUNID Parentesis_c ;
 
 
-
-  
-
+/*Expresiones artimeticas*/
 EXP_ARITMETICA_UNA ::=
     Unario_positivo Identificador  |
     Unario_negatico Identificador  ;
     
 
-
 PARAM_EXP_ARITMETICA ::= 
-    Identificador |
-    Int |
-    Float |
-    EXP_ARITMETICA_UNA |
-    FUNCION|
-    TIPO_ARREGLO;
+    LITERAL_NUMERICO |
+    LITERAL_FUNID |
+    EXP_ARITMETICA_UNA;
 
 
 EXP_ARITMETICA_BIN::=
@@ -270,16 +272,13 @@ EXP_ARITMETICA_BIN::=
     Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  PARAM_EXP_ARITMETICA | 
     Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  EXP_ARITMETICA_BIN;
 
-
+/*Expresiones realcionales*/
 
 PARAM_EXP_RELACIONAL ::=
-    Identificador |
-    Int |
-    Float |
+    LITERAL_NUMERICO |
+    LITERAL_FUNID |
     EXP_ARITMETICA_UNA |
-    EXP_ARITMETICA_BIN
-    FUNCION |
-    TIPO_ARREGLO;
+    EXP_ARITMETICA_BIN;
 
 
 
@@ -291,13 +290,13 @@ EXP_RELACIONAL ::=
     Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  EXP_RELACIONAL ;
 
 
+/*Expresiones logicas*/
+
 EXP_LOGICA_UNA ::=
-    Identificador | 
-    Negacion Identificador | 
-    FUNCION | 
-    Negacion FUNCION |
-    VARIABLES_LOGICAS | 
-    Negacion VARIABLES_LOGICAS |
+    LITERAL_FUNID |
+    Negacion LITERAL_FUNID |
+    LITERAL_BOOLEANO |
+    Negacion LITERAL_BOOLEANO |
     EXP_RELACIONAL |
     Negacion EXP_RELACIONAL;
     
@@ -310,10 +309,9 @@ EXP_LOGICA ::=
     Parentesis_a EXP_LOGICA  Parentesis_c TIPOS_LOGICOS EXP_LOGICA;
    
 
-
+/*Sentencia*/
 
 SENTENCIA ::=
-    /*COMENTARIO | */
     DEC_VARIABLE Delimitador |
     ASIG_VARIABLE Delimitador |
     CAST_STRING_INT Delimitador |
@@ -323,21 +321,26 @@ SENTENCIA ::=
     SWITCH |
     FUNCION Delimitador|
     LEER Delimitador|
-    ESCRIBIR Delimitador   |
+    ESCRIBIR Delimitador|
     error Delimitador |
     error Llave_c; 
 
 
- 
-CONDICION ::= 
-    EXP_LOGICA|
-    EXP_LOGICA_UNA;
 
 
 BLOQUE ::= 
     SENTENCIA |
     SENTENCIA BLOQUE |
+    /*Agregar bloques anidados*/
     RETORNOS_FUNCION ;
+
+
+
+/*Estructuras de control */
+
+CONDICION ::= 
+    EXP_LOGICA|
+    EXP_LOGICA_UNA;
 
 
 IF_ELSE::=
@@ -349,7 +352,6 @@ WHILE::=
 
 DO_WHILE ::=
     Do Llave_a BLOQUE Llave_c While Parentesis_a CONDICION Parentesis_c;
-
 
 
 PARAM_SWITCH::=
@@ -369,12 +371,18 @@ CASE_SWITCH::=
     Default Dos_puntos Break Delimitador|
     Default Dos_puntos BLOQUE Break Delimitador|
     Default Dos_puntos BLOQUE Break Delimitador CASE_SWITCH |
-    Default Dos_puntos  Break Delimitador CASE_SWITCH;
+    Default Dos_puntos  Break Delimitador CASE_SWITCH   ;
 
 SWITCH::=
     Switch Parentesis_a PARAM_SWITCH Parentesis_c Llave_a CASE_SWITCH Llave_c;
 
 
+
+/*Agregar For y If UNARIO*/
+
+
+
+/*Fucniones*/
 TIPOS_RETORNO_FUNCION ::= 
     T_void |
     TIPOS_VARIABLES;
@@ -391,10 +399,8 @@ TIPOS_PARAMETRO_FUNCION::=
 
 
 RETORNOS_FUNCION::=
-    Return String Delimitador |
-    Return Character Delimitador |
-    Return Int Delimitador  |
-    Return Float Delimitador |
+    Return LITERAL_CADENA Delimitador |
+    Return LITERAL_NUMERICO Delimitador  |
     Return Null Delimitador |
     Return EXP_ARITMETICA_BIN Delimitador |
     Return EXP_ARITMETICA_UNA Delimitador |
@@ -409,11 +415,8 @@ DEC_FUNCION ::=
     error Llave_c ;
 
 PARAMETROS_FUNCION_AUX::=
-    String |
-    Character |
-    Int |
-    Float |
-    TIPO_ARREGLO |
+    LITERAL_NUMERICO |
+    LITERAL_CADENA |
     Null |
     EXP_ARITMETICA_BIN |
     EXP_ARITMETICA_UNA |
@@ -421,7 +424,6 @@ PARAMETROS_FUNCION_AUX::=
     EXP_LOGICA_UNA ;
 
     
-
 PARAMETROS_FUNCION ::=
     PARAMETROS_FUNCION_AUX |
     PARAMETROS_FUNCION_AUX Coma PARAMETROS_FUNCION;
@@ -431,28 +433,20 @@ FUNCION ::=
     Identificador Parentesis_a  Parentesis_c   |
     Identificador Parentesis_a PARAMETROS_FUNCION Parentesis_c;
 
-
+/*Funcioens del sistema*/
 
 LEER::=
     Input Simbolo_input Identificador;
 
 ESCRIBIR::=
-    Print Parentesis_a String  Parentesis_c |
-    Print Parentesis_a Character  Parentesis_c |
-    Print Parentesis_a Int  Parentesis_c |
-    Print Parentesis_a Float  Parentesis_c |
+    Print Parentesis_a LITERAL_CADENA  Parentesis_c |
+    Print Parentesis_a LITERAL_NUMERICO Parentesis_c |
     Print Parentesis_a Null  Parentesis_c |
-    Print Parentesis_a TIPO_ARREGLO  Parentesis_c |
     Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c |     
     Print Parentesis_a EXP_LOGICA Parentesis_c | 
     Print Parentesis_a EXP_LOGICA_UNA Parentesis_c | 
     Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c ;
     
-/*
-COMENTARIO::=
-    Comentario;*/
-
-
 
 
 
