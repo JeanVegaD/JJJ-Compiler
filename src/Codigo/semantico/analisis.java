@@ -5,7 +5,7 @@ public class analisis {
     
     private ArrayList<ArrayList<String>> tablaSimbolos = new ArrayList<ArrayList<String>>();
     //Estructura 
-    //ID    TIPO    BLOQUE_PADRE    AUX
+    //ID    TIPO    BLOQUE_PADRE    AUX     INCIALIZACION
     
     private ArrayList<ArrayList<String>> tablaBloques = new ArrayList<ArrayList<String>>();
     //Estructura 
@@ -309,11 +309,35 @@ public class analisis {
         temp_vars.add(tipo);
         temp_vars.add(currentBlock);
         temp_vars.add("var");
+        temp_vars.add("true");
         tablaSimbolos.add(temp_vars);
         System.out.println("Varaiable: "+id+" creada");
         get_current_symbol_table();
         
     } 
+    
+    public void setVar_Aux(String id, String tipo){
+        ArrayList<String>  temp_vars =  new ArrayList<String>();
+        temp_vars.add(id);
+        temp_vars.add(tipo);
+        temp_vars.add(currentBlock);
+        temp_vars.add("var");
+        temp_vars.add("false");
+        tablaSimbolos.add(temp_vars);
+        System.out.println("Varaiable: "+id+" creada");
+        get_current_symbol_table();
+        
+    } 
+    
+    public String var_inicializada(String id){
+        String res="";
+        for (int i = 0; i < tablaSimbolos.size(); i++) {
+            if(tablaSimbolos.get(i).get(0).equals(id)){
+                res= tablaSimbolos.get(i).get(4);
+            }
+        }
+        return res;
+    }
      
     public void prueba(){
         
