@@ -327,7 +327,16 @@ public class analisis {
         System.out.println("Varaiable: "+id+" creada");
         get_current_symbol_table();
         
-    } 
+    }
+    
+    
+    public void init_var(String id){
+        for (int i = 0; i < tablaSimbolos.size(); i++) {
+            if(tablaSimbolos.get(i).get(0).equals(id) && tablaSimbolos.get(i).get(2).equals(currentBlock)){
+                tablaSimbolos.get(i).set(4, "true");
+            }
+        }
+    }
     
     public String var_inicializada(String id){
         String res="";

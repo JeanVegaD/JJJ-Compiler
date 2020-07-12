@@ -522,21 +522,21 @@ DEC_VARIABLE ::=
                                                                         }
                                                                                     :} 
     |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion EXP_LOGICA:exp {:
-                                                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
-                                                                                    if(!flag){
-                                                                                        if(tipo_var.toString().equals("bool")){
-                                                                                            parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
-                                                                                        }
-                                                                                        else{
-                                                                                            String mensaje = "Imposible convertir explícitamente a '"+tipo_var.toString()+"'";
-                                                                                            parser.semantic_error(id_varleft,id_varright, mensaje);
-                                                                                        }
+                                                                                boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                if(!flag){
+                                                                                    if(tipo_var.toString().equals("bool")){
+                                                                                        parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
                                                                                     }
                                                                                     else{
-                                                                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
-                                                                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
-                                                                                    } 
-                                                                                    :} 
+                                                                                        String mensaje = "Imposible convertir explícitamente a '"+tipo_var.toString()+"'";
+                                                                                        parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                    }
+                                                                                }
+                                                                                else{
+                                                                                    String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                    parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                } 
+                                                                                :} 
     |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion OPERADOR_TERNARIO:exp  {: 
                                                                                     boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                                                                     if(!flag){
@@ -557,6 +557,22 @@ DEC_VARIABLE ::=
                                                                                     }
 
                                                                                         :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion CAST_STRING_INT {: 
+                                                                                boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                if(!flag){
+                                                                                    if(tipo_var.toString().equals("int")){
+                                                                                            parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                        }
+                                                                                        else{
+                                                                                            String mensaje = "Imposible convertir explícitamente a '"+tipo_var.toString()+"'";
+                                                                                            parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                        }
+                                                                                
+                                                                                }else{
+                                                                                    String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                    parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                }   
+                                                                                 :}
     |TIPOS_VARIABLES:tipo_var Identificador:id_var Corchete_a Corchete_c {: 
                                                                                             boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                                                                             if(!flag){
@@ -591,7 +607,7 @@ DEC_VARIABLE ::=
     |TIPOS_VARIABLES:tipo_var Identificador:id_var Corchete_a Corchete_c Asignacion Llave_a PARAMETROS_ARREGLO Llave_c {: 
                                                                                             boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                                                                             if(!flag){
-                                                                                                if(tipo_var.toString().equals("int")){
+                                                                                                if(tipo_var.toString().equals("array")){
                                                                                                     parser.analis_semantico.setVar(id_var.toString(),"array");
 
                                                                                                 }else{
@@ -705,25 +721,188 @@ PARAMETROS_ARREGLO::=
 
 ASIG_VARIABLE ::= 
 
-    Identificador Asignacion LITERAL_NUMERICO |
-    Identificador Asignacion LITERAL_CADENA |
-    Identificador Asignacion Null |
+     Identificador:id_var Asignacion Null{: 
+                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                    if(flag){
+                                        parser.analis_semantico.init_var(id_var.toString());
+                                    }else{
+                                        String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                        parser.semantic_error(id_varleft,id_varright, mensaje);
+                                    }:} 
+    |Identificador:id_var Asignacion LITERAL_NUMERICO:lit {: 
+                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                    if(flag){
+                                                        String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                        literal litObject=(literal)lit;
+                                                        if(tipo_var.toString().equals(litObject.getTipo())){
+                                                            parser.analis_semantico.init_var(id_var.toString());
+                                                        }
+                                                        else{
+                                                            String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                            parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                        }
+                                                    }else{
+                                                        String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                        parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                    }
+                                                    :} 
+    |Identificador:id_var Asignacion LITERAL_CADENA:lit {: 
+                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                    if(flag){
+                                                        String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                        literal litObject=(literal)lit;
+                                                        if(tipo_var.toString().equals(litObject.getTipo())){
+                                                            parser.analis_semantico.init_var(id_var.toString());
+                                                        }
+                                                        else{
+                                                            String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                            parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                        }
+                                                    }else{
+                                                        String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                        parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                    }
+                                                    :} 
 
-    Identificador Asignacion EXP_ARITMETICA_UNA| 
-    Identificador Asignacion EXP_ARITMETICA_BIN |
+    |Identificador:id_var  Asignacion EXP_ARITMETICA_UNA:lit {:
+                                                            boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                            if(flag){
+                                                                String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                                literal litObject=(literal)lit;
+                                                                if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                    parser.analis_semantico.init_var(id_var.toString());
+                                                                }
+                                                                else{
+                                                                    String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                }
+                                                            }else{
+                                                                String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                                parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                            }
 
-    Identificador Asignacion EXP_LOGICA_UNA |
-    Identificador Asignacion EXP_LOGICA |
+                                                            :}
+    |Identificador:id_var Asignacion EXP_ARITMETICA_BIN:lit {:
+                                                            boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                            if(flag){
+                                                                String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                                literal litObject=(literal)lit;
+                                                                if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                    parser.analis_semantico.init_var(id_var.toString());
+                                                                }
+                                                                else{
+                                                                    String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                }
+                                                            }else{
+                                                                String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                                parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                            }
 
-    Identificador Asignacion OPERADOR_TERNARIO |
+                                                            :}
 
-    Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion POSICION_ARREGLO;
+    |Identificador:id_var Asignacion EXP_LOGICA_UNA:lit {:
+                                                            boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                            if(flag){
+                                                                String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                                literal litObject=(literal)lit;
+                                                                if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                    parser.analis_semantico.init_var(id_var.toString());
+                                                                }
+                                                                else{
+                                                                    String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                }
+                                                            }else{
+                                                                String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                                parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                            }:}
+    |Identificador:id_var Asignacion EXP_LOGICA:lit {: 
+                                                            boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                            if(flag){
+                                                               String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                                literal litObject=(literal)lit;
+                                                                if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                    parser.analis_semantico.init_var(id_var.toString());
+                                                                }
+                                                                else{
+                                                                    String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                }
+                                                            }else{
+                                                                String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                                parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                            }
+                                                            :}
+
+    |Identificador:id_var Asignacion OPERADOR_TERNARIO:lit {:
+                                                            boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                            if(flag){
+                                                                String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                                literal litObject=(literal)lit;
+                                                                if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                    parser.analis_semantico.init_var(id_var.toString());
+                                                                }
+                                                                else{
+                                                                    String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                }
+                                                            }else{
+                                                                String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                                parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                            }
+                                                                :}
+    |Identificador:id_var Asignacion CAST_STRING_INT {:
+                                                boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                if(flag){
+                                                    String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                    if(tipo_var.toString().equals("int")){
+                                                        parser.analis_semantico.init_var(id_var.toString());
+                                                    }
+                                                    else{
+                                                        String mensaje = "Imposible convertir explícitamente de '" + tipo_var.toString() + "' a 'int'";
+                                                        parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                    }
+                                                }else{
+                                                    String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                }
+                                                :}
+
+    |Identificador:id_var Corchete_a POSICION_ARREGLO Corchete_c Asignacion POSICION_ARREGLO {:
+                                                                boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                if(flag){
+                                                                    String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                                    if(tipo_var.toString().equals("array")){
+                                                                        parser.analis_semantico.init_var(id_var.toString());
+                                                                    }
+                                                                    else{
+                                                                        String mensaje = "El identificador '" + id_var + "' no es un array";
+                                                                        parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                    }
+                                                                }else{
+                                                                    String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                }                                       :};
 
 
 /*Casteo de string a int*/
 CAST_STRING_INT::= 
-    String_to_int Parentesis_a LITERAL_CADENA Parentesis_c |
-    String_to_int Parentesis_a LITERAL_FUNID Parentesis_c ;
+      String_to_int Parentesis_a LITERAL_CADENA Parentesis_c 
+    | String_to_int Parentesis_a LITERAL_FUNID:lit Parentesis_c {:
+                                                                     literal objectparam1=(literal)lit;
+                                                                     if(!objectparam1.getTipo().equals("null")){
+                                                                        if(objectparam1.getTipo().equals("string") || objectparam1.getTipo().equals("char")){
+
+                                                                        }else{
+                                                                            String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                                                            parser.semantic_error(litleft,litright, mensaje); 
+                                                                        }
+                                                                     }else{
+                                                                        String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                        parser.semantic_error(litleft,litright, mensaje);
+                                                                     }
+                                                                        :};
 
 
 /*Expresiones artimeticas*/
@@ -883,7 +1062,7 @@ EXP_RELACIONAL ::=
                                                                                                     parser.semantic_error(param1left,param1right, mensaje);
                                                                                                 }
                                                                                                 RESULT = param1.toString() + tipo_rel.toString() + param2.toString();
-                                                                                            :} 
+                                                                                                :} 
     |PARAM_EXP_RELACIONAL:param1 TIPOS_RELACIONALES:tipo_rel EXP_RELACIONAL:param2 {:
                                                                                     literal objectparam1=(literal)param1;
                                                                                     if(!objectparam1.getTipo().equals("null")){
@@ -899,7 +1078,6 @@ EXP_RELACIONAL ::=
                                                                                     }
                                                                                     RESULT = param1.toString() + tipo_rel.toString() + param2.toString();
                                                                                     :} 
-                                                                         
     |Parentesis_a EXP_RELACIONAL:exp Parentesis_c {: RESULT = "(" + exp.toString() + ")"; :}
     |Parentesis_a EXP_RELACIONAL:exp Parentesis_c  TIPOS_RELACIONALES:tipo_rel  PARAM_EXP_RELACIONAL: param2  {: RESULT = "(" + exp.toString() + ")" + tipo_rel.toString() + param2.toString() ; :}
     |Parentesis_a EXP_RELACIONAL:exp Parentesis_c  TIPOS_RELACIONALES:tipo_rel  EXP_RELACIONAL: param2 {: RESULT = "(" + exp.toString() + ")" + tipo_rel.toString() + param2.toString() ; :};
@@ -1023,7 +1201,6 @@ EXP_LOGICA ::=
 SENTENCIA ::=
     DEC_VARIABLE Delimitador |
     ASIG_VARIABLE Delimitador |
-    CAST_STRING_INT Delimitador |
     IF_ELSE |
     WHILE |
     FOR |
