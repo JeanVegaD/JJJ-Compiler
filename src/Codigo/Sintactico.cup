@@ -2,10 +2,13 @@ package Codigo;
 
 import java_cup.runtime.Symbol;
 import Codigo.archivo_ingresado;
+import Codigo.semantico.analisis;
+import Codigo.semantico.literal;
 
 parser code
 {:
-    private Symbol s;
+    protected analisis analis_semantico =  new analisis();
+    protected Symbol s;
     
     public void syntax_error(Symbol s){
         archivo_ingresado.reportarError("recuperable" ,s.left+1,s.right+1,s.value);
@@ -15,6 +18,10 @@ parser code
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
          archivo_ingresado.reportarError("no recuperable" ,s.left+1,s.right+1,s.value);
     }
+    
+    public void semantic_error(int left, int right, String mensaje){
+        archivo_ingresado.reportarError_Semantico("recuperable",left+1,right+1,mensaje);
+    }   
 
     public Symbol getS(){
         return this.s;
@@ -134,124 +141,551 @@ non terminal INICIO,
     PARAMETROS_ARREGLO_AUX,
     PARAMETROS_ARREGLO,
     ASIG_VARIABLE,   
-    CAST_STRING_INT;
+    CAST_STRING_INT,
     /*COMENTARIO,*/
-    
+
+    /*procedimeintos*/
+    CALL_PROC_ID_FUNC,
+    CALL_PROC_MAIN;
+   
+
+/* Precedencia */
+precedence left FUNCION;
 
 
 start with INICIO;
 
+CALL_PROC_MAIN::=
+    Main: id_func {:
+                    RESULT = id_func;
+                    boolean flag= parser.analis_semantico.dec_func(id_func); 
+                    if(!flag){
+                        String mensaje = "La variable '" + id_func + "' ya está definida";
+                        parser.semantic_error(id_funcleft,id_funcright, mensaje);
+                        parser.analis_semantico.set_id_current_block("null");
+                    }else{
+                        parser.analis_semantico.set_id_current_block(id_func.toString());
+                    }
+                    :};
 
 
 INICIO ::= 
-    T_int Main Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c |
-    DEC_FUNCION INICIO ;
+    T_int CALL_PROC_MAIN Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c {: parser.analis_semantico.dec_main(); :}
+    |DEC_FUNCION INICIO; 
 
 
 TIPOS_ARITMETICOS ::= 
-    Suma |
-    Resta |
-    Division |
-    Multiplicacion |
-    Potencia |
-    Modulo ; 
+     Suma : tipo  {:RESULT = tipo; :} 
+    |Resta: tipo  {:RESULT = tipo; :} 
+    |Division: tipo  {:RESULT = tipo; :} 
+    |Multiplicacion: tipo  {:RESULT = tipo; :}  
+    |Potencia: tipo  {:RESULT = tipo; :}  
+    |Modulo: tipo  {:RESULT = tipo; :}  ; 
 
 
 TIPOS_RELACIONALES ::=
-    Menor |
-    Mayor |
-    Igual |
-    Diferente |
-    Menor_igual |
-    Mayor_igual ;
+     Menor: tipo  {:RESULT = tipo; :}  
+    |Mayor: tipo  {:RESULT = tipo; :}  
+    |Igual: tipo  {:RESULT = tipo; :}  
+    |Diferente: tipo  {:RESULT = tipo; :} 
+    |Menor_igual: tipo  {:RESULT = tipo; :}  
+    |Mayor_igual: tipo  {:RESULT = tipo; :}  ;
 
 TIPOS_LOGICOS ::=
-    Conjuncion |
-    Disyuncion; 
+     Conjuncion: tipo  {:RESULT = tipo; :}  
+    |Disyuncion: tipo  {:RESULT = tipo; :} ; 
 
 TIPOS_VARIABLES ::=
-    T_int |
-    T_float |
-    T_bool |
-    T_char |
-    T_string; 
+     T_int: tipo  {:RESULT = tipo; :} 
+    |T_float: tipo  {:RESULT = tipo; :}
+    |T_bool: tipo  {:RESULT = tipo; :} 
+    |T_char: tipo  {:RESULT = tipo; :} 
+    |T_string: tipo  {:RESULT = tipo; :} ; 
 
 
 /*Literales*/
 
 LITERAL_NUMERICO ::= 
-    Int |
-    Float |
-    TIPO_ARREGLO;
+     Int : lit  {:  
+                    literal litObject =  new literal();
+                    litObject.setTipo("int");
+                    litObject.setResultado(lit);
+                    litObject.setTextual(lit.toString());
+                    RESULT = litObject; 
+                :} 
+    |Float: lit  {: 
+                    literal litObject =  new literal();
+                    litObject.setTipo("float");
+                    litObject.setResultado(lit);
+                    litObject.setTextual(lit.toString());
+                    RESULT = litObject; 
+                :}
+
+    |TIPO_ARREGLO: literal  {:RESULT = literal; :};
+
 
 LITERAL_CADENA ::= 
-    String |
-    Character ;
+     String: lit  {:
+                    literal litObject =  new literal();
+                    litObject.setTipo("string");
+                    litObject.setResultado(lit);
+                    litObject.setTextual(lit.toString());
+                    RESULT = litObject; 
+                    :}
+    |Character: lit  {:
+                    literal litObject =  new literal();
+                    litObject.setTipo("char");
+                    litObject.setResultado(lit);
+                    litObject.setTextual(lit.toString());
+                    RESULT = litObject;  
+                    :} ;
 
 LITERAL_BOOLEANO ::= 
-    True |
-    False ;
+     True: lit  {:
+                    literal litObject =  new literal();
+                    litObject.setTipo("bool");
+                    litObject.setResultado(lit);
+                    litObject.setTextual(lit.toString());
+                    RESULT = litObject;  
+                    :}
+    |False: lit  {:
+                    literal litObject =  new literal();
+                    litObject.setTipo("bool");
+                    litObject.setResultado(lit);
+                    litObject.setTextual(lit.toString());
+                    RESULT = litObject;  
+                    :};
+
 
 LITERAL_FUNID ::= 
-    Identificador |
-    FUNCION;
+    Identificador: lit  {:
+                    literal litObject =  new literal();
+                    litObject.setTipo(parser.analis_semantico.get_tipo_var(lit.toString())); //obtener tipo a traves de una funcion 
+                    litObject.setResultado(lit);
+                    litObject.setTextual(lit.toString());
+                    RESULT = litObject;  
+                     :} 
+    |FUNCION: lit  {:
+                    literal litObject =  new literal();
+                    litObject.setTipo(parser.analis_semantico.get_tipo_func(lit.toString())); //obtener tipo a traves de una funcion 
+                    litObject.setResultado(lit);
+                    litObject.setTextual(lit.toString());
+                    RESULT = lit;:};
 
 TIPO_ARREGLO::=
-    Identificador Corchete_a LITERAL_NUMERICO Corchete_c|
-    Identificador Corchete_a LITERAL_FUNID Corchete_c;
+    Identificador:id_arreglo Corchete_a LITERAL_NUMERICO:num Corchete_c {: 
+                                                                        String res= parser.analis_semantico.get_tipo_var(id_arreglo.toString());
+                                                                        literal litObject2 =  new literal();
+                                                                        litObject2.setTipo("null");
+                                                                        if(res!="null"){
+                                                                            if(res=="array"){
+                                                                                literal litObject1=(literal)num;
+                                                                                litObject2.setTipo("int"); 
+                                                                                litObject2.setResultado(id_arreglo+ "["+litObject1.getTextual()+"]");
+                                                                                litObject2.setTextual(id_arreglo+ "["+litObject1.getTextual()+"]");
+                                                                               
+                                                                            }
+                                                                            else{
+                                                                                String mensaje = "El identificador '" + id_arreglo + "' no es un array";
+                                                                                parser.semantic_error(id_arregloleft,id_arregloright, mensaje);
+                                                                            }
+
+                                                                        }
+                                                                        else{
+                                                                            String mensaje = "El identificador '" + id_arreglo + "' no se ha declarado";
+                                                                            parser.semantic_error(id_arregloleft,id_arregloright, mensaje);
+                                                                        }
+                                                                         RESULT = litObject2;
+
+                                                                        
+                                                                        :}
+    |Identificador:id_arreglo Corchete_a LITERAL_FUNID:id Corchete_c {:
+                                                                        String res= parser.analis_semantico.get_tipo_var(id_arreglo.toString());
+                                                                        literal litObject2 =  new literal();
+                                                                        litObject2.setTipo("null");
+                                                                        if(res!="null"){
+                                                                            if(res=="array"){
+                                                                                literal litObject3=(literal)id;
+                                                                                if(litObject3.getTipo().equals("int")){
+
+                                                                                    literal litObject4 =  new literal();
+                                                                                    litObject4.setTipo("int"); //obtener tipo a traves de una funcion 
+                                                                                    litObject4.setResultado(id_arreglo+ "["+litObject4.getTextual()+"]");
+                                                                                    litObject4.setTextual(id_arreglo+ "["+litObject4.getTextual()+"]");
+                                                                                
+
+                                                                                }
+                                                                                else{
+                                                                                    String mensaje = "Imposible convertir explícitamente a int'" + litObject3.getTextual()+"'" ;
+                                                                                    parser.semantic_error(idleft,idright, mensaje);
+                                                                                }
+                                                                            }
+                                                                            else{
+                                                                                String mensaje = "El identificador '" + id_arreglo + "' no es un array";
+                                                                                parser.semantic_error(id_arregloleft,id_arregloright, mensaje);
+                                                                            }
+
+                                                                        }
+                                                                        else{
+                                                                            String mensaje = "El identificador '" + id_arreglo + "' no se ha declarado";
+                                                                            parser.semantic_error(id_arregloleft,id_arregloright, mensaje);
+                                                                        }
+                                                                        RESULT = litObject2;
+:};
 
 /*Declaracion de variables */
-
-
 PARAM_OPERADOR_TERNARIO ::=
-    LITERAL_NUMERICO |
-    LITERAL_CADENA |
-    EXP_ARITMETICA_UNA |
-    EXP_ARITMETICA_BIN |
-    EXP_LOGICA_UNA |
-    EXP_LOGICA ;
+    LITERAL_NUMERICO:lit  {:RESULT = lit; :} 
+    |LITERAL_CADENA:lit  {:RESULT = lit; :}
+    |EXP_ARITMETICA_UNA:lit  {:RESULT = lit; :} 
+    |EXP_ARITMETICA_BIN:lit  {:
+                                literal litObject =  new literal();
+                                litObject.setTipo("int");
+                                litObject.setResultado(lit.toString());
+                                litObject.setTextual(lit.toString());
+                                RESULT = litObject; 
+                                :}
+    |EXP_LOGICA_UNA:lit  {:RESULT = lit; :}
+    |EXP_LOGICA:lit  {:
+                        literal litObject =  new literal();
+                        litObject.setTipo("bool");
+                        litObject.setResultado(lit.toString());
+                        litObject.setTextual(lit.toString());
+                        RESULT = litObject; 
+                        :}; 
 
 
 
 OPERADOR_TERNARIO ::=
-   Corchete_a Parentesis_a EXP_LOGICA_UNA Parentesis_c Sig_pregunta PARAM_OPERADOR_TERNARIO Dos_puntos PARAM_OPERADOR_TERNARIO Corchete_c |
-   Corchete_a Parentesis_a EXP_LOGICA Parentesis_c Sig_pregunta PARAM_OPERADOR_TERNARIO Dos_puntos PARAM_OPERADOR_TERNARIO Corchete_c ; 
+    Corchete_a Parentesis_a EXP_LOGICA_UNA:exp Parentesis_c Sig_pregunta PARAM_OPERADOR_TERNARIO:param1 Dos_puntos PARAM_OPERADOR_TERNARIO:param2 Corchete_c {: 
+                                                                                                literal objectparam1=(literal)param1;
+                                                                                                literal objectparam2=(literal)param2;
+                                                                                                literal litObject =  new literal();
+                                                                                                litObject.setTipo("null");
+                                                                                                litObject.setResultado("("+exp.toString()+")? " + param1.toString()+":" + param2.toString());
+                                                                                                litObject.setTextual("("+exp.toString()+")? " + param1.toString()+":" + param2.toString());
+                                                                                                if(!objectparam1.getTipo().equals("null")){
+                                                                                                    if(!objectparam2.getTipo().equals("null")){
+                                                                                                        if(objectparam1.getTipo().equals(objectparam2.getTipo())){
+                                                                                                                litObject.setTipo(objectparam1.getTipo());
+                                                                                                                
+                                                                                                        }
+                                                                                                        else{
+                                                                                                            String mensaje = "Los tipos de retorno del 'IF ternario' no coinciden";
+                                                                                                            parser.semantic_error(param1left,param1right, mensaje);
+                                                                                                        }
+                                                                                                    }
+                                                                                                    else{
+                                                                                                        String mensaje = "El identificador '" + objectparam2.getTextual() + "' no se ha definido";
+                                                                                                        parser.semantic_error(param2left,param2right, mensaje);
+                                                                                                    }
+                                                                                                }else{
+                                                                                                    String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                                                    parser.semantic_error(param1left,param1right, mensaje);
+                                                                                                }
+                                                                                                RESULT = litObject;     
+                                                                                                :} 
+
+   |Corchete_a Parentesis_a EXP_LOGICA:exp Parentesis_c Sig_pregunta PARAM_OPERADOR_TERNARIO:param1 Dos_puntos PARAM_OPERADOR_TERNARIO:param2 Corchete_c {:
+                                                                                                literal objectparam1=(literal)param1;
+                                                                                                literal objectparam2=(literal)param2;
+                                                                                                literal litObject =  new literal();
+                                                                                                litObject.setTipo("null");
+                                                                                                litObject.setResultado("("+exp.toString()+")? " + param1.toString()+":" + param2.toString());
+                                                                                                litObject.setTextual("("+exp.toString()+")? " + param1.toString()+":" + param2.toString());
+                                                                                                if(!objectparam1.getTipo().equals("null")){
+                                                                                                    if(!objectparam2.getTipo().equals("null")){
+                                                                                                        if(objectparam1.getTipo().equals(objectparam2.getTipo())){
+                                                                                                                litObject.setTipo(objectparam1.getTipo());    
+                                                                                                        }
+                                                                                                        else{
+                                                                                                            String mensaje = "Los tipos de retorno del 'IF ternario' no coinciden";
+                                                                                                            parser.semantic_error(param1left,param1right, mensaje);
+                                                                                                        }
+                                                                                                    }
+                                                                                                    else{
+                                                                                                        String mensaje = "El identificador '" + objectparam2.getTextual() + "' no se ha definido";
+                                                                                                        parser.semantic_error(param2left,param2right, mensaje);
+                                                                                                    }
+                                                                                                }else{
+                                                                                                    String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                                                    parser.semantic_error(param1left,param1right, mensaje);
+                                                                                                }
+                                                                                                RESULT = litObject;     
+                                                                                                :}; 
 
 DEC_VARIABLE ::=
-    TIPOS_VARIABLES Identificador |
-    TIPOS_VARIABLES Identificador Asignacion LITERAL_NUMERICO |
-    TIPOS_VARIABLES Identificador Asignacion LITERAL_CADENA |
+     TIPOS_VARIABLES:tipo_var Identificador:id_var {: 
+                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                    if(!flag){
+                                                        parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                    }else{
+                                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                    }
+                                                    :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion LITERAL_NUMERICO:lit {:
+                                                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                    if(!flag){
+                                                                                        literal litObject=(literal)lit;
+                                                                                        if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                                            parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                        }
+                                                                                        else{
+                                                                                            String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                                            parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                        }
+                                                                                    }else{
+                                                                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                    }   
+                                                                                    :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion LITERAL_CADENA:lit {: 
+                                                                                boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                if(!flag){
+                                                                                    literal litObject=(literal)lit;
+                                                                                    if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                                        parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                    }
+                                                                                    else{
+                                                                                        String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                                        parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                    }
+                                                                                }else{
+                                                                                    String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                    parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                } 
+                                                                                 :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion EXP_ARITMETICA_UNA:exp_una {:
+                                                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                    if(!flag){
+                                                                                        if(exp_una!=null){
+                                                                                            literal litObject=(literal)exp_una;
+                                                                                            if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                                                parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                            }
+                                                                                            else{
+                                                                                                String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                                                parser.semantic_error(id_varleft,id_varright, mensaje);    
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                    else{
+                                                                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                    }
+                                                                                        :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion EXP_ARITMETICA_BIN{:
+                                                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                    if(!flag){
+                                                                                        if(tipo_var.toString().equals("int") || tipo_var.toString().equals("int")){
+                                                                                            parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                        }else{
+                                                                                            String mensaje = "Imposible convertir explícitamente a '"+tipo_var.toString()+"'";
+                                                                                            parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                        }
+                                                                                    }
+                                                                                    else{
+                                                                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                    }
+                                                                                    :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion EXP_LOGICA_UNA:exp {: 
+                                                                        boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                        if(!flag){
+                                                                            literal objectlit1=(literal)exp;
+                                                                            String tipo= objectlit1.getTipo();
+                                                                            if(tipo_var.toString().equals(tipo) ){
+                                                                                parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                            }
+                                                                            else{
+                                                                                String mensaje = "Imposible convertir explícitamente de '" + tipo + "' a '"+tipo_var.toString()+"'";
+                                                                                parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                            }
+                                                                        }
+                                                                        else{
+                                                                            String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                            parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                        }
+                                                                                    :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion EXP_LOGICA:exp {:
+                                                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                    if(!flag){
+                                                                                        if(tipo_var.toString().equals("bool")){
+                                                                                            parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                        }
+                                                                                        else{
+                                                                                            String mensaje = "Imposible convertir explícitamente a '"+tipo_var.toString()+"'";
+                                                                                            parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                        }
+                                                                                    }
+                                                                                    else{
+                                                                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                    } 
+                                                                                    :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion OPERADOR_TERNARIO:exp  {: 
+                                                                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                    if(!flag){
+                                                                                        literal objectlit1=(literal)exp;
+                                                                                        String tipo= objectlit1.getTipo();
+                                                                                        if(!tipo.equals("null")){
+                                                                                            if(tipo_var.toString().equals(tipo)){
+                                                                                                parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                            }else{
+                                                                                                String mensaje = "Imposible convertir explícitamente de '" + tipo + "' a '"+tipo_var.toString()+"'";
+                                                                                                parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                    else{
+                                                                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                    }
 
-    TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_UNA|
-    TIPOS_VARIABLES Identificador Asignacion EXP_ARITMETICA_BIN |
-    
-    TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA_UNA |
-    TIPOS_VARIABLES Identificador Asignacion EXP_LOGICA |
+                                                                                        :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Corchete_a Corchete_c {: 
+                                                                                            boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                            if(!flag){
+                                                                                                if(tipo_var.toString().equals("int")){
+                                                                                                    parser.analis_semantico.setVar(id_var.toString(),"array");
 
-    TIPOS_VARIABLES Identificador Asignacion OPERADOR_TERNARIO  |
+                                                                                                }else{
+                                                                                                    String mensaje = "Imposible convertir explícitamente de '" + "int" + "' a '"+tipo_var.toString()+"'";
+                                                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                                }
 
-    TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c |
-    TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion Null | 
-    TIPOS_VARIABLES Identificador Corchete_a POSICION_ARREGLO Corchete_c Asignacion  Corchete_a PARAMETROS_ARREGLO Corchete_c  ;
+                                                                                            }else{
+                                                                                                String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                                parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                            }
+                                                                                                 :} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Corchete_a Corchete_c Asignacion Null {:
+                                                                                            boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                            if(!flag){
+                                                                                                if(tipo_var.toString().equals("int")){
+                                                                                                    parser.analis_semantico.setVar(id_var.toString(),"array");
+
+                                                                                                }else{
+                                                                                                    String mensaje = "Imposible convertir explícitamente de '" + "int" + "' a '"+tipo_var.toString()+"'";
+                                                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                                }
+
+                                                                                            }else{
+                                                                                                String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                                parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                            }:} 
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Corchete_a Corchete_c Asignacion Llave_a PARAMETROS_ARREGLO Llave_c {: 
+                                                                                            boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                                                            if(!flag){
+                                                                                                if(tipo_var.toString().equals("int")){
+                                                                                                    parser.analis_semantico.setVar(id_var.toString(),"array");
+
+                                                                                                }else{
+                                                                                                    String mensaje = "Imposible convertir explícitamente de '" + "int" + "' a '"+tipo_var.toString()+"'";
+                                                                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                                                                }
+
+                                                                                            }else{
+                                                                                                String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                                                                                parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                                                                            }:}  ;
 
 
 
 /*Declaraciones necesarias para el arreglo*/
 POSICION_ARREGLO ::=
-    Int |
-    TIPO_ARREGLO |
-    LITERAL_FUNID |
-    EXP_ARITMETICA_BIN;
+    Int:lit {:      
+                literal litObject =  new literal();
+                litObject.setTipo("int");
+                litObject.setResultado(lit);
+                litObject.setTextual(lit.toString());
+                RESULT = litObject; 
+                :}
+    |TIPO_ARREGLO:lit {:RESULT=lit;:}
+    |LITERAL_FUNID :lit {:
+                            literal objectparam1=(literal)lit;
+                            if(!objectparam1.getTipo().equals("null")){
+                                if(objectparam1.getTipo().equals("int")){
+
+                                }else{
+                                    String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                    parser.semantic_error(litleft,litright, mensaje);
+                                }
+                            }else{
+                                String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                parser.semantic_error(litleft,litright, mensaje);
+                            }
+                            RESULT=objectparam1;
+                        :}
+    |EXP_ARITMETICA_BIN:lit {:
+                                literal litObject =  new literal();
+                                litObject.setTipo("int");
+                                litObject.setResultado(lit.toString());
+                                litObject.setTextual(lit.toString());
+                                RESULT = litObject; 
+    :};
 
 
 PARAMETROS_ARREGLO_AUX ::=
-    Int |
-    LITERAL_FUNID |
-    EXP_ARITMETICA_BIN ;
+    Int:lit {:
+            literal litObject =  new literal();
+            litObject.setTipo("int");
+            litObject.setResultado(lit);
+            litObject.setTextual(lit.toString());
+            RESULT = litObject; 
+    :}
+    |LITERAL_FUNID:lit {:
+                            literal objectparam1=(literal)lit;
+                            if(!objectparam1.getTipo().equals("null")){
+                                if(objectparam1.getTipo().equals("int")){
+
+                                }else{
+                                    String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                    parser.semantic_error(litleft,litright, mensaje);
+                                }
+                            }else{
+                                String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                parser.semantic_error(litleft,litright, mensaje);
+                            }
+                            RESULT=objectparam1;
+                            :} 
+    |EXP_ARITMETICA_BIN:lit {:
+                            literal litObject =  new literal();
+                            litObject.setTipo("int");
+                            litObject.setResultado(lit.toString());
+                            litObject.setTextual(lit.toString());
+                            RESULT = litObject; 
+                               :} ;
 
 PARAMETROS_ARREGLO::=
-    PARAMETROS_ARREGLO_AUX | 
-    PARAMETROS_ARREGLO_AUX Coma PARAMETROS_ARREGLO;
+    PARAMETROS_ARREGLO_AUX:param1{:  
+                            literal objectparam1=(literal)param1;
+                            if(!objectparam1.getTipo().equals("null")){
+                                    if(!objectparam1.getTipo().equals("int") ){
+                                        String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                        parser.semantic_error(param1left,param1right, mensaje); 
+                                    }
+                            }else{
+                                String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                parser.semantic_error(param1left,param1right, mensaje);
+                            }
+                            RESULT = objectparam1.getTextual(); 
+                            :}
+    | PARAMETROS_ARREGLO_AUX:param1 Coma PARAMETROS_ARREGLO:param2 {:
+                                        literal objectparam1=(literal)param1;
+                                        if(!objectparam1.getTipo().equals("null")){
+                                                if(!objectparam1.getTipo().equals("int") ){
+                                                    String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                                    parser.semantic_error(param1left,param1right, mensaje); 
+                                                }
+                                        }else{
+                                            String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                            parser.semantic_error(param1left,param1right, mensaje);
+                                        }
+                                        RESULT = objectparam1.getTextual() + ","+ param2.toString(); 
+
+                                                                        :};
 
 
 /*Aignaciones de variables*/
@@ -281,58 +715,281 @@ CAST_STRING_INT::=
 
 /*Expresiones artimeticas*/
 EXP_ARITMETICA_UNA ::=
-    Unario_positivo Identificador  |
-    Unario_negatico Identificador  ;
+    Unario_positivo Identificador:id_var {:
+                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                    literal litObject =  new literal();
+                                    RESULT=null;
+                                    if(flag){
+                                        String res= parser.analis_semantico.get_tipo_var(id_var.toString());
+                                        if(res.equals("int") || res.equals("float")){
+                                            litObject.setTipo(res); //obtener tipo a traves de una funcion 
+                                            litObject.setResultado("++"+id_var.toString());
+                                            litObject.setTextual("++"+id_var.toString());
+                                            RESULT = litObject;  
+                                        }
+                                        else{
+                                            String mensaje = "El identificador '" + id_var + "' no permite esta operación";
+                                            parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                        }
+                                        
+                                    }else{
+                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                    }
+
+
+                                    :}  
+    | Unario_negatico Identificador:id_var {:
+                                    boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                    literal litObject =  new literal();
+                                    RESULT=null;
+                                    if(!flag){
+                                        String res= parser.analis_semantico.get_tipo_var(id_var.toString());
+                                        if(res.equals("int") || res.equals("float")){
+                                            litObject.setTipo(res); //obtener tipo a traves de una funcion 
+                                            litObject.setResultado("--"+id_var.toString());
+                                            litObject.setTextual("--"+id_var.toString());
+                                            RESULT = litObject;  
+                                        }
+                                        else{
+                                            String mensaje = "El identificador '" + id_var + "' no permite esta operación";
+                                            parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                        }
+                                        
+                                    }else{
+                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                        parser.semantic_error(id_varleft,id_varright, mensaje); 
+                                    }
+                                    :} ;
     
 
 PARAM_EXP_ARITMETICA ::= 
-    LITERAL_NUMERICO |
-    LITERAL_FUNID |
-    EXP_ARITMETICA_UNA;
+    LITERAL_NUMERICO:lit  {:RESULT = lit; :}
+    | LITERAL_FUNID: lit  {:RESULT = lit; :} 
+    | EXP_ARITMETICA_UNA:lit  {:RESULT = lit; :};
 
 
 EXP_ARITMETICA_BIN::=
-    PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS PARAM_EXP_ARITMETICA |
-    PARAM_EXP_ARITMETICA TIPOS_ARITMETICOS EXP_ARITMETICA_BIN  |
-    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c | 
-    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  PARAM_EXP_ARITMETICA | 
-    Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  TIPOS_ARITMETICOS  EXP_ARITMETICA_BIN;
+
+     PARAM_EXP_ARITMETICA:param1 TIPOS_ARITMETICOS:tipo_arit PARAM_EXP_ARITMETICA:param2 {:
+                                                                                literal objectparam1=(literal)param1;
+                                                                                literal objectparam2=(literal)param2;
+                                                                                if(!objectparam1.getTipo().equals("null")){
+                                                                                    if(!objectparam2.getTipo().equals("null")){
+                                                                                        if(objectparam1.getTipo().equals("int") || objectparam1.getTipo().equals("float")){
+                                                                                            if(objectparam2.getTipo().equals("int") || objectparam2.getTipo().equals("float")){
+                                                                                            }
+                                                                                            else{
+                                                                                                String mensaje = "El identificador '" + objectparam2.getTextual() + "' no permite esta operación";
+                                                                                                 parser.semantic_error(param1left,param1right, mensaje); 
+                                                                                            }
+                                                                                        }else{
+                                                                                            String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                                                                            parser.semantic_error(param2left,param2right, mensaje); 
+                                                                                        }
+                                                                                    }else{
+                                                                                        String mensaje = "El identificador '" + objectparam2.getTextual() + "' no se ha definido";
+                                                                                        parser.semantic_error(param2left,param2right, mensaje);
+                                                                                    }
+                                                                                }
+                                                                                else{
+                                                                                    String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                                    parser.semantic_error(param1left,param1right, mensaje);
+                                                                                }
+                                                                                RESULT = param1.toString() + tipo_arit.toString() + param2.toString();
+                                                                                :}
+    |PARAM_EXP_ARITMETICA:param1 TIPOS_ARITMETICOS:tipo_arit EXP_ARITMETICA_BIN:param2 {: 
+                                                                                        literal objectparam1=(literal)param1;
+                                                                                        if(!objectparam1.getTipo().equals("null")){
+                                                                                            if(objectparam1.getTipo().equals("int") || objectparam1.getTipo().equals("float")){
+                                                                                            }
+                                                                                            else{
+                                                                                                String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                                                                                parser.semantic_error(param2left,param2right, mensaje); 
+                                                                                            }
+                                                                                        }else{
+                                                                                            String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                                            parser.semantic_error(param1left,param1right, mensaje);
+                                                                                        }
+                                                                                        RESULT = param1.toString() + tipo_arit.toString() + param2.toString();
+                                                                                        :} 
+    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c {: RESULT = "(" + exp.toString() + ")"; :}
+    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c TIPOS_ARITMETICOS:tipo_arit PARAM_EXP_ARITMETICA:param2 {: RESULT = "(" + exp.toString() + ")" + tipo_arit.toString() + param2.toString() ; :}
+    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c TIPOS_ARITMETICOS:tipo_arit EXP_ARITMETICA_BIN:param2   {: RESULT = "(" + exp.toString() + ")" + tipo_arit.toString() + param2.toString() ; :};
 
 /*Expresiones realcionales*/
 
 PARAM_EXP_RELACIONAL ::=
-    LITERAL_NUMERICO |
-    LITERAL_FUNID |
-    EXP_ARITMETICA_UNA |
-    EXP_ARITMETICA_BIN;
-
-
+     LITERAL_NUMERICO:lit  {:RESULT = lit; :}
+    |LITERAL_FUNID: lit  {:RESULT = lit; :} 
+    |EXP_ARITMETICA_UNA:lit  {:RESULT = lit; :} 
+    |EXP_ARITMETICA_BIN:lit  {:
+                                literal litObject =  new literal();
+                                litObject.setTipo("int");
+                                litObject.setResultado(lit.toString());
+                                litObject.setTextual(lit.toString());
+                                RESULT = litObject; 
+                                :};
 
 EXP_RELACIONAL ::=
-    PARAM_EXP_RELACIONAL TIPOS_RELACIONALES PARAM_EXP_RELACIONAL |
-    PARAM_EXP_RELACIONAL TIPOS_RELACIONALES EXP_RELACIONAL |
-    Parentesis_a EXP_RELACIONAL Parentesis_c |
-    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  PARAM_EXP_RELACIONAL | 
-    Parentesis_a EXP_RELACIONAL Parentesis_c  TIPOS_RELACIONALES  EXP_RELACIONAL ;
+     PARAM_EXP_RELACIONAL:param1 TIPOS_RELACIONALES:tipo_rel PARAM_EXP_RELACIONAL:param2   {:
+                                                                                                literal objectparam1=(literal)param1;
+                                                                                                literal objectparam2=(literal)param2;
+                                                                                                if(!objectparam1.getTipo().equals("null")){
+                                                                                                    if(!objectparam2.getTipo().equals("null")){
+                                                                                                         if(objectparam1.getTipo().equals("int") || objectparam1.getTipo().equals("float")){
+                                                                                                            if(objectparam2.getTipo().equals("int") || objectparam2.getTipo().equals("float")){
+
+                                                                                                            }else{
+                                                                                                                String mensaje = "El identificador '" + objectparam2.getTextual() + "' no permite esta operación";
+                                                                                                                parser.semantic_error(param2left,param2right, mensaje); 
+                                                                                                            }
+                                                                                                        }else{
+                                                                                                            String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                                                                                            parser.semantic_error(param1left,param1right, mensaje); 
+                                                                                                        }
+                                                                                                    }else{
+                                                                                                        String mensaje = "El identificador '" + objectparam2.getTextual() + "' no se ha definido";
+                                                                                                        parser.semantic_error(param2left,param2right, mensaje);
+                                                                                                    }
+                                                                                                }else{
+                                                                                                    String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                                                    parser.semantic_error(param1left,param1right, mensaje);
+                                                                                                }
+                                                                                                RESULT = param1.toString() + tipo_rel.toString() + param2.toString();
+                                                                                            :} 
+    |PARAM_EXP_RELACIONAL:param1 TIPOS_RELACIONALES:tipo_rel EXP_RELACIONAL:param2 {:
+                                                                                    literal objectparam1=(literal)param1;
+                                                                                    if(!objectparam1.getTipo().equals("null")){
+                                                                                        if(objectparam1.getTipo().equals("int") || objectparam1.getTipo().equals("float")){
+                                                                                        }
+                                                                                        else{
+                                                                                            String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                                                                            parser.semantic_error(param2left,param2right, mensaje); 
+                                                                                        }
+                                                                                    }else{
+                                                                                        String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                                        parser.semantic_error(param1left,param1right, mensaje);
+                                                                                    }
+                                                                                    RESULT = param1.toString() + tipo_rel.toString() + param2.toString();
+                                                                                    :} 
+                                                                         
+    |Parentesis_a EXP_RELACIONAL:exp Parentesis_c {: RESULT = "(" + exp.toString() + ")"; :}
+    |Parentesis_a EXP_RELACIONAL:exp Parentesis_c  TIPOS_RELACIONALES:tipo_rel  PARAM_EXP_RELACIONAL: param2  {: RESULT = "(" + exp.toString() + ")" + tipo_rel.toString() + param2.toString() ; :}
+    |Parentesis_a EXP_RELACIONAL:exp Parentesis_c  TIPOS_RELACIONALES:tipo_rel  EXP_RELACIONAL: param2 {: RESULT = "(" + exp.toString() + ")" + tipo_rel.toString() + param2.toString() ; :};
 
 
 /*Expresiones logicas*/
 
 EXP_LOGICA_UNA ::=
-    LITERAL_FUNID |
-    Negacion LITERAL_FUNID |
-    LITERAL_BOOLEANO |
-    Negacion LITERAL_BOOLEANO |
-    EXP_RELACIONAL |
-    Negacion EXP_RELACIONAL;
+    LITERAL_FUNID: lit  {:
+                            literal objectlit1=(literal)lit;
+                            String tipo= objectlit1.getTipo();
+                            if(tipo.equals("null")){
+                                String mensaje = "El identificador '" + objectlit1.getTextual() + "' no se ha declarado";
+                                parser.semantic_error(litleft,litright, mensaje);
+                            }
+                            RESULT = objectlit1;
+                         :}
+    |Negacion:lit_neg LITERAL_FUNID: lit {:
+                                            literal objectlit1=(literal)lit;
+                                            String tipo= objectlit1.getTipo();
+                                            if(!tipo.equals("null")){
+                                                if(tipo.equals("bool")){
+                                                    String temp= objectlit1.getTextual();
+                                                    objectlit1.setTextual("!"+ temp);
+
+                                                }else{
+                                                    String mensaje = "El identificador '" + objectlit1.getTextual() + "' no permite la operacion '!'";
+                                                    parser.semantic_error(lit_negleft,lit_negright, mensaje);
+                                                }
+                                            }else{
+                                                String mensaje = "El identificador '" + objectlit1.getTextual() + "' no se ha declarado";
+                                                parser.semantic_error(litleft,litright, mensaje);
+                                            }
+                                            RESULT = objectlit1;
+                                            :} 
+    |LITERAL_BOOLEANO:lit  {:RESULT = lit; :}
+    |Negacion:lit_neg LITERAL_BOOLEANO:lit{:
+                                            literal objectlit1=(literal)lit;
+                                            String tipo= objectlit1.getTipo();
+                                            if(!tipo.equals("null")){
+                                                if(tipo.equals("bool")){
+                                                    String temp= objectlit1.getTextual();
+                                                    objectlit1.setTextual("!"+ temp);
+
+                                                }else{
+                                                    String mensaje = "'" + objectlit1.getTextual() + "' no permite la operacion '!'";
+                                                    parser.semantic_error(lit_negleft,lit_negright, mensaje);
+                                                }
+                                            }
+                                            else{
+                                                String mensaje = "El identificador '" + objectlit1.getTextual() + "' no se ha declarado";
+                                                parser.semantic_error(litleft,litright, mensaje);
+                                            }
+                                            RESULT = objectlit1;
+                                            :} 
+    |EXP_RELACIONAL:exp {:
+                        literal litObject =  new literal();
+                        litObject.setTipo("bool");
+                        litObject.setResultado(exp.toString());
+                        litObject.setTextual(exp.toString());
+                        RESULT = litObject; 
+                        :}
+    |Negacion EXP_RELACIONAL:exp{:
+                        literal litObject =  new literal();
+                        litObject.setTipo("bool");
+                        litObject.setResultado("!" +exp.toString());
+                        litObject.setTextual("!" +exp.toString());
+                        RESULT = litObject; 
+                        :};
     
 
 EXP_LOGICA ::=
-    EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA_UNA |
-    EXP_LOGICA_UNA TIPOS_LOGICOS EXP_LOGICA |
-    Parentesis_a EXP_LOGICA  Parentesis_c |
-    Parentesis_a EXP_LOGICA  Parentesis_c TIPOS_LOGICOS EXP_LOGICA_UNA |
-    Parentesis_a EXP_LOGICA  Parentesis_c TIPOS_LOGICOS EXP_LOGICA;
+    EXP_LOGICA_UNA:param1 TIPOS_LOGICOS:tipo_logico EXP_LOGICA_UNA:param2  {:
+                                                                            literal objectparam1=(literal)param1;
+                                                                            literal objectparam2=(literal)param2;
+                                                                            if(!objectparam1.getTipo().equals("null")){
+                                                                                if(!objectparam2.getTipo().equals("null")){
+                                                                                     if(objectparam1.getTipo().equals("bool")){
+                                                                                        if(objectparam2.getTipo().equals("bool")){
+
+                                                                                        }else{
+                                                                                            String mensaje = "El identificador '" + objectparam2.getTextual() + "' no permite esta operación";
+                                                                                            parser.semantic_error(param2left,param2right, mensaje); 
+                                                                                        }
+                                                                                    }else{
+                                                                                        String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                                                                        parser.semantic_error(param1left,param1right, mensaje); 
+                                                                                    }
+                                                                                }else{
+                                                                                    String mensaje = "El identificador '" + objectparam2.getTextual() + "' no se ha definido";
+                                                                                    parser.semantic_error(param2left,param2right, mensaje);
+                                                                                }
+                                                                            }else{
+                                                                                String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                                parser.semantic_error(param1left,param1right, mensaje);
+                                                                            }
+                                                                            RESULT = param1.toString() + tipo_logico.toString() + param2.toString();
+                                                                            :} 
+    |EXP_LOGICA_UNA:param1 TIPOS_LOGICOS:tipo_logico EXP_LOGICA:param2 {: 
+                                                                        literal objectparam1=(literal)param1;
+                                                                        if(!objectparam1.getTipo().equals("null")){
+                                                                            if(objectparam1.getTipo().equals("bool") ){
+                                                                            }
+                                                                            else{
+                                                                                String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                                                                parser.semantic_error(param2left,param2right, mensaje); 
+                                                                            }
+                                                                        }else{
+                                                                            String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                                                            parser.semantic_error(param1left,param1right, mensaje);
+                                                                        }
+                                                                        RESULT = param1.toString() + tipo_logico.toString() + param2.toString();
+                                                                        :} 
+    |Parentesis_a EXP_LOGICA:exp Parentesis_c {: RESULT = "(" + exp.toString() + ")"; :}
+    |Parentesis_a EXP_LOGICA:exp Parentesis_c TIPOS_LOGICOS:tipo_logico EXP_LOGICA_UNA:param2 {: RESULT = "(" + exp.toString() + ")" + tipo_logico.toString() + param2.toString() ; :}
+    |Parentesis_a EXP_LOGICA:exp Parentesis_c TIPOS_LOGICOS:tipo_logico EXP_LOGICA:param2 {: RESULT = "(" + exp.toString() + ")" + tipo_logico.toString() + param2.toString() ; :};
    
 
 /*Sentencia*/
@@ -429,17 +1086,17 @@ SWITCH::=
 
 /*Fucniones*/
 TIPOS_RETORNO_FUNCION ::= 
-    T_void |
-    TIPOS_VARIABLES;
+    T_void:tipo  {:RESULT = tipo; :}  
+    | TIPOS_VARIABLES: tipo  {:RESULT = tipo; :};
     
 
 TIPOS_PARAM_FUNCION_AUX::=
-    TIPOS_VARIABLES Identificador |
-    T_int Corchete_a  Corchete_c Identificador;
+    TIPOS_VARIABLES:tipo Identificador:id {:RESULT = tipo + " "+id; :} ;
+
 
 TIPOS_PARAMETRO_FUNCION::=
-    TIPOS_PARAM_FUNCION_AUX |
-    TIPOS_PARAM_FUNCION_AUX Coma TIPOS_PARAMETRO_FUNCION;
+    TIPOS_PARAM_FUNCION_AUX : param {: RESULT = param; :}
+    | TIPOS_PARAM_FUNCION_AUX:param1 Coma TIPOS_PARAMETRO_FUNCION: param2 {: RESULT = param1+","+param2+ ""; :};
 
 
 
@@ -453,30 +1110,85 @@ RETORNOS_FUNCION::=
     Return EXP_LOGICA_UNA Delimitador ;
 
 
+CALL_PROC_ID_FUNC::=
+    Identificador: id_func {:
+                            RESULT = id_func;
+                            boolean flag= parser.analis_semantico.dec_func(id_func); 
+                            if(!flag){
+                                String mensaje = "El identificador '" + id_func + "' ya está definido";
+                                parser.semantic_error(id_funcleft,id_funcright, mensaje);
+                                parser.analis_semantico.set_id_current_block("null");
+                            }else{
+                                parser.analis_semantico.set_id_current_block(id_func.toString());
+                            }
+                            :};
+
+
 DEC_FUNCION ::=
-    TIPOS_RETORNO_FUNCION Identificador Parentesis_a  Parentesis_c Llave_a BLOQUE Llave_c |
-    TIPOS_RETORNO_FUNCION Identificador Parentesis_a TIPOS_PARAMETRO_FUNCION Parentesis_c Llave_a BLOQUE Llave_c |
-    error Parentesis_c |
-    error Llave_c ;
+    TIPOS_RETORNO_FUNCION:tipo_func CALL_PROC_ID_FUNC:id_func  Parentesis_a  Parentesis_c Llave_a BLOQUE Llave_c {:
+                                                                                                                //setea el string del tipo a la funcion
+                                                                                                                parser.analis_semantico.dec_func_aux(id_func,tipo_func); 
+                                                                                                                
+                                                                                                                :}
+
+
+    |TIPOS_RETORNO_FUNCION:tipo_func CALL_PROC_ID_FUNC:id_func Parentesis_a TIPOS_PARAMETRO_FUNCION:parametros Parentesis_c Llave_a BLOQUE Llave_c {:
+                                                                                                                //setea el string del tipo a la funcion
+                                                                                                                parser.analis_semantico.dec_func_aux(id_func,tipo_func);
+                                                                                                                //validar parametros
+                                                                                                                String flag= parser.analis_semantico.dec_func_param(id_func,parametros); 
+                                                                                                                if(!flag.equals("")){
+                                                                                                                    parser.semantic_error(id_funcleft,id_funcright, flag);
+                                                                                                                }  
+                                                                                                                :}
+    |error Parentesis_c 
+    |error Llave_c ;
+
 
 PARAMETROS_FUNCION_AUX::=
-    LITERAL_NUMERICO |
-    LITERAL_CADENA |
-    Null |
-    EXP_ARITMETICA_BIN |
-    EXP_ARITMETICA_UNA |
-    EXP_LOGICA |
-    EXP_LOGICA_UNA ;
+     LITERAL_NUMERICO: tipo  {:RESULT = tipo; :}
+    |LITERAL_CADENA : tipo  {:RESULT = tipo; :}
+    |Null: tipo  {:RESULT = tipo; :}
+    |EXP_ARITMETICA_BIN : tipo  {:RESULT = tipo; :}
+    |EXP_ARITMETICA_UNA: tipo  {:RESULT = tipo; :}
+    |EXP_LOGICA: tipo  {:RESULT = tipo; :}
+    |EXP_LOGICA_UNA: tipo  {:RESULT = tipo; :}; 
 
     
 PARAMETROS_FUNCION ::=
-    PARAMETROS_FUNCION_AUX |
-    PARAMETROS_FUNCION_AUX Coma PARAMETROS_FUNCION;
+     PARAMETROS_FUNCION_AUX:param {: RESULT = param; :} 
+    |PARAMETROS_FUNCION_AUX:param1 Coma PARAMETROS_FUNCION:param2 {: RESULT = param1+","+param2+ ""; :};
 
 
 FUNCION ::=
-    Identificador Parentesis_a  Parentesis_c   |
-    Identificador Parentesis_a PARAMETROS_FUNCION Parentesis_c;
+    Identificador:id_func Parentesis_a  Parentesis_c  {:
+                                                
+                                                String flag= parser.analis_semantico.func_call(id_func); 
+                                                if(!flag.equals("")){
+                                                    parser.semantic_error(id_funcleft,id_funcright, flag);
+                                                }
+                                                String res= id_func + "()";
+                                                literal litObject =  new literal();
+                                                litObject.setTipo(parser.analis_semantico.get_tipo_func(id_func.toString()));
+                                                litObject.setResultado(res);
+                                                litObject.setTextual(res);
+                                                RESULT = litObject; 
+
+                                            :} 
+
+    |Identificador:id_func Parentesis_a PARAMETROS_FUNCION:param_func Parentesis_c {:
+                                                
+                                                String flag= parser.analis_semantico.func_call_params(id_func,param_func);
+                                                if(!flag.equals("")){
+                                                    parser.semantic_error(id_funcleft,id_funcright, flag);
+                                                }
+                                                String res= id_func + "("+param_func.toString()+")";
+                                                literal litObject =  new literal();
+                                                litObject.setTipo(parser.analis_semantico.get_tipo_func(id_func.toString()));
+                                                litObject.setResultado(res);
+                                                litObject.setTextual(res);
+                                                RESULT = litObject;  
+                                            :};
 
 /*Funcioens del sistema*/
 
@@ -492,9 +1204,4 @@ ESCRIBIR::=
     Print Parentesis_a EXP_LOGICA_UNA Parentesis_c | 
     Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c ;
     
-
-
-
-
-
 

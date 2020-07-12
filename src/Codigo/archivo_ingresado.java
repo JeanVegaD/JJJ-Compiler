@@ -153,6 +153,7 @@ public class archivo_ingresado {
     Se encarga de reconocer los tokens presentes en el archivo mediante la clase Lexer.java que se creoo 
     */
    public void analizarTokens(){
+       
         try {
             Reader lector = new BufferedReader(new FileReader(this.archivo.getPath()));
             Lexer lexer = new Lexer(lector);
@@ -241,6 +242,7 @@ public class archivo_ingresado {
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
        
+       
    }
    
    
@@ -255,6 +257,20 @@ public class archivo_ingresado {
                + " línea: " + linea +","
                + " columna: "+columna +","
                + " cerca de: "+valor
+               + "</p>";
+   }
+   
+   /*
+    E:String con los errores encontrados 
+    S:Reportar errores en consola 
+    R:No aplica
+    */
+   public static  void reportarError_Semantico(String tipo, int columna, int linea,String info){
+       errores=true;
+       reporte_errores += "<p class='textoRojo'> <b>Error "+tipo+ "</b>:  "
+               + " línea: " + linea +","
+               + " columna: "+columna +","
+               + " informacion: "+info 
                + "</p>";
    }
    
