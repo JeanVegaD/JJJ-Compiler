@@ -121,7 +121,6 @@ non terminal INICIO,
     DO_WHILE,
     FOR,
     STATEMENT1,
-    STATEMENT3,
     SWITCH,
     PARAM_SWITCH,
     CASE_SWITCH,
@@ -157,6 +156,8 @@ non terminal INICIO,
     CALL_PROC_WHILE_CIERRE,
     CALL_PROC_DOWHILE,
     CALL_PROC_DOWHILE_CIERRE,
+    CALL_PROC_FOR,
+    CALL_PROC_FOR_CIERRE,
 
     CALL_PROC_MAIN;
    
@@ -1310,7 +1311,7 @@ WHILE::=
 
 CALL_PROC_DOWHILE ::=
     Llave_a {:
-                parser.analis_semantico.new_block("while");
+                parser.analis_semantico.new_block("doWhile");
             :};
 
 CALL_PROC_DOWHILE_CIERRE::=
@@ -1325,19 +1326,22 @@ DO_WHILE ::=
 
 
 STATEMENT1 ::= 
-    TIPOS_VARIABLES Identificador Asignacion LITERAL_NUMERICO |
-    TIPOS_VARIABLES Identificador Asignacion LITERAL_FUNID |
-    Identificador Asignacion LITERAL_NUMERICO |
-    Identificador Asignacion LITERAL_FUNID ;
+    DEC_VARIABLE
+    |ASIG_VARIABLE;
 
-STATEMENT3 ::=
-    Identificador Asignacion LITERAL_NUMERICO |
-    Identificador Asignacion LITERAL_FUNID |
-    Identificador Asignacion EXP_ARITMETICA_UNA| 
-    Identificador Asignacion EXP_ARITMETICA_BIN ;
+CALL_PROC_FOR ::=
+    Llave_a {:
+                parser.analis_semantico.new_block("for");
+            :};
+
+CALL_PROC_FOR_CIERRE::=
+    Llave_c {:
+                parser.analis_semantico.backBlock();
+            :};
+
 
 FOR::=
-    For Parentesis_a STATEMENT1 Delimitador CONDICION Delimitador STATEMENT3 Parentesis_c Llave_a BLOQUE Llave_c ;
+    For Parentesis_a STATEMENT1 Delimitador CONDICION Delimitador ASIG_VARIABLE Parentesis_c CALL_PROC_FOR BLOQUE CALL_PROC_FOR_CIERRE ;
 
 PARAM_SWITCH::=
     Int |

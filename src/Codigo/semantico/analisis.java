@@ -415,4 +415,10 @@ public class analisis {
         return temp+n;
     }
     
+    
+    public void prtueba(){
+        for(String x ="s";x!="sa";x+="s"){
+            
+        }
+    }
 }
