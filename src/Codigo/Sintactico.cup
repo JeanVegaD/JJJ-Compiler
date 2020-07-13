@@ -158,6 +158,11 @@ non terminal INICIO,
     CALL_PROC_DOWHILE_CIERRE,
     CALL_PROC_FOR,
     CALL_PROC_FOR_CIERRE,
+    CALL_PROC_SWITCH,
+    CALL_PROC_SWITCH_CIERRE,
+    SWITCH_STAMENT,
+    CALL_PROC_CASE,
+    CALL_PROC_CASE_CIERRE,
 
     CALL_PROC_MAIN;
    
@@ -1344,26 +1349,62 @@ FOR::=
     For Parentesis_a STATEMENT1 Delimitador CONDICION Delimitador ASIG_VARIABLE Parentesis_c CALL_PROC_FOR BLOQUE CALL_PROC_FOR_CIERRE ;
 
 PARAM_SWITCH::=
-    Int |
-    Float |
-    String |
-    Character | 
-    Identificador |
-    FUNCION |
-    TIPO_ARREGLO;
+     LITERAL_NUMERICO:lit {:RESULT=lit; :}
+    |LITERAL_CADENA:lit {:RESULT=lit; :}
+    |LITERAL_FUNID:lit {:RESULT=lit; :};
+
+
+SWITCH_STAMENT::=
+    PARAM_SWITCH:lit{:  
+                        literal objectparam1=(literal)lit;
+                        if(!objectparam1.getTipo().equals("null")){
+                                if(!objectparam1.getTipo().equals(parser.analis_semantico.get_tipo_currentBlock()) ){
+                                    String mensaje = "Case: '" + objectparam1.getTextual() + "' no es compatible con el switch de tipo '" +parser.analis_semantico.get_tipo_currentBlock() + "'" ;
+                                    parser.semantic_error(litleft,litright, mensaje); 
+                                }
+                        }else{
+                            String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                            parser.semantic_error(litleft,litright, mensaje);
+                        }
+                        RESULT = objectparam1.getTextual();
+                        :};
+
+CALL_PROC_CASE::=
+    Dos_puntos {:
+                parser.analis_semantico.new_block("case");
+            :};
+
+
+CALL_PROC_CASE_CIERRE::=
+    Delimitador {:
+                parser.analis_semantico.backBlock();
+            :};
+
 
 CASE_SWITCH::=
-    Case PARAM_SWITCH Dos_puntos BLOQUE Break Delimitador |
-    Case PARAM_SWITCH Dos_puntos Break Delimitador |
-    Case PARAM_SWITCH Dos_puntos BLOQUE Break Delimitador CASE_SWITCH |
-    Case PARAM_SWITCH Dos_puntos  Break Delimitador CASE_SWITCH |
-    Default Dos_puntos Break Delimitador|
-    Default Dos_puntos BLOQUE Break Delimitador|
-    Default Dos_puntos BLOQUE Break Delimitador CASE_SWITCH |
-    Default Dos_puntos  Break Delimitador CASE_SWITCH   ;
+    Case SWITCH_STAMENT CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE |
+    Case SWITCH_STAMENT CALL_PROC_CASE Break CALL_PROC_CASE_CIERRE |
+    Case SWITCH_STAMENT CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
+    Case SWITCH_STAMENT CALL_PROC_CASE  Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
+    Default CALL_PROC_CASE Break CALL_PROC_CASE_CIERRE|
+    Default CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE|
+    Default CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
+    Default CALL_PROC_CASE  Break CALL_PROC_CASE_CIERRE CASE_SWITCH   ;
+
+CALL_PROC_SWITCH::=
+    PARAM_SWITCH:lit {: 
+                        literal objectparam1=(literal)lit;
+                        parser.analis_semantico.new_block_aux("switch",objectparam1.getTipo());
+                        :};
+
+CALL_PROC_SWITCH_CIERRE::=
+    Llave_c {:
+                parser.analis_semantico.backBlock();
+            :};
+
 
 SWITCH::=
-    Switch Parentesis_a PARAM_SWITCH Parentesis_c Llave_a CASE_SWITCH Llave_c;
+    Switch Parentesis_a CALL_PROC_SWITCH Parentesis_c Llave_a CASE_SWITCH CALL_PROC_SWITCH_CIERRE;
 
 
 

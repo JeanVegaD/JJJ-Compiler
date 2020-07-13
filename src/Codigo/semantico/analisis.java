@@ -380,6 +380,18 @@ public class analisis {
         
     }
     
+    public void new_block_aux(String id,String tipo){
+        String nuevoID =  obtenerIdBloque(id);
+        ArrayList<String>  temp =  new ArrayList<String>();
+        temp.add(nuevoID);
+        temp.add(tipo);
+        temp.add(currentBlock);
+        temp.add(id);
+        tablaBloques.add(temp);
+        System.out.println("bloque: " + nuevoID + " agregada a la tabla de simbolos");
+        set_id_current_block(nuevoID);
+    }
+    
     public void backBlock(){
         for (int i = 0; i < tablaBloques.size(); i++) {
             if(tablaBloques.get(i).get(0).equals(currentBlock)){
@@ -389,6 +401,17 @@ public class analisis {
         }
     }
     
+    public String get_tipo_currentBlock(){
+        String res="";
+        for (int i = 0; i < tablaBloques.size(); i++) {
+            if(tablaBloques.get(i).get(0).equals(currentBlock)){
+                res=tablaBloques.get(i).get(1);
+                break;
+            }
+        }
+        return res;
+        
+    }
     
     
     public boolean existeBloque(String n_boque){
@@ -417,8 +440,16 @@ public class analisis {
     
     
     public void prtueba(){
-        for(String x ="s";x!="sa";x+="s"){
-            
+        int day = 4;
+        switch (get_cant_param_func("")) {
+          case 2:
+            int  day5=5;
+            System.out.println("Monday");
+            break;
+          case 3:
+            System.out.println("Tuesday");
+            break;
+         
         }
     }
 }
