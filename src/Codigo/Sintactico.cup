@@ -148,11 +148,17 @@ non terminal INICIO,
     CALL_PROC_ID_FUNC,
     CALL_PROC_BLOQUE,
     CALL_PROC_BLOQUE_CIERRE,
+
+    CALL_PROC_IF,
+    CALL_PROC_IF_CIERRE,
+    CALL_PROC_ELSE,
+    CALL_PROC_ELSE_CIERRE,
+
     CALL_PROC_MAIN;
    
 
 /* Precedencia */
-precedence left FUNCION;
+precedence left FUNCION,CALL_PROC_IF;
 
 
 start with INICIO;
@@ -1216,8 +1222,8 @@ SENTENCIA ::=
 
 
 BLOQUE_ANIDADO::=
-    SENTENCIA |
-    SENTENCIA BLOQUE_ANIDADO;
+    SENTENCIA 
+    |SENTENCIA BLOQUE_ANIDADO;
 
 CALL_PROC_BLOQUE::=
     Llave_a {:
@@ -1232,24 +1238,55 @@ CALL_PROC_BLOQUE_CIERRE::=
 ;
 
 BLOQUE ::= 
-    SENTENCIA |
-    SENTENCIA BLOQUE |
-    CALL_PROC_BLOQUE BLOQUE_ANIDADO CALL_PROC_BLOQUE_CIERRE |
-    CALL_PROC_BLOQUE BLOQUE_ANIDADO CALL_PROC_BLOQUE_CIERRE BLOQUE |
-    RETORNOS_FUNCION ;
+     SENTENCIA 
+    |SENTENCIA BLOQUE 
+    |CALL_PROC_BLOQUE BLOQUE_ANIDADO CALL_PROC_BLOQUE_CIERRE 
+    |CALL_PROC_BLOQUE BLOQUE_ANIDADO CALL_PROC_BLOQUE_CIERRE BLOQUE 
+    |RETORNOS_FUNCION ;
 
 
 
 /*Estructuras de control */
-
 CONDICION ::= 
     EXP_LOGICA|
-    EXP_LOGICA_UNA;
+    EXP_LOGICA_UNA:exp {:
+                            literal objectparam1=(literal)exp;
+                            if(!objectparam1.getTipo().equals("null")){
+                                    if(!objectparam1.getTipo().equals("bool") ){
+                                        String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
+                                        parser.semantic_error(expleft,expright, mensaje); 
+                                    }
+                            }else{
+                                String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                parser.semantic_error(expleft,expright, mensaje);
+                            }
+                            RESULT = objectparam1.getTextual();
+                        :};
+
+CALL_PROC_IF ::=
+    Llave_a {:
+                parser.analis_semantico.new_block("if");
+            :};
+
+CALL_PROC_IF_CIERRE::=
+    Llave_c {:
+                parser.analis_semantico.backBlock();
+            :};
+
+CALL_PROC_ELSE ::=
+    Llave_a {:
+                parser.analis_semantico.new_block("else");
+            :};
+
+CALL_PROC_ELSE_CIERRE::=
+    Llave_c {:
+                parser.analis_semantico.backBlock();
+            :};
 
 
 IF_ELSE::=
-    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c | 
-    If Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c Else Llave_a BLOQUE Llave_c;
+    If Parentesis_a CONDICION Parentesis_c CALL_PROC_IF BLOQUE CALL_PROC_IF_CIERRE | 
+    If Parentesis_a CONDICION Parentesis_c CALL_PROC_IF BLOQUE CALL_PROC_IF_CIERRE Else CALL_PROC_ELSE BLOQUE CALL_PROC_ELSE_CIERRE;
 
 WHILE::=
     While Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c;
