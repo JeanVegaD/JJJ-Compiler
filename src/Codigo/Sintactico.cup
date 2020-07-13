@@ -1377,7 +1377,7 @@ FUNCION ::=
                                                 litObject.setTextual(res);
                                                 RESULT = litObject; 
 
-                                            :} 
+                                                        :} 
 
     |Identificador:id_func Parentesis_a PARAMETROS_FUNCION:param_func Parentesis_c {:
                                                 
@@ -1391,20 +1391,35 @@ FUNCION ::=
                                                 litObject.setResultado(res);
                                                 litObject.setTextual(res);
                                                 RESULT = litObject;  
-                                            :};
+                                                                                        :};
 
 /*Funcioens del sistema*/
 
 LEER::=
-    Input Simbolo_input Identificador;
+    Input Simbolo_input Identificador:id_var {:
+                                                boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
+                                                if(flag){
+                                                    String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
+                                                    if(tipo_var.toString().equals("string")){
+                                                        parser.analis_semantico.init_var(id_var.toString());
+                                                    }
+                                                    else{
+                                                        String mensaje = "Imposible convertir explícitamente de '" + "string" + "' a '"+tipo_var.toString()+"'";
+                                                        parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                    }
+                                                }else{
+                                                    String mensaje = "El identificador '" + id_var.toString() + "' no se ha definido";
+                                                    parser.semantic_error(id_varleft,id_varright, mensaje);
+                                                }
+                                                :};
 
 ESCRIBIR::=
-    Print Parentesis_a LITERAL_CADENA  Parentesis_c |
-    Print Parentesis_a LITERAL_NUMERICO Parentesis_c |
-    Print Parentesis_a Null  Parentesis_c |
-    Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c |     
-    Print Parentesis_a EXP_LOGICA Parentesis_c | 
-    Print Parentesis_a EXP_LOGICA_UNA Parentesis_c | 
-    Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c ;
+     Print Parentesis_a LITERAL_CADENA  Parentesis_c 
+    |Print Parentesis_a LITERAL_NUMERICO Parentesis_c
+    |Print Parentesis_a Null  Parentesis_c
+    |Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c     
+    |Print Parentesis_a EXP_LOGICA Parentesis_c 
+    |Print Parentesis_a EXP_LOGICA_UNA Parentesis_c 
+    |Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c ;
     
 
