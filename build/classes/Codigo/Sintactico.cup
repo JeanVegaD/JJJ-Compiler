@@ -155,6 +155,8 @@ non terminal INICIO,
     CALL_PROC_ELSE_CIERRE,
     CALL_PROC_WHILE,
     CALL_PROC_WHILE_CIERRE,
+    CALL_PROC_DOWHILE,
+    CALL_PROC_DOWHILE_CIERRE,
 
     CALL_PROC_MAIN;
    
@@ -1301,13 +1303,24 @@ CALL_PROC_WHILE_CIERRE::=
                 parser.analis_semantico.backBlock();
             :};
 
-
 WHILE::=
     While Parentesis_a CONDICION Parentesis_c CALL_PROC_WHILE BLOQUE CALL_PROC_WHILE_CIERRE;
+
+
+
+CALL_PROC_DOWHILE ::=
+    Llave_a {:
+                parser.analis_semantico.new_block("while");
+            :};
+
+CALL_PROC_DOWHILE_CIERRE::=
+    Parentesis_c {:
+                parser.analis_semantico.backBlock();
+            :};
     
 
 DO_WHILE ::=
-    Do Llave_a BLOQUE Llave_c While Parentesis_a CONDICION Parentesis_c;
+    Do CALL_PROC_DOWHILE BLOQUE Llave_c While Parentesis_a CONDICION CALL_PROC_DOWHILE_CIERRE;
 
 
 
