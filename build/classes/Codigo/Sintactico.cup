@@ -153,6 +153,8 @@ non terminal INICIO,
     CALL_PROC_IF_CIERRE,
     CALL_PROC_ELSE,
     CALL_PROC_ELSE_CIERRE,
+    CALL_PROC_WHILE,
+    CALL_PROC_WHILE_CIERRE,
 
     CALL_PROC_MAIN;
    
@@ -1288,8 +1290,21 @@ IF_ELSE::=
     If Parentesis_a CONDICION Parentesis_c CALL_PROC_IF BLOQUE CALL_PROC_IF_CIERRE | 
     If Parentesis_a CONDICION Parentesis_c CALL_PROC_IF BLOQUE CALL_PROC_IF_CIERRE Else CALL_PROC_ELSE BLOQUE CALL_PROC_ELSE_CIERRE;
 
+
+CALL_PROC_WHILE ::=
+    Llave_a {:
+                parser.analis_semantico.new_block("while");
+            :};
+
+CALL_PROC_WHILE_CIERRE::=
+    Llave_c {:
+                parser.analis_semantico.backBlock();
+            :};
+
+
 WHILE::=
-    While Parentesis_a CONDICION Parentesis_c Llave_a BLOQUE Llave_c;
+    While Parentesis_a CONDICION Parentesis_c CALL_PROC_WHILE BLOQUE CALL_PROC_WHILE_CIERRE;
+    
 
 DO_WHILE ::=
     Do Llave_a BLOQUE Llave_c While Parentesis_a CONDICION Parentesis_c;
