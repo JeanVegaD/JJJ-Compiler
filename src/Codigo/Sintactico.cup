@@ -146,6 +146,8 @@ non terminal INICIO,
 
     /*procedimeintos*/
     CALL_PROC_ID_FUNC,
+    CALL_PROC_BLOQUE,
+    CALL_PROC_BLOQUE_CIERRE,
     CALL_PROC_MAIN;
    
 
@@ -1199,28 +1201,41 @@ EXP_LOGICA ::=
 /*Sentencia*/
 
 SENTENCIA ::=
-    DEC_VARIABLE Delimitador |
-    ASIG_VARIABLE Delimitador |
-    IF_ELSE |
-    WHILE |
-    FOR |
-    DO_WHILE |
-    SWITCH |
-    FUNCION Delimitador|
-    LEER Delimitador|
-    ESCRIBIR Delimitador|
-    error Delimitador |
-    error Llave_c; 
+    DEC_VARIABLE Delimitador 
+    |ASIG_VARIABLE Delimitador 
+    |IF_ELSE 
+    |WHILE
+    |FOR 
+    |DO_WHILE 
+    |SWITCH 
+    |FUNCION Delimitador
+    |LEER Delimitador
+    |ESCRIBIR Delimitador
+    |error Delimitador 
+    |error Llave_c; 
 
 
 BLOQUE_ANIDADO::=
     SENTENCIA |
     SENTENCIA BLOQUE_ANIDADO;
 
+CALL_PROC_BLOQUE::=
+    Llave_a {:
+                parser.analis_semantico.new_block("block");
+            :}
+;
+
+CALL_PROC_BLOQUE_CIERRE::=
+    Llave_c {:
+                parser.analis_semantico.backBlock();
+            :}
+;
+
 BLOQUE ::= 
     SENTENCIA |
     SENTENCIA BLOQUE |
-    Llave_a BLOQUE_ANIDADO Llave_c |
+    CALL_PROC_BLOQUE BLOQUE_ANIDADO CALL_PROC_BLOQUE_CIERRE |
+    CALL_PROC_BLOQUE BLOQUE_ANIDADO CALL_PROC_BLOQUE_CIERRE BLOQUE |
     RETORNOS_FUNCION ;
 
 

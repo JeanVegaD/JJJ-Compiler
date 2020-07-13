@@ -9,7 +9,7 @@ public class analisis {
     
     private ArrayList<ArrayList<String>> tablaBloques = new ArrayList<ArrayList<String>>();
     //Estructura 
-    //ID    TIPO    BLOQUE_PADRE
+    //ID    TIPO    BLOQUE_PADRE    AUX
     
     
     //temporales 
@@ -128,7 +128,6 @@ public class analisis {
         if(tablaBloques.size()>0){
             for (int i = 0; i < tablaBloques.size(); i++) {
                 if(tablaBloques.get(i).get(0).equals(id)){
-                
                     res= tablaBloques.get(i).get(2);
                     break;
                 }
@@ -154,7 +153,7 @@ public class analisis {
             }
             tempBlock=get_parent_block(tempBlock);
             
-        }while(tempBlock!="root");
+        }while(!tempBlock.equals("root"));
             
         
     }
@@ -173,6 +172,7 @@ public class analisis {
             temp.add(id.toString());
             temp.add("");
             temp.add("root");
+            temp.add("func");
             tablaBloques.add(temp);
             System.out.println("Funcion: " + id + " agregada a la tabla de simbolos");
             return true;
@@ -298,11 +298,27 @@ public class analisis {
     /**********************************************************************************************************/
     
     
-    
+    public boolean existeVariable_aux(String identificador,ArrayList<ArrayList<String>> tablaBusqueda){
+        if(tablaBusqueda!=null){
+            boolean flag=false;
+            for (int i = 0; i < tablaBusqueda.size(); i++) {
+                if(tablaBusqueda.get(i).get(0).equals(identificador) ){
+                    flag=true;
+                    break;
+                }
+             }
+            return flag;
+        }
+        else{
+            return false;
+        }
+    }
+    /*Verifica si la variable ingresada pertenece al bloque*/
     public boolean existeVariable(String id){
-        return buscar_id_simbolos(id,currentBlock,tablaSimbolosActual);
+        return existeVariable_aux(id,tablaSimbolosActual);
     }
 
+    /*crea una nueva variable*/
     public void setVar(String id, String tipo){
         ArrayList<String>  temp_vars =  new ArrayList<String>();
         temp_vars.add(id);
@@ -316,6 +332,7 @@ public class analisis {
         
     } 
     
+     /*crea una nueva variable sin inicializar*/
     public void setVar_Aux(String id, String tipo){
         ArrayList<String>  temp_vars =  new ArrayList<String>();
         temp_vars.add(id);
@@ -329,7 +346,7 @@ public class analisis {
         
     }
     
-    
+     /*Inicializa una variable*/
     public void init_var(String id){
         for (int i = 0; i < tablaSimbolos.size(); i++) {
             if(tablaSimbolos.get(i).get(0).equals(id) && tablaSimbolos.get(i).get(2).equals(currentBlock)){
@@ -338,6 +355,7 @@ public class analisis {
         }
     }
     
+     /*verifica si la variable esta inicializada*/
     public String var_inicializada(String id){
         String res="";
         for (int i = 0; i < tablaSimbolos.size(); i++) {
@@ -348,8 +366,53 @@ public class analisis {
         return res;
     }
      
-    public void prueba(){
+    /*creaun nuevo bloque*/
+    public void new_block(String id){
+        String nuevoID =  obtenerIdBloque(id);
+        ArrayList<String>  temp =  new ArrayList<String>();
+        temp.add(nuevoID);
+        temp.add("");
+        temp.add(currentBlock);
+        temp.add(id);
+        tablaBloques.add(temp);
+        System.out.println("bloque: " + nuevoID + " agregada a la tabla de simbolos");
+        set_id_current_block(nuevoID);
         
+    }
+    
+    public void backBlock(){
+        for (int i = 0; i < tablaBloques.size(); i++) {
+            if(tablaBloques.get(i).get(0).equals(currentBlock)){
+                set_id_current_block(tablaBloques.get(i).get(2));
+                break;
+            }
+        }
+    }
+    
+    
+    
+    public boolean existeBloque(String n_boque){
+        boolean res=false;
+        for (int i = 0; i < tablaBloques.size(); i++) {
+            if(tablaBloques.get(i).get(0).equals(n_boque)){
+                res=true;
+                break;
+            }
+        }
+        return res;
+    }
+    
+    
+    public String obtenerIdBloque(String n_boque){
+        String temp= currentBlock+"_"+n_boque;
+        int n=0;
+        String compare= currentBlock+"_"+n_boque+n;
+        while(existeBloque(compare)){
+            n+=1;
+            compare=temp + n;
+            
+        }
+        return temp+n;
     }
     
 }
