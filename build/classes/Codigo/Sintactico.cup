@@ -1524,13 +1524,34 @@ DEC_FUNCION ::=
 
 
 PARAMETROS_FUNCION_AUX::=
-     LITERAL_NUMERICO: tipo  {:RESULT = tipo; :}
-    |LITERAL_CADENA : tipo  {:RESULT = tipo; :}
-    |Null: tipo  {:RESULT = tipo; :}
-    |EXP_ARITMETICA_BIN : tipo  {:RESULT = tipo; :}
-    |EXP_ARITMETICA_UNA: tipo  {:RESULT = tipo; :}
-    |EXP_LOGICA: tipo  {:RESULT = tipo; :}
-    |EXP_LOGICA_UNA: tipo  {:RESULT = tipo; :}; 
+     LITERAL_NUMERICO: tipo  {: 
+                                literal objectparam1=(literal)tipo;
+                                //parser.analis_semantico.add_param_type_temp(objectparam1.getTipo());
+                                RESULT =  objectparam1.getTipo() + " "+ objectparam1.getTextual(); 
+                                :}
+    |LITERAL_CADENA : tipo  {: 
+                                literal objectparam1=(literal)tipo;
+                                //parser.analis_semantico.add_param_type_temp(objectparam1.getTipo());
+                                RESULT = objectparam1.getTipo() + " "+ objectparam1.getTextual(); 
+                                :}
+    |EXP_ARITMETICA_BIN : tipo  {: 
+                                //parser.analis_semantico.add_param_type_temp("int");
+                                RESULT = "int" + " "+  tipo.toString(); 
+                                :}
+                                
+    |EXP_ARITMETICA_UNA: tipo  {: literal objectparam1=(literal)tipo;
+                                //parser.analis_semantico.add_param_type_temp(objectparam1.getTipo());
+                                RESULT = objectparam1.getTextual(); 
+                                :}
+    |EXP_LOGICA: tipo  {:       
+                                //parser.analis_semantico.add_param_type_temp("bool");
+                               RESULT = "bool" + " "+  tipo.toString(); 
+                               :}
+    |EXP_LOGICA_UNA: tipo  {: 
+                                literal objectparam1=(literal)tipo;
+                                //parser.analis_semantico.add_param_type_temp(objectparam1.getTipo());
+                                RESULT =  objectparam1.getTipo() + " "+ objectparam1.getTextual(); 
+                                :}; 
 
     
 PARAMETROS_FUNCION ::=

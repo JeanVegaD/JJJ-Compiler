@@ -16,12 +16,14 @@ public class analisis {
     private String currentBlock="";
     private ArrayList<ArrayList<String>> tablaSimbolosActual = new ArrayList<ArrayList<String>>();
     private String temp_type;
-
+    
+    //private ArrayList<String> tipos_param_func_temp = new ArrayList<String>();
    
     
     public void  analisis(){
         tablaSimbolos=null;
         tablaBloques=null;
+
         
     }
     
@@ -319,11 +321,24 @@ public class analisis {
         String res= "";
          if(buscar_id_bloques(id.toString(),"root")){
             String[] params = parametros.toString().split(",");
+            ArrayList<String> tipos_param_func_temp =  new ArrayList<String>();
+            for (int i = 0; i < params.length; i++){
+                String[] p_t = params[i].split(" ");
+                tipos_param_func_temp.add(p_t[0]);
+            }
+ 
             if(get_cant_param_func(id.toString())!=params.length){
                 res+= "'" + id.toString() + "' espera "+get_cant_param_func(id.toString())+ " parametros y esta recibiendo "+params.length + " parametros \n" ;
             }
+            
             ArrayList<String> prueba= get_tipos_param_func(id.toString());
-            System.out.println(prueba.toString());
+            if(!prueba.equals(tipos_param_func_temp)){
+                res+= "Los argumentos no coinciden con la función: '" + id.toString();
+            }
+
+            //System.out.println("funcion recibe: "+ prueba);
+            //System.out.println("funcion envia: "+ tipos_param_func_temp);
+            //tipos_param_func_temp.clear();
             return res;
          }
          else{
@@ -332,6 +347,13 @@ public class analisis {
          }
     }
     /**********************************************************************************************************/
+    
+    
+    /* Añade un tipo de parametro a la lista temporal*/
+   /* public void add_param_type_temp(String type){
+        tipos_param_func_temp.add(type);
+    }*/
+    
     
     
     public boolean existeVariable_aux(String identificador,ArrayList<ArrayList<String>> tablaBusqueda){
