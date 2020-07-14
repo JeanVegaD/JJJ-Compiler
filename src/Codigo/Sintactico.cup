@@ -144,6 +144,7 @@ non terminal INICIO,
     /*COMENTARIO,*/
 
     /*procedimeintos*/
+    CALL_PROC_TYPE_FUNC,
     CALL_PROC_ID_FUNC,
     CALL_PROC_BLOQUE,
     CALL_PROC_BLOQUE_CIERRE,
@@ -1252,7 +1253,37 @@ BLOQUE ::=
     |SENTENCIA BLOQUE 
     |CALL_PROC_BLOQUE BLOQUE_ANIDADO CALL_PROC_BLOQUE_CIERRE 
     |CALL_PROC_BLOQUE BLOQUE_ANIDADO CALL_PROC_BLOQUE_CIERRE BLOQUE 
-    |RETORNOS_FUNCION ;
+    |RETORNOS_FUNCION:ret {:
+                            literal objectparam1=(literal)ret;
+                            if(!objectparam1.getTipo().equals("null")){
+                                if(!parser.analis_semantico.get_tipo_currentBlock().equals("void")){
+                                    if(!parser.analis_semantico.get_tipo_currentBlock().equals("void")){
+                                        if(objectparam1.getTipo().equals(parser.analis_semantico.get_tipo_currentBlock()) ){
+                                            parser.analis_semantico.set_funcionConReturn();
+                                            
+                                        }
+                                        else{
+                                            String mensaje = "Imposible convertir explícitamente de '" + objectparam1.getTipo() + "' a '"+parser.analis_semantico.get_tipo_currentBlock()+"'";
+                                            parser.semantic_error(retleft,retright, mensaje);
+                                        }
+                                    }                         
+                                    else{
+                                         String mensaje = "El retorno no esta permitido";
+                                    parser.semantic_error(retleft,retright, mensaje);
+                                    }
+                                }
+                                else{
+                                    String mensaje = "El retorno no esta permitido";
+                                    parser.semantic_error(retleft,retright, mensaje);
+                                }
+                                    
+                            }else{
+                                String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
+                                parser.semantic_error(retleft,retright, mensaje);
+                            }
+                            RESULT = objectparam1.getTextual();
+
+                            :} ;
 
 
 
@@ -1429,13 +1460,22 @@ TIPOS_PARAMETRO_FUNCION::=
 
 
 RETORNOS_FUNCION::=
-    Return LITERAL_CADENA Delimitador |
-    Return LITERAL_NUMERICO Delimitador  |
-    Return Null Delimitador |
-    Return EXP_ARITMETICA_BIN Delimitador |
-    Return EXP_ARITMETICA_UNA Delimitador |
-    Return EXP_LOGICA Delimitador |
-    Return EXP_LOGICA_UNA Delimitador ;
+     Return LITERAL_CADENA:lit Delimitador {:RESULT = lit;:}
+    |Return LITERAL_NUMERICO:lit Delimitador {:RESULT = lit;:} 
+    |Return EXP_ARITMETICA_BIN:lit Delimitador {:
+                                                    literal litObject =  new literal();
+                                                    litObject.setTipo("int");
+                                                    litObject.setResultado(lit.toString());
+                                                    litObject.setTextual(lit.toString());
+                                                    RESULT = litObject; :}
+    |Return EXP_ARITMETICA_UNA:lit Delimitador  {:RESULT = lit;:} 
+    |Return EXP_LOGICA:lit Delimitador {:
+                                            literal litObject =  new literal();
+                                            litObject.setTipo("bool");
+                                            litObject.setResultado(lit.toString());
+                                            litObject.setTextual(lit.toString());
+                                            RESULT = litObject; :}
+    |Return EXP_LOGICA_UNA:lit Delimitador {:RESULT = lit;:} ;
 
 
 CALL_PROC_ID_FUNC::=
@@ -1451,18 +1491,28 @@ CALL_PROC_ID_FUNC::=
                             }
                             :};
 
+CALL_PROC_TYPE_FUNC::=
+    TIPOS_RETORNO_FUNCION:tipo_func {: 
+                                        parser.analis_semantico.set_temp_type(tipo_func.toString());
+                                        RESULT = tipo_func.toString();
+                                        :};
+
 
 DEC_FUNCION ::=
-    TIPOS_RETORNO_FUNCION:tipo_func CALL_PROC_ID_FUNC:id_func  Parentesis_a  Parentesis_c Llave_a BLOQUE Llave_c {:
+    CALL_PROC_TYPE_FUNC:tipo_func CALL_PROC_ID_FUNC:id_func  Parentesis_a  Parentesis_c Llave_a BLOQUE Llave_c {:
                                                                                                                 //setea el string del tipo a la funcion
-                                                                                                                parser.analis_semantico.dec_func_aux(id_func,tipo_func); 
+                                                                                                                boolean flag = parser.analis_semantico.get_returnFuncion(id_func.toString());
+                                                                                                                if(!flag){
+                                                                                                                    String mensaje = "Falta el retorno de la función";
+                                                                                                                    parser.semantic_error(id_funcleft,id_funcright, mensaje); 
+                                                                                                                }
                                                                                                                 
                                                                                                                 :}
 
 
-    |TIPOS_RETORNO_FUNCION:tipo_func CALL_PROC_ID_FUNC:id_func Parentesis_a TIPOS_PARAMETRO_FUNCION:parametros Parentesis_c Llave_a BLOQUE Llave_c {:
+    |CALL_PROC_TYPE_FUNC:tipo_func CALL_PROC_ID_FUNC:id_func Parentesis_a TIPOS_PARAMETRO_FUNCION:parametros Parentesis_c Llave_a BLOQUE Llave_c {:
                                                                                                                 //setea el string del tipo a la funcion
-                                                                                                                parser.analis_semantico.dec_func_aux(id_func,tipo_func);
+                                                                                                                //parser.analis_semantico.dec_func_aux(id_func,tipo_func);
                                                                                                                 //validar parametros
                                                                                                                 String flag= parser.analis_semantico.dec_func_param(id_func,parametros); 
                                                                                                                 if(!flag.equals("")){

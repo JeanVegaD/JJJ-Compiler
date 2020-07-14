@@ -9,12 +9,13 @@ public class analisis {
     
     private ArrayList<ArrayList<String>> tablaBloques = new ArrayList<ArrayList<String>>();
     //Estructura 
-    //ID    TIPO    BLOQUE_PADRE    AUX
+    //ID    TIPO    BLOQUE_PADRE    AUX     RETURN
     
     
     //temporales 
     private String currentBlock="";
     private ArrayList<ArrayList<String>> tablaSimbolosActual = new ArrayList<ArrayList<String>>();
+    private String temp_type;
 
    
     
@@ -24,8 +25,7 @@ public class analisis {
         
     }
     
-    
-    
+
     /*
     * Imprime la tabla con formato 
     */
@@ -166,13 +166,20 @@ public class analisis {
     }
     
     
+    /*Establece el temporal de las funciones*/
+    public void  set_temp_type(String tipo){
+        temp_type=tipo;
+        
+    }
+    
     public boolean dec_func(Object id){
         if(!buscar_id_bloques(id.toString(),"root")){
             ArrayList<String>  temp =  new ArrayList<String>();
             temp.add(id.toString());
-            temp.add("");
+            temp.add(temp_type);
             temp.add("root");
             temp.add("func");
+            temp.add("false");
             tablaBloques.add(temp);
             System.out.println("Funcion: " + id + " agregada a la tabla de simbolos");
             return true;
@@ -193,6 +200,36 @@ public class analisis {
             }
         }
         
+        
+    }
+    
+    
+    public void set_funcionConReturn(){
+       for (int i = 0; i < tablaBloques.size(); i++) {
+            if(tablaBloques.get(i).get(0).equals(currentBlock) ){
+               tablaBloques.get(i).set(4, "true");
+                break;
+            }
+        }
+    }
+    
+    public boolean get_returnFuncion(String id){
+        boolean res =false;
+        for (int i = 0; i < tablaBloques.size(); i++) {
+            if(tablaBloques.get(i).get(0).equals(id)){
+                if(tablaBloques.get(i).get(4).equals("false") && tablaBloques.get(i).get(1).equals("void")){
+                    res=true;
+                }
+                else if (tablaBloques.get(i).get(4).equals("false")){
+                    res=false;
+                }
+                else{
+                    res=true;
+                }
+                break;
+            }
+        }
+        return res;
     }
     
 
@@ -221,7 +258,6 @@ public class analisis {
         }
         return res;
     }
-    
     
     
     /*Valida la existencia de la funcion dentro del archivo*/
@@ -439,17 +475,5 @@ public class analisis {
     }
     
     
-    public void prtueba(){
-        int day = 4;
-        switch (get_cant_param_func("")) {
-          case 2:
-            int  day5=5;
-            System.out.println("Monday");
-            break;
-          case 3:
-            System.out.println("Tuesday");
-            break;
-         
-        }
-    }
+   
 }
