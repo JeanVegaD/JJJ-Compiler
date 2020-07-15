@@ -195,7 +195,7 @@ public class archivo_ingresado {
    public void escribirTokensArchivo(){
        FileWriter myWriter;
         try {
-            myWriter = new FileWriter("src/txtFiles/tokens_"+ archivo.getName().substring(0, archivo.getName().lastIndexOf('.')) + ".txt" );
+            myWriter = new FileWriter("src/txtFiles/tokens/tokens_"+ archivo.getName().substring(0, archivo.getName().lastIndexOf('.')) + ".txt" );
             myWriter.write(this.tokens_archivo);
             myWriter.close();
             reporte_consola+= "<h3 class='textoNormal'>Se ha generado el archivo con los tokens</h3>";
@@ -222,6 +222,7 @@ public class archivo_ingresado {
             try {
                 sin.parse();
                 reporte_consola+= "<h2 class='textoVerde'> Análisis sintáctico realizado </h2>";
+                reporte_consola+= "<h2 class='textoVerde'> Análisis semántico realizado </h2>";
                 resultadoCompilacion();
                 reporte_consola += reporte_errores;
                 reporte_consola += "<br> <br>";

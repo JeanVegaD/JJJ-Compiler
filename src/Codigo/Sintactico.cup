@@ -146,6 +146,7 @@ non terminal INICIO,
     /*procedimeintos*/
     CALL_PROC_TYPE_FUNC,
     CALL_PROC_ID_FUNC,
+    CALL_PROC_FUNC_PARAMS,
     CALL_PROC_BLOQUE,
     CALL_PROC_BLOQUE_CIERRE,
 
@@ -179,7 +180,7 @@ CALL_PROC_MAIN::=
                     RESULT = id_func;
                     boolean flag= parser.analis_semantico.dec_func(id_func); 
                     if(!flag){
-                        String mensaje = "La variable '" + id_func + "' ya está definida";
+                        String mensaje = "El identificador '" + id_func + "' ya está definida";
                         parser.semantic_error(id_funcleft,id_funcright, mensaje);
                         parser.analis_semantico.set_id_current_block("null");
                     }else{
@@ -189,7 +190,14 @@ CALL_PROC_MAIN::=
 
 
 INICIO ::= 
-    T_int CALL_PROC_MAIN Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c {: parser.analis_semantico.dec_main(); :}
+    T_int CALL_PROC_MAIN:id_func Parentesis_a Parentesis_c Llave_a BLOQUE Llave_c:cierre {: 
+                                                                            parser.analis_semantico.dec_main();
+                                                                            boolean flag = parser.analis_semantico.get_returnFuncion(id_func.toString());
+                                                                            if(!flag){
+                                                                                String mensaje = "Falta el retorno de la función";
+                                                                                parser.semantic_error(id_funcleft,id_funcright, mensaje); 
+                                                                            } 
+                                                                            :}
     |DEC_FUNCION INICIO; 
 
 
@@ -626,7 +634,7 @@ DEC_VARIABLE ::=
     |TIPOS_VARIABLES:tipo_var Identificador:id_var Corchete_a Corchete_c Asignacion Llave_a PARAMETROS_ARREGLO Llave_c {: 
                                                                                             boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                                                                             if(!flag){
-                                                                                                if(tipo_var.toString().equals("array")){
+                                                                                                if(tipo_var.toString().equals("int")){
                                                                                                     parser.analis_semantico.setVar(id_var.toString(),"array");
 
                                                                                                 }else{
@@ -805,12 +813,12 @@ ASIG_VARIABLE ::=
                                                             boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                                             if(flag){
                                                                 String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
-                                                                literal litObject=(literal)lit;
-                                                                if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                
+                                                                if(tipo_var.toString().equals("int") || tipo_var.toString().equals("float")){
                                                                     parser.analis_semantico.init_var(id_var.toString());
                                                                 }
                                                                 else{
-                                                                    String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                    String mensaje = "Imposible convertir explícitamente de '" + "int" + "' a '"+tipo_var.toString()+"'";
                                                                     parser.semantic_error(id_varleft,id_varright, mensaje);
                                                                 }
                                                             }else{
@@ -840,12 +848,12 @@ ASIG_VARIABLE ::=
                                                             boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                                             if(flag){
                                                                String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
-                                                                literal litObject=(literal)lit;
-                                                                if(tipo_var.toString().equals(litObject.getTipo())){
+                                                                
+                                                                if(tipo_var.toString().equals("bool")){
                                                                     parser.analis_semantico.init_var(id_var.toString());
                                                                 }
                                                                 else{
-                                                                    String mensaje = "Imposible convertir explícitamente de '" + litObject.getTipo() + "' a '"+tipo_var.toString()+"'";
+                                                                    String mensaje = "Imposible convertir explícitamente de '" + "bool" + "' a '"+tipo_var.toString()+"'";
                                                                     parser.semantic_error(id_varleft,id_varright, mensaje);
                                                                 }
                                                             }else{
@@ -929,7 +937,8 @@ EXP_ARITMETICA_UNA ::=
     Unario_positivo Identificador:id_var {:
                                     boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                     literal litObject =  new literal();
-                                    RESULT=null;
+                                    litObject.setTipo("null");
+                                    litObject.setTextual(id_var.toString());
                                     if(flag){
                                         String res= parser.analis_semantico.get_tipo_var(id_var.toString());
                                         if(res.equals("int") || res.equals("float")){
@@ -937,7 +946,7 @@ EXP_ARITMETICA_UNA ::=
                                                 litObject.setTipo(res); //obtener tipo a traves de una funcion 
                                                 litObject.setResultado("++"+id_var.toString());
                                                 litObject.setTextual("++"+id_var.toString());
-                                                RESULT = litObject;  
+                                                
                                             }else{
                                                 String mensaje = "El identificador '" + id_var.toString() + "' no se ha inicializado";
                                                 parser.semantic_error(id_varleft,id_varright, mensaje);
@@ -950,16 +959,17 @@ EXP_ARITMETICA_UNA ::=
                                         }
                                         
                                     }else{
-                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                        String mensaje = "El identificador '" + id_var + "' no se ha definido";
                                         parser.semantic_error(id_varleft,id_varright, mensaje); 
                                     }
 
-
+                                    RESULT = litObject;
                                     :}  
     | Unario_negatico Identificador:id_var {:
                                     boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                     literal litObject =  new literal();
-                                    RESULT=null;
+                                    litObject.setTipo("null");
+                                    litObject.setTextual(id_var.toString());
                                     if(flag){
                                         String res= parser.analis_semantico.get_tipo_var(id_var.toString());
                                         if(res.equals("int") || res.equals("float")){
@@ -967,7 +977,7 @@ EXP_ARITMETICA_UNA ::=
                                                 litObject.setTipo(res); //obtener tipo a traves de una funcion 
                                                 litObject.setResultado("--"+id_var.toString());
                                                 litObject.setTextual("--"+id_var.toString());
-                                                RESULT = litObject;
+                                                
                                              }
                                              else{
                                                 String mensaje = "El identificador '" + id_var.toString() + "' no se ha inicializado";
@@ -981,9 +991,10 @@ EXP_ARITMETICA_UNA ::=
                                         }
                                         
                                     }else{
-                                        String mensaje = "El identificador '" + id_var + "' ya está definido";
+                                        String mensaje = "El identificador '" + id_var + "' no se ha definido";
                                         parser.semantic_error(id_varleft,id_varright, mensaje); 
                                     }
+                                    RESULT = litObject;
                                     :} ;
     
 
@@ -1021,6 +1032,7 @@ EXP_ARITMETICA_BIN::=
                                                                                     parser.semantic_error(param1left,param1right, mensaje);
                                                                                 }
                                                                                 RESULT = param1.toString() + tipo_arit.toString() + param2.toString();
+                                                                               
                                                                                 :}
     |PARAM_EXP_ARITMETICA:param1 TIPOS_ARITMETICOS:tipo_arit EXP_ARITMETICA_BIN:param2 {: 
                                                                                         literal objectparam1=(literal)param1;
@@ -1491,6 +1503,14 @@ CALL_PROC_ID_FUNC::=
                             }
                             :};
 
+CALL_PROC_FUNC_PARAMS::=
+    TIPOS_PARAMETRO_FUNCION:parametros {:
+                                            String flag= parser.analis_semantico.dec_func_param(parametros); 
+                                            if(!flag.equals("")){
+                                                parser.semantic_error(parametrosleft,parametrosright, flag);
+                                            } 
+                                        :};
+
 CALL_PROC_TYPE_FUNC::=
     TIPOS_RETORNO_FUNCION:tipo_func {: 
                                         parser.analis_semantico.set_temp_type(tipo_func.toString());
@@ -1500,7 +1520,6 @@ CALL_PROC_TYPE_FUNC::=
 
 DEC_FUNCION ::=
     CALL_PROC_TYPE_FUNC:tipo_func CALL_PROC_ID_FUNC:id_func  Parentesis_a  Parentesis_c Llave_a BLOQUE Llave_c {:
-                                                                                                                //setea el string del tipo a la funcion
                                                                                                                 boolean flag = parser.analis_semantico.get_returnFuncion(id_func.toString());
                                                                                                                 if(!flag){
                                                                                                                     String mensaje = "Falta el retorno de la función";
@@ -1510,14 +1529,15 @@ DEC_FUNCION ::=
                                                                                                                 :}
 
 
-    |CALL_PROC_TYPE_FUNC:tipo_func CALL_PROC_ID_FUNC:id_func Parentesis_a TIPOS_PARAMETRO_FUNCION:parametros Parentesis_c Llave_a BLOQUE Llave_c {:
-                                                                                                                //setea el string del tipo a la funcion
-                                                                                                                //parser.analis_semantico.dec_func_aux(id_func,tipo_func);
-                                                                                                                //validar parametros
-                                                                                                                String flag= parser.analis_semantico.dec_func_param(id_func,parametros); 
-                                                                                                                if(!flag.equals("")){
-                                                                                                                    parser.semantic_error(id_funcleft,id_funcright, flag);
-                                                                                                                }  
+    |CALL_PROC_TYPE_FUNC:tipo_func CALL_PROC_ID_FUNC:id_func Parentesis_a CALL_PROC_FUNC_PARAMS Parentesis_c Llave_a BLOQUE Llave_c {:
+                                                                                                                boolean flag = parser.analis_semantico.get_returnFuncion(id_func.toString());
+                                                                                                                if(!flag){
+                                                                                                                    String mensaje = "Falta el retorno de la función";
+                                                                                                                    parser.semantic_error(id_funcleft,id_funcright, mensaje); 
+                                                                                                                }
+
+
+                                                                                                                 
                                                                                                                 :}
     |error Parentesis_c 
     |error Llave_c ;

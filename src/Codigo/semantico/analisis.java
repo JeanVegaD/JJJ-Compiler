@@ -156,6 +156,11 @@ public class analisis {
             tempBlock=get_parent_block(tempBlock);
             
         }while(!tempBlock.equals("root"));
+        
+        
+        System.out.println("==========="+currentBlock+"============");
+         System.out.println(tablaSimbolosActual.toString());
+        System.out.println("=======================");
             
         
     }
@@ -238,19 +243,21 @@ public class analisis {
     /*
     * Funciona que valida la declaracion de funciones con parametros
     */
-    public String dec_func_param(Object id,Object parametros){
+    public String dec_func_param(Object parametros){
          String res="";
         if(!currentBlock.equals("null")){
             String[] params = parametros.toString().split(",");
             for (String p : params){
                 String[] unit_param = p.split(" ");
-                if(!buscar_id_simbolos(unit_param[1],id.toString(),tablaSimbolos)){
+                if(!buscar_id_simbolos(unit_param[1],currentBlock,tablaSimbolos)){
                     ArrayList<String>  temp_vars =  new ArrayList<String>();
                     temp_vars.add(unit_param[1]);
                     temp_vars.add(unit_param[0]);
-                    temp_vars.add(id.toString());
+                    temp_vars.add(currentBlock);
                     temp_vars.add("param");
+                    temp_vars.add("true");
                     tablaSimbolos.add(temp_vars);
+                    get_current_symbol_table();
                 }else{
                     res+="El identificador : '"+unit_param[1] + "' ya se encuntra definido \n";
 
@@ -404,10 +411,21 @@ public class analisis {
         
     }
     
+    
+    public String getOriginal_paren(String id){
+        String res="";
+        for (int i = 0; i < tablaSimbolosActual.size(); i++) {
+            if(tablaSimbolosActual.get(i).get(0).equals(id) ){
+                res=tablaSimbolosActual.get(i).get(2);
+            }
+        }
+        return res;
+    }
+    
      /*Inicializa una variable*/
     public void init_var(String id){
         for (int i = 0; i < tablaSimbolos.size(); i++) {
-            if(tablaSimbolos.get(i).get(0).equals(id) && tablaSimbolos.get(i).get(2).equals(currentBlock)){
+            if(tablaSimbolos.get(i).get(0).equals(id) && tablaSimbolos.get(i).get(2).equals(getOriginal_paren(id))){
                 tablaSimbolos.get(i).set(4, "true");
             }
         }
