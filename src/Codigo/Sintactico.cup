@@ -1030,7 +1030,7 @@ EXP_ARITMETICA_BIN::=
                                                                                         if(objectparam1.getTipo().equals("int") || objectparam1.getTipo().equals("float")){
                                                                                             if(objectparam2.getTipo().equals("int") || objectparam2.getTipo().equals("float")){
 
-                                                                                                //parser.generador3d.load_lit(objectparam1.getTextual(),tipo_arit.toString(),objectparam2.getTextual());
+                                                                                                parser.generador3d.param_op_param(objectparam1.getTextual(),tipo_arit.toString(),objectparam2.getTextual());
                                                                                                 //ln p1= new ln(objectparam1.getTextual());
                                                                                                 //ln p2= new ln(objectparam2.getTextual());
                                                                                                 //c3d res= new c3d(p1,tipo_arit.toString(),p2);
@@ -1062,7 +1062,7 @@ EXP_ARITMETICA_BIN::=
                                                                                         if(!objectparam1.getTipo().equals("null")){
                                                                                             if(objectparam1.getTipo().equals("int") || objectparam1.getTipo().equals("float")){
 
-                                                                                                //parser.generador3d.load_lit_aux(objectparam1.getTextual(),tipo_arit.toString());
+                                                                                                parser.generador3d.exp_op_param(objectparam1.getTextual(),tipo_arit.toString());
                                                                                                 //ln p1= new ln(objectparam1.getTextual());
                                                                                                 //c3d p2=(c3d)param2;
                                                                                                 //c3d res= new c3d(p1,tipo_arit.toString(),p2);
@@ -1094,6 +1094,7 @@ EXP_ARITMETICA_BIN::=
                                                             if(!objectparam2.getTipo().equals("null")){
                                                                 if(objectparam2.getTipo().equals("int") || objectparam2.getTipo().equals("float")){
                                                                     
+                                                                    parser.generador3d.param_op_exp(objectparam2.getTextual(),tipo_arit.toString());
                                                                     //parser.generador3d.load_lit_aux(objectparam1.getTextual(),tipo_arit.toString());
                                                                     //ln p2= new ln(objectparam2.getTextual());
                                                                     //c3d expresion=(c3d)exp;
@@ -1114,7 +1115,8 @@ EXP_ARITMETICA_BIN::=
                                                             System.out.println(RESULT.toString());
                                                             :}
     |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c TIPOS_ARITMETICOS:tipo_arit EXP_ARITMETICA_BIN:param2   {: 
-                                                            RESULT = "(" + exp.toString() + ")" + tipo_arit.toString() + param2.toString() ; 
+                                                            RESULT = "(" + exp.toString() + ")" + tipo_arit.toString() + param2.toString() ;
+                                                            parser.generador3d.exp_op_exp(tipo_arit.toString());
                                                             //System.out.println("-> (exp) + exp2") ; 
                                                             System.out.println(RESULT.toString()); 
                                                             //c3d p2=(c3d)param2;

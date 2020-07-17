@@ -56,6 +56,11 @@ public class cuadruplos {
         return tn + " = " + left; 
     }
     
+    public String getCompleteLine(){
+        return tn + " = " + left + op + right; 
+    }
+    
+    
     
     
            

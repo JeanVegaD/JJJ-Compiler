@@ -44,7 +44,6 @@ public class codigo_tres_direcciones {
         temp.add(identificador);
         temp.add("root");
         code3d+="func begin "+ identificador + "\n";
-        System.out.print(code3d);
     }
     
     
@@ -68,10 +67,8 @@ public class codigo_tres_direcciones {
             tablaSimbolos.add(newLoad);
             code3d+=newLoad.getLine()+ "\n";
         }
-        
-        System.out.print(code3d);
-        
-        
+     
+
     }
     
     public void closeFunc(){
@@ -80,26 +77,81 @@ public class codigo_tres_direcciones {
     
     
     
-
-
-    
-    /*
-     
-     public void load_lit(String p1,String op, String p2){
-        String l="l"+contadorLabel_block;
+     public void param_op_param(String p1,String op, String p2){
+        String t="t"+contadorLabel_block;
+        contadorLabel_block+=1;
+        cuadruplos left= new cuadruplos(t,p1,current_Label);
+        tablaSimbolos.add(left);
+        code3d+=left.getLine() + "\n";
         
-        cuadruplos left= new cuadruplos(l,p1);         
-        //left.imprimir();
+    
+        String t2="t"+contadorLabel_block;
         contadorLabel_block+=1;
-        String l2="l"+contadorLabel_block;
-        cuadruplos right= new cuadruplos(l2,p2);         
-        //right.imprimir();
+        cuadruplos right= new cuadruplos(t2,p2,current_Label);         
+        tablaSimbolos.add(right);
+        code3d+=right.getLine() + "\n";
+        
+       
+        String t3="t"+contadorLabel_block;
         contadorLabel_block+=1;
-        String l3="l"+contadorLabel_block;
-        cuadruplos temp= new cuadruplos(l3,left,op,right);
+        cuadruplos temp= new cuadruplos(t3,left.getTn(),op,right.getTn(),current_Label);
+        tablaSimbolos.add(temp);
+        code3d+= temp.getCompleteLine() + "\n";   
+        pila.add(temp);
+     }
+    
+     public void exp_op_param(String p1,String op ){
+        String t="t"+contadorLabel_block;
+        contadorLabel_block+=1;
+        cuadruplos left= new cuadruplos(t,p1,current_Label);
+        tablaSimbolos.add(left);
+        code3d+=left.getLine() + "\n";
+        
+        String t3="t"+contadorLabel_block;
+        contadorLabel_block+=1;
+        
+        String inpila=pila.get(pila.size()-1).getTn();
+        cuadruplos temp= new cuadruplos(t3,left.getTn(),op,inpila,current_Label);
+        pila.remove(pila.size()-1);
+        tablaSimbolos.add(temp);
+        code3d+= temp.getCompleteLine() + "\n";   
         pila.add(temp);
      }
      
+     public void param_op_exp(String p1,String op){
+        String t="t"+contadorLabel_block;
+        contadorLabel_block+=1;
+        cuadruplos left= new cuadruplos(t,p1,current_Label);
+        tablaSimbolos.add(left);
+        code3d+=left.getLine() + "\n";
+        
+        String t3="t"+contadorLabel_block;
+        contadorLabel_block+=1;
+        
+        String inpila=pila.get(pila.size()-1).getTn();
+        cuadruplos temp= new cuadruplos(t3,inpila,op,left.getTn(),current_Label);
+        pila.remove(pila.size()-1);
+        tablaSimbolos.add(temp);
+        code3d+= temp.getCompleteLine() + "\n";   
+        pila.add(temp);
+     }
+     
+     public void exp_op_exp(String op){
+        String t1="t"+contadorLabel_block;
+        contadorLabel_block+=1;
+        
+        String inpila=pila.get(pila.size()-1).getTn();
+        pila.remove(pila.size()-1);
+        
+        String inpila2=pila.get(pila.size()-1).getTn();
+        pila.remove(pila.size()-1);
+        
+        cuadruplos temp= new cuadruplos(t1,inpila2,op,inpila,current_Label);
+        code3d+= temp.getCompleteLine() + "\n";   
+        pila.add(temp);
+     }
+        
+     /*
      
      public void load_lit_aux(String p1,String op){
             String l="l"+contadorLabel_block;
