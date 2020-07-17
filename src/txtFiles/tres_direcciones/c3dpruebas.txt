@@ -1,0 +1,18 @@
+func begin func2
+end func
+
+
+func begin to5
+num = param[0]
+tipo = param[1]
+flag = param[2]
+t0 = num
+t1 = tipo
+t2 = flag
+end func
+
+
+func begin main
+end func
+
+

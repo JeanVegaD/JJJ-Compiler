@@ -207,6 +207,8 @@ public class archivo_ingresado {
    }
    
    
+  
+   
    /*
     E:Ruta de un archivo de texto
     S:String con los tokens encontrados en el archivo rencocidos por la gramatica 

@@ -4,10 +4,13 @@ import java_cup.runtime.Symbol;
 import Codigo.archivo_ingresado;
 import Codigo.semantico.analisis;
 import Codigo.semantico.literal;
+import Codigo.semantico.ln;
+import Codigo.semantico.codigo_tres_direcciones;
 
 parser code
 {:
     protected analisis analis_semantico =  new analisis();
+    protected codigo_tres_direcciones generador3d = new codigo_tres_direcciones();
     protected Symbol s;
     
     public void syntax_error(Symbol s){
@@ -171,6 +174,10 @@ non terminal INICIO,
 
 /* Precedencia */
 precedence left FUNCION,CALL_PROC_IF;
+precedence left Suma, Resta;
+precedence left Multiplicacion, Division,Potencia,Modulo;
+precedence left Parentesis_a;
+
 
 
 start with INICIO;
@@ -185,8 +192,11 @@ CALL_PROC_MAIN::=
                         parser.analis_semantico.set_id_current_block("null");
                     }else{
                         parser.analis_semantico.set_id_current_block(id_func.toString());
+                        parser.generador3d.newFunc(id_func.toString());
                     }
                     :};
+
+
 
 
 INICIO ::= 
@@ -196,7 +206,10 @@ INICIO ::=
                                                                             if(!flag){
                                                                                 String mensaje = "Falta el retorno de la función";
                                                                                 parser.semantic_error(id_funcleft,id_funcright, mensaje); 
-                                                                            } 
+                                                                            }
+                                                                                //3D CODE
+                                                                                parser.generador3d.closeFunc();
+                                                                                parser.generador3d.escribirCodigo3D("pruebas");
                                                                             :}
     |DEC_FUNCION INICIO; 
 
@@ -515,11 +528,15 @@ DEC_VARIABLE ::=
                                                                                         parser.semantic_error(id_varleft,id_varright, mensaje); 
                                                                                     }
                                                                                         :} 
-    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion EXP_ARITMETICA_BIN{:
+    |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion EXP_ARITMETICA_BIN:exp{:
                                                                                     boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                                                                     if(!flag){
                                                                                         if(tipo_var.toString().equals("int") || tipo_var.toString().equals("int")){
                                                                                             parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                            
+
+                                                                                            //c3d temp = (c3d)exp;
+                                                                                            //parser.generador3d.prueba(temp);
                                                                                         }else{
                                                                                             String mensaje = "Imposible convertir explícitamente a '"+tipo_var.toString()+"'";
                                                                                             parser.semantic_error(id_varleft,id_varright, mensaje);
@@ -1013,6 +1030,12 @@ EXP_ARITMETICA_BIN::=
                                                                                     if(!objectparam2.getTipo().equals("null")){
                                                                                         if(objectparam1.getTipo().equals("int") || objectparam1.getTipo().equals("float")){
                                                                                             if(objectparam2.getTipo().equals("int") || objectparam2.getTipo().equals("float")){
+
+                                                                                                //parser.generador3d.load_lit(objectparam1.getTextual(),tipo_arit.toString(),objectparam2.getTextual());
+                                                                                                //ln p1= new ln(objectparam1.getTextual());
+                                                                                                //ln p2= new ln(objectparam2.getTextual());
+                                                                                                //c3d res= new c3d(p1,tipo_arit.toString(),p2);
+                                                                                                //RESULT = res;
                                                                                             }
                                                                                             else{
                                                                                                 String mensaje = "El identificador '" + objectparam2.getTextual() + "' no permite esta operación";
@@ -1031,12 +1054,20 @@ EXP_ARITMETICA_BIN::=
                                                                                     String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
                                                                                     parser.semantic_error(param1left,param1right, mensaje);
                                                                                 }
-                                                                                RESULT = param1.toString() + tipo_arit.toString() + param2.toString();
+                                                                                RESULT = objectparam1.getTextual() + tipo_arit.toString() + objectparam2.getTextual();
+                                                                                System.out.println(RESULT.toString());
+                                                                                //System.out.println("-> p1 + p2" );
                                                                                 :}
     |PARAM_EXP_ARITMETICA:param1 TIPOS_ARITMETICOS:tipo_arit EXP_ARITMETICA_BIN:param2 {: 
                                                                                         literal objectparam1=(literal)param1;
                                                                                         if(!objectparam1.getTipo().equals("null")){
                                                                                             if(objectparam1.getTipo().equals("int") || objectparam1.getTipo().equals("float")){
+
+                                                                                                //parser.generador3d.load_lit_aux(objectparam1.getTextual(),tipo_arit.toString());
+                                                                                                //ln p1= new ln(objectparam1.getTextual());
+                                                                                                //c3d p2=(c3d)param2;
+                                                                                                //c3d res= new c3d(p1,tipo_arit.toString(),p2);
+                                                                                                //RESULT = res;
                                                                                             }
                                                                                             else{
                                                                                                 String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
@@ -1046,11 +1077,53 @@ EXP_ARITMETICA_BIN::=
                                                                                             String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
                                                                                             parser.semantic_error(param1left,param1right, mensaje);
                                                                                         }
-                                                                                        RESULT = param1.toString() + tipo_arit.toString() + param2.toString();
+                                                                                        RESULT = objectparam1.getTextual() + tipo_arit.toString() + param2.toString();
+                                                                                        System.out.println(RESULT.toString());
+                                                                                        //System.out.println("-> p1 + expp2" );
                                                                                         :} 
-    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c {: RESULT = "(" + exp.toString() + ")"; :}
-    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c TIPOS_ARITMETICOS:tipo_arit PARAM_EXP_ARITMETICA:param2 {: RESULT = "(" + exp.toString() + ")" + tipo_arit.toString() + param2.toString() ; :}
-    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c TIPOS_ARITMETICOS:tipo_arit EXP_ARITMETICA_BIN:param2   {: RESULT = "(" + exp.toString() + ")" + tipo_arit.toString() + param2.toString() ; :};
+    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c {: 
+
+                                                            
+                                                            RESULT = "(" + exp.toString() + ")";  
+                                                            /*System.out.println("-> (exp)")*/
+                                                            System.out.println(RESULT.toString());
+                                                            //c3d expresion=(c3d)exp;
+                                                            //RESULT = expresion;
+                                                            :}
+    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c TIPOS_ARITMETICOS:tipo_arit PARAM_EXP_ARITMETICA:param2 {: 
+                                                            literal objectparam2=(literal)param2;
+                                                            if(!objectparam2.getTipo().equals("null")){
+                                                                if(objectparam2.getTipo().equals("int") || objectparam2.getTipo().equals("float")){
+                                                                    
+                                                                    //parser.generador3d.load_lit_aux(objectparam1.getTextual(),tipo_arit.toString());
+                                                                    //ln p2= new ln(objectparam2.getTextual());
+                                                                    //c3d expresion=(c3d)exp;
+                                                                    //c3d res= new c3d(expresion,tipo_arit.toString(),p2);
+                                                                    //RESULT = res;
+                                                                }
+                                                                else{
+                                                                    String mensaje = "El identificador '" + objectparam2.getTextual() + "' no permite esta operación";
+                                                                     parser.semantic_error(param2left,param2right, mensaje); 
+                                                                }
+                                                            }
+                                                            else{
+                                                                String mensaje = "El identificador '" + objectparam2.getTextual() + "' no se ha definido";
+                                                                parser.semantic_error(param2left,param2right, mensaje);
+                                                            }
+                                                            RESULT = "(" + exp.toString() + ")" + tipo_arit.toString() + objectparam2.getTextual() ; 
+                                                            //System.out.println("-> (exp) + p2") ; 
+                                                            System.out.println(RESULT.toString());
+                                                            :}
+    |Parentesis_a EXP_ARITMETICA_BIN:exp Parentesis_c TIPOS_ARITMETICOS:tipo_arit EXP_ARITMETICA_BIN:param2   {: 
+                                                            RESULT = "(" + exp.toString() + ")" + tipo_arit.toString() + param2.toString() ; 
+                                                            //System.out.println("-> (exp) + exp2") ; 
+                                                            System.out.println(RESULT.toString()); 
+                                                            //c3d p2=(c3d)param2;
+                                                            //c3d expresion=(c3d)exp;
+                                                            //c3d res= new c3d(expresion,tipo_arit.toString(),p2);
+                                                            //RESULT = res;
+                                                            :};
+
 
 /*Expresiones realcionales*/
 
@@ -1499,6 +1572,7 @@ CALL_PROC_ID_FUNC::=
                                 parser.analis_semantico.set_id_current_block("null");
                             }else{
                                 parser.analis_semantico.set_id_current_block(id_func.toString());
+                                parser.generador3d.newFunc(id_func.toString());
                             }
                             :};
 
@@ -1507,7 +1581,9 @@ CALL_PROC_FUNC_PARAMS::=
                                             String flag= parser.analis_semantico.dec_func_param(parametros); 
                                             if(!flag.equals("")){
                                                 parser.semantic_error(parametrosleft,parametrosright, flag);
-                                            } 
+                                            }else{
+                                                parser.generador3d.newFunc_params(parametros.toString());
+                                            }
                                         :};
 
 CALL_PROC_TYPE_FUNC::=
@@ -1524,6 +1600,12 @@ DEC_FUNCION ::=
                                                                                                                     String mensaje = "Falta el retorno de la función";
                                                                                                                     parser.semantic_error(id_funcleft,id_funcright, mensaje); 
                                                                                                                 }
+                                                                                                                else{
+                                                                                                                    //3DCODE
+                                                                                                                    parser.generador3d.closeFunc();
+
+
+                                                                                                                }
                                                                                                                 
                                                                                                                 :}
 
@@ -1533,6 +1615,10 @@ DEC_FUNCION ::=
                                                                                                                 if(!flag){
                                                                                                                     String mensaje = "Falta el retorno de la función";
                                                                                                                     parser.semantic_error(id_funcleft,id_funcright, mensaje); 
+                                                                                                                }else{
+                                                                                                                    //3DCODE
+                                                                                                                    parser.generador3d.closeFunc();
+
                                                                                                                 }
 
 

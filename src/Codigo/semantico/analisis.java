@@ -157,10 +157,11 @@ public class analisis {
             
         }while(!tempBlock.equals("root"));
         
-        
+        /*
         System.out.println("==========="+currentBlock+"============");
          System.out.println(tablaSimbolosActual.toString());
         System.out.println("=======================");
+        */
             
         
     }
