@@ -7,16 +7,37 @@ t2 = 0
 end func
 
 
-func begin to5
-num = param[0]
-tipo = param[1]
-flag = param[2]
-t0 = num
-t1 = tipo
-t2 = flag
-t3 = 5
-cont = t3
-t4 = cont
+func begin prueba2
+prueba2_doWhile0:
+t0 = 0
+prueba = t0
+t1 = true
+t2 = false
+t3 = true
+t4 = t2|t3
+t5 = t4&t1
+if t5 goto prueba2_doWhile0
+goto end_prueba2_doWhile0
+end_prueba2_doWhile0:
+t6 = 0
+end func
+
+
+func begin prueba3
+t0 = true
+t1 = false
+t2 = true
+t3 = t1|t2
+t4 = t3&t0
+prueba3_While0:
+if t4 goto ciclo_prueba3_While0
+goto end_prueba3_While0
+ciclo_prueba3_While0:
+t5 = 0
+cont = t5
+goto prueba3_While0:
+end_prueba3_While0:
+t6 = 0
 end func
 
 

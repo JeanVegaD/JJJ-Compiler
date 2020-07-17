@@ -244,8 +244,7 @@ public class archivo_ingresado {
             reporte_consola+= "<h3 class='textoRojo'> ERROR: Análisis sintáctico NO realizado </h3>";
             Logger.getLogger(archivo_ingresado.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
-       
+              
    }
    
    

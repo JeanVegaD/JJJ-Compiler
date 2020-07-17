@@ -347,19 +347,31 @@ public class codigo_tres_direcciones {
     }
     
     
-    public void ifwithelse(){
-        
-    }
-    
-
-    
     public void gotoIF(){
         code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ obtenerIdBloque("if")  + "\n";
         pilaLiteral.remove(pilaLiteral.size()-1);
         code3d+="goto " + obtenerIdBloque("else")+ "\n";
+    
     }
     
-
+    
+    public void gotDoWhile(String endBloque){
+        code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ endBloque  + "\n";
+        pilaLiteral.remove(pilaLiteral.size()-1);
+        code3d+="goto " + "end_"+ endBloque + "\n";
+    }
+    
+    
+    public void gotoWhile(String endBloque){
+        code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ "ciclo_"+endBloque   + "\n";
+        pilaLiteral.remove(pilaLiteral.size()-1);
+        code3d+="goto " + "end_"+ endBloque + "\n";
+        code3d+= "ciclo_"+endBloque + ":" + "\n";
+    } 
+    
+    public void gotoUp(String bloque){
+        code3d+="goto "+bloque+ ":" + "\n";
+    }
 
     /*
     E:String con el codigo intermedio generado 

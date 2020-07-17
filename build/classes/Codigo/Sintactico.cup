@@ -1553,7 +1553,7 @@ CALL_PROC_ELSE_CIERRE::=
 IF_ELSE::=
     If Parentesis_a CONDICION Parentesis_c CALL_PROC_IF:b_if BLOQUE CALL_PROC_IF_CIERRE {:  
                                                                                             parser.generador3d.gotoEnd(b_if.toString());
-                                                                                            
+
                                                                                             String res= parser.generador3d.nuevoBloque("else");
                                                                                             parser.generador3d.cierreBloque();
 
@@ -1568,31 +1568,49 @@ IF_ELSE::=
 CALL_PROC_WHILE ::=
     Llave_a {:
                 parser.analis_semantico.new_block("while");
+                //3dcode
+                String res= parser.generador3d.nuevoBloque("While");
+                parser.generador3d.gotoWhile(res);
+                RESULT  = res;
             :};
 
 CALL_PROC_WHILE_CIERRE::=
     Llave_c {:
                 parser.analis_semantico.backBlock();
+                //3dcode
+                parser.generador3d.cierreBloque();
             :};
 
 WHILE::=
-    While Parentesis_a CONDICION Parentesis_c CALL_PROC_WHILE BLOQUE CALL_PROC_WHILE_CIERRE;
+    While Parentesis_a CONDICION Parentesis_c CALL_PROC_WHILE:b_while BLOQUE CALL_PROC_WHILE_CIERRE {:
+                                                                                                    parser.generador3d.gotoUp(b_while.toString());
+
+                                                                                                    parser.generador3d.endEstrcutura(b_while.toString());
+                                                                                                            :};
 
 
 
 CALL_PROC_DOWHILE ::=
     Llave_a {:
                 parser.analis_semantico.new_block("doWhile");
+                //3dcode
+                //parser.generador3d.gotoIF();
+                String res= parser.generador3d.nuevoBloque("doWhile");
+                RESULT  = res;
             :};
 
 CALL_PROC_DOWHILE_CIERRE::=
     Parentesis_c {:
                 parser.analis_semantico.backBlock();
+                //3dcode
+                parser.generador3d.cierreBloque();
             :};
     
 
 DO_WHILE ::=
-    Do CALL_PROC_DOWHILE BLOQUE Llave_c While Parentesis_a CONDICION CALL_PROC_DOWHILE_CIERRE;
+    Do CALL_PROC_DOWHILE:b_dowhi BLOQUE Llave_c While Parentesis_a CONDICION CALL_PROC_DOWHILE_CIERRE {:
+                                                                                                        parser.generador3d.gotDoWhile(b_dowhi.toString());
+                                                                                                        parser.generador3d.endEstrcutura(b_dowhi.toString());:};
 
 
 
