@@ -1,4 +1,9 @@
 func begin func2
+prueba = param[0]
+prueba2 = param[1]
+t0 = prueba
+t1 = prueba2
+t2 = 0
 end func
 
 
@@ -10,31 +15,46 @@ t0 = num
 t1 = tipo
 t2 = flag
 t3 = 5
-t4 = 2
-t5 = t3-t4
-t6 = 8
-t7 = 1
-t8 = t6-t7
-t9 = 2
-t10 = 11
-t11 = t9*t10
-t12 = t8-t11
-t13 = 7
-t14 = t13+t12
-t15 = t5+t14
-t16 = 13
-t17 = 21
-t18 = t16/t17
-t19 = t15+t18
+cont = t3
+t4 = cont
 end func
 
 
 func begin main
-t0 = func2()
+t0 = 1
+cont = t0
 t1 = cont
-t2 = t0+t1
-t3 = 5
-t4 = t3+t2
+t2 = 1
+t3 = t1==t2
+if t3 goto main_if0
+goto main_else0
+main_if0:
+t4 = true
+t5 = false
+t6 = true
+t7 = t5|t6
+t8 = t7&t4
+if t8 goto main_if0_if0
+goto main_if0_else0
+main_if0_if0:
+t9 = 2
+t10 = 5
+t11 = t9<t10
+cont2 = t11
+goto end_main_if0_if0:
+main_if0_else0:
+end_main_if0_if0:
+t12 = 2
+t13 = 5
+t14 = t12<t13
+cont2 = t14
+goto end_main_if0:
+main_else0:
+t15 = 0
+variablenueva = t15
+goto end_main_if0:
+end_main_if0:
+t16 = 0
 end func
 
 

@@ -12,12 +12,12 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/Sintactico.cup</file>
+            <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/Sintax.java</file>
+            <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/semantico/analisis.java</file>
             <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/semantico/codigo_tres_direcciones.java</file>
             <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/archivo_ingresado.java</file>
-            <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/semantico/c3d.java</file>
-            <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/semantico/ln.java</file>
-            <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/semantico/literal.java</file>
+            <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/Codigo/semantico/cuadruplos.java</file>
+            <file>file:/C:/Users/Jean/Documents/TEC/Compi/JJJ-Compiler/src/txtFiles/tres_direcciones/c3dpruebas.txt</file>
         </group>
     </open-files>
 </project-private>
