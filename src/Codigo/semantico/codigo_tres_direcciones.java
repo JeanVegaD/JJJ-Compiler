@@ -34,105 +34,131 @@ public class codigo_tres_direcciones {
     private String current_Label="";
     private String code3d="";
     
+    private boolean activo=true;
+    
     public codigo_tres_direcciones(){
         
     }
     
+    
+    public void Activacion3d(boolean act){
+        this.activo=act;
+    }
+    
     public void setLit(String lit){
-        String t="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        cuadruplos left= new cuadruplos(t,lit,current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";
-        pilaLiteral.add(left);
+        if(activo){
+             String t="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos left= new cuadruplos(t,lit,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+            pilaLiteral.add(left);
+        }
+       
         
     }
     
     public void set_lit_arimetico_un(String op, String id){
-        String t="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        cuadruplos left= new cuadruplos(t,id,current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";
-         
-        String t2="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        cuadruplos temp= new cuadruplos(t2,left.getTn(),op,"1",current_Label);
-        tablaSimbolos.add(temp);
-        code3d+=temp.getCompleteLine()+ "\n";
-        pilaLiteral.add(temp);
+        if(activo){
+            String t="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos left= new cuadruplos(t,id,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+
+            String t2="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos temp= new cuadruplos(t2,left.getTn(),op,"1",current_Label);
+            tablaSimbolos.add(temp);
+            code3d+=temp.getCompleteLine()+ "\n";
+            pilaLiteral.add(temp);
+        }
+        
   
     }
     
     public void newFunc(String identificador){
-        contadorLabel_block=0;
-        current_Label=identificador;
-        ArrayList<String> temp =  new ArrayList<>();
-        temp.add(identificador);
-        temp.add("root");
-        code3d+="func begin "+ identificador + "\n";
+        if(activo){
+            contadorLabel_block=0;
+            current_Label=identificador;
+            ArrayList<String> temp =  new ArrayList<>();
+            temp.add(identificador);
+            temp.add("root");
+            code3d+="func begin "+ identificador + "\n";
+        }
+        
     }
     
     
     public void newFunc_params(String parametros){
-        String[] params = parametros.toString().split(",");
-        int cont=0;
-        for (String p : params){
-            String[] unit_param = p.split(" ");
-            String tempcont="param["+cont+"]";
-            cuadruplos newLoad =  new cuadruplos(unit_param[1], tempcont, current_Label);
-            tablaSimbolos.add(newLoad);
-            code3d+=newLoad.getLine() + "\n";
-            cont+=1;
+        if(activo){
+            String[] params = parametros.toString().split(",");
+            int cont=0;
+            for (String p : params){
+                String[] unit_param = p.split(" ");
+                String tempcont="param["+cont+"]";
+                cuadruplos newLoad =  new cuadruplos(unit_param[1], tempcont, current_Label);
+                tablaSimbolos.add(newLoad);
+                code3d+=newLoad.getLine() + "\n";
+                cont+=1;
+            }
+
+            for (String p : params){
+                String[] unit_param = p.split(" ");
+                String t1="t"+contadorLabel_block;
+                contadorLabel_block+=1;
+                cuadruplos newLoad =  new cuadruplos(t1, unit_param[1], current_Label);
+                tablaSimbolos.add(newLoad);
+                code3d+=newLoad.getLine()+ "\n";
+            }
         }
         
-        for (String p : params){
-            String[] unit_param = p.split(" ");
-            String t1="t"+contadorLabel_block;
-            contadorLabel_block+=1;
-            cuadruplos newLoad =  new cuadruplos(t1, unit_param[1], current_Label);
-            tablaSimbolos.add(newLoad);
-            code3d+=newLoad.getLine()+ "\n";
-        }
      
 
     }
     
     public void closeFunc(){
-        code3d+="end func"+ "\n\n\n";
+        if(activo){
+            code3d+="end func"+ "\n\n\n";
+        }
+        
     }
     
     
     
      public void param_op_param(String p1,String op, String p2){
-        /*String t="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        cuadruplos left= new cuadruplos(t,p1,current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";
+         if(activo){
+            /*String t="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos left= new cuadruplos(t,p1,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+
+
+            String t2="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos right= new cuadruplos(t2,p2,current_Label);         
+            tablaSimbolos.add(right);
+            code3d+=right.getLine() + "\n";*/
+
+            String inpila2=pilaLiteral.get(pilaLiteral.size()-1).getTn();
+            pilaLiteral.remove(pilaLiteral.size()-1);
+            String inpila1=pilaLiteral.get(pilaLiteral.size()-1).getTn();
+            pilaLiteral.remove(pilaLiteral.size()-1);
+
+            String t3="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos temp= new cuadruplos(t3,inpila1,op,inpila2,current_Label);
+            tablaSimbolos.add(temp);
+            code3d+= temp.getCompleteLine() + "\n";   
+            pila.add(temp);
+        }
         
-    
-        String t2="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        cuadruplos right= new cuadruplos(t2,p2,current_Label);         
-        tablaSimbolos.add(right);
-        code3d+=right.getLine() + "\n";*/
-        
-        String inpila2=pilaLiteral.get(pilaLiteral.size()-1).getTn();
-        pilaLiteral.remove(pilaLiteral.size()-1);
-        String inpila1=pilaLiteral.get(pilaLiteral.size()-1).getTn();
-        pilaLiteral.remove(pilaLiteral.size()-1);
-        
-        String t3="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        cuadruplos temp= new cuadruplos(t3,inpila1,op,inpila2,current_Label);
-        tablaSimbolos.add(temp);
-        code3d+= temp.getCompleteLine() + "\n";   
-        pila.add(temp);
      }
     
      public void exp_op_param(String p1,String op ){
-       /* String t="t"+contadorLabel_block;
+         if(activo){
+            /* String t="t"+contadorLabel_block;
         contadorLabel_block+=1;
         cuadruplos left= new cuadruplos(t,p1,current_Label);
         tablaSimbolos.add(left);
@@ -150,229 +176,340 @@ public class codigo_tres_direcciones {
         tablaSimbolos.add(temp);
         code3d+= temp.getCompleteLine() + "\n";   
         pila.add(temp);
+        }
+       
      }
      
      public void param_op_exp(String p1,String op){
-        /*String t="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        cuadruplos left= new cuadruplos(t,p1,current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";*/
+         if(activo){
+            /*String t="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos left= new cuadruplos(t,p1,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";*/
+
+            String parampila=pilaLiteral.get(pilaLiteral.size()-1).getTn();
+            pilaLiteral.remove(pilaLiteral.size()-1);
+
+            String t3="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+
+            String inpila=pila.get(pila.size()-1).getTn();
+            cuadruplos temp= new cuadruplos(t3,inpila,op,parampila,current_Label);
+            pila.remove(pila.size()-1);
+            tablaSimbolos.add(temp);
+            code3d+= temp.getCompleteLine() + "\n";   
+            pila.add(temp);
+        }
         
-        String parampila=pilaLiteral.get(pilaLiteral.size()-1).getTn();
-        pilaLiteral.remove(pilaLiteral.size()-1);
-        
-        String t3="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        
-        String inpila=pila.get(pila.size()-1).getTn();
-        cuadruplos temp= new cuadruplos(t3,inpila,op,parampila,current_Label);
-        pila.remove(pila.size()-1);
-        tablaSimbolos.add(temp);
-        code3d+= temp.getCompleteLine() + "\n";   
-        pila.add(temp);
      }
      
      public void exp_op_exp(String op){
-        String t1="t"+contadorLabel_block;
-        contadorLabel_block+=1;
+         if(activo){
+            String t1="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+
+            String inpila=pila.get(pila.size()-1).getTn();
+            pila.remove(pila.size()-1);
+
+            String inpila2=pila.get(pila.size()-1).getTn();
+            pila.remove(pila.size()-1);
+
+            cuadruplos temp= new cuadruplos(t1,inpila2,op,inpila,current_Label);
+            code3d+= temp.getCompleteLine() + "\n";   
+            pila.add(temp);
+        }
         
-        String inpila=pila.get(pila.size()-1).getTn();
-        pila.remove(pila.size()-1);
-        
-        String inpila2=pila.get(pila.size()-1).getTn();
-        pila.remove(pila.size()-1);
-        
-        cuadruplos temp= new cuadruplos(t1,inpila2,op,inpila,current_Label);
-        code3d+= temp.getCompleteLine() + "\n";   
-        pila.add(temp);
      }
      
      
      public void decVar(String idvar){
-        cuadruplos left= new cuadruplos(idvar,"0",current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";
+         if(activo){
+            cuadruplos left= new cuadruplos(idvar,"0",current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+        }
+        
      }
      
      
      public void asginarVar(String idvar){
-        //String t="t"+contadorLabel_block;
-        //contadorLabel_block+=1;
-        String inpila=pila.get(pila.size()-1).getTn();
-        pila.remove(pila.size()-1);
-        cuadruplos left= new cuadruplos(idvar,inpila,current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";
+         if(activo){
+             //String t="t"+contadorLabel_block;
+            //contadorLabel_block+=1;
+            String inpila=pila.get(pila.size()-1).getTn();
+            pila.remove(pila.size()-1);
+            cuadruplos left= new cuadruplos(idvar,inpila,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+        }
+        
      }
      
      public void asginarVar_lit(String idvar){
-        //String t="t"+contadorLabel_block;
-        //contadorLabel_block+=1;
-        String inpila=pilaLiteral.get(pilaLiteral.size()-1).getTn();
-        pilaLiteral.remove(pilaLiteral.size()-1);
-        cuadruplos left= new cuadruplos(idvar,inpila,current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";
+         if(activo){
+            //String t="t"+contadorLabel_block;
+            //contadorLabel_block+=1;
+            String inpila=pilaLiteral.get(pilaLiteral.size()-1).getTn();
+            pilaLiteral.remove(pilaLiteral.size()-1);
+            cuadruplos left= new cuadruplos(idvar,inpila,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+        }
+        
      }
      
      
      
      public void asignarFuncion(String id){
-         /*
-        param t1
-        param t2
-        t3 = call dot_prod 2*/
-        String t="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        String cargafunc= "call " + id; 
-        cuadruplos left= new cuadruplos(t,cargafunc,current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";
-        pilaLiteral.add(left);
+         if(activo){
+            /*
+            param t1
+            param t2
+            t3 = call dot_prod 2*/
+            String t="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            String cargafunc= "call " + id; 
+            cuadruplos left= new cuadruplos(t,cargafunc,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+            pilaLiteral.add(left);
+        }
+         
 
      }
      
      
    public void asignarFuncionParams(String id, String parametros){
-       
-       String[] params = parametros.toString().split(",");
+       if(activo){
+             String[] params = parametros.toString().split(",");
 
-        ArrayList<cuadruplos> paramsTemp =  new ArrayList<>();
-        for (String p : params){
-            String[] unit_param = p.split(" ");
-            String t1="t"+contadorLabel_block;
+            ArrayList<cuadruplos> paramsTemp =  new ArrayList<>();
+            for (String p : params){
+                String[] unit_param = p.split(" ");
+                String t1="t"+contadorLabel_block;
+                contadorLabel_block+=1;
+                cuadruplos newLoad =  new cuadruplos(t1,unit_param[1], current_Label);
+                tablaSimbolos.add(newLoad);
+                paramsTemp.add(newLoad);
+                code3d+=newLoad.getLine() + "\n";
+            }
+
+            for (int i=0; i<paramsTemp.size(); i++ ){
+                String print= "param "+ paramsTemp.get(i).getTn();
+                code3d+=print + "\n";
+            }
+
+
+
+            String t="t"+contadorLabel_block;
             contadorLabel_block+=1;
-            cuadruplos newLoad =  new cuadruplos(t1,unit_param[1], current_Label);
-            tablaSimbolos.add(newLoad);
-            paramsTemp.add(newLoad);
-            code3d+=newLoad.getLine() + "\n";
+            String cargafunc= "call " + id + " " + paramsTemp.size(); 
+            cuadruplos left= new cuadruplos(t,cargafunc,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+            pilaLiteral.add(left);
         }
-        
-        for (int i=0; i<paramsTemp.size(); i++ ){
-            String print= "param "+ paramsTemp.get(i).getTn();
-            code3d+=print + "\n";
-        }
-        
-        
-        
-        String t="t"+contadorLabel_block;
-        contadorLabel_block+=1;
-        String cargafunc= "call " + id + " " + paramsTemp.size(); 
-        cuadruplos left= new cuadruplos(t,cargafunc,current_Label);
-        tablaSimbolos.add(left);
-        code3d+=left.getLine() + "\n";
-        pilaLiteral.add(left);
+       
+       
 
      }
    
      public void getExpToLit(){
-        cuadruplos inpila2=pila.get(pila.size()-1);
-        pila.remove(pila.size()-1);
-        pilaLiteral.add(inpila2);
+         if(activo){
+            cuadruplos inpila2=pila.get(pila.size()-1);
+            pila.remove(pila.size()-1);
+            pilaLiteral.add(inpila2);
+        }
+        
      }
         
-     /*
-     
-     public void load_lit_aux(String p1,String op){
-            String l="l"+contadorLabel_block;
-            cuadruplos left= new cuadruplos(l,p1);         
-            //left.imprimir();
-            contadorLabel_block+=1;
-            cuadruplos temp= new cuadruplos(l,left,op,pila.get((pila.size()-1)));
-            pila.remove(pila.size()-1);
-            pila.add(temp);
-     }
-    
-    */
-     
-     
+
+   
      
     public boolean existeLabel(String n_boque){
-        boolean res=false;
-        for (int i = 0; i < tablaEtiquetas.size(); i++) {
-            if(tablaEtiquetas.get(i).get(0).equals(n_boque)){
-                res=true;
-                break;
+         boolean res=false;
+        if(activo){
+             for (int i = 0; i < tablaEtiquetas.size(); i++) {
+                if(tablaEtiquetas.get(i).get(0).equals(n_boque)){
+                    res=true;
+                    break;
+                }
             }
         }
+       
+       
         return res;
     }
      
     public String obtenerIdBloque(String n_boque){
-        String temp= current_Label+"_"+n_boque;
-        int n=0;
-        String compare= current_Label+"_"+n_boque+n;
-        while(existeLabel(compare)){
-            n+=1;
-            compare=temp + n;
-            
+        String res="";
+        if(activo){
+            String temp= current_Label+"_"+n_boque;
+            int n=0;
+            String compare= current_Label+"_"+n_boque+n;
+            while(existeLabel(compare)){
+                n+=1;
+                compare=temp + n;
+
+            }
+            res =temp+n;
         }
-        return temp+n;
+        return res;
     }
      
      
      
      public String nuevoBloque(String bloque){
-        String nuevoID = obtenerIdBloque(bloque);
-        ArrayList<String> temp =  new ArrayList<>();
-        temp.add(nuevoID);
-        temp.add(current_Label);
-        tablaEtiquetas.add(temp);
-        code3d+=nuevoID+ ":" + "\n";
-        current_Label=nuevoID;
-        return current_Label;
+         String res="";
+         if(activo){
+            String nuevoID = obtenerIdBloque(bloque);
+            ArrayList<String> temp =  new ArrayList<>();
+            temp.add(nuevoID);
+            temp.add(current_Label);
+            tablaEtiquetas.add(temp);
+            code3d+=nuevoID+ ":" + "\n";
+            current_Label=nuevoID;
+            res= current_Label;
+        }
+         return res;
+        
          
      }
      
      public void cierreBloque(){
-         for (int i = 0; i < tablaEtiquetas.size(); i++) {
-            if(tablaEtiquetas.get(i).get(0).equals(current_Label)){
-                System.out.println("Codigo.semantico.codigo_tres_direcciones.cierreBloque()");
-                current_Label= tablaEtiquetas.get(i).get(1);
-                break;
+         if(activo){
+             for (int i = 0; i < tablaEtiquetas.size(); i++) {
+                if(tablaEtiquetas.get(i).get(0).equals(current_Label)){
+                    System.out.println("Codigo.semantico.codigo_tres_direcciones.cierreBloque()");
+                    current_Label= tablaEtiquetas.get(i).get(1);
+                    break;
+                }
             }
         }
+        
 
      }
      
     public void gotoEnd(String bloque){
-        code3d+="goto " +"end_"+bloque+ ":" + "\n";
+        if(activo){
+            code3d+="goto " +"end_"+bloque+ ":" + "\n";
+        }
+        
     }
      
     public void endEstrcutura(String bloque){
-        code3d+="end_"+bloque+ ":" + "\n";
-        /*current_Label=nuevoID;*/
+        if(activo){
+             code3d+="end_"+bloque+ ":" + "\n";
+        
+        }
+       
   
     }
     
     
     public void gotoIF(){
-        code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ obtenerIdBloque("if")  + "\n";
-        pilaLiteral.remove(pilaLiteral.size()-1);
-        code3d+="goto " + obtenerIdBloque("else")+ "\n";
+        if(activo){
+            code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ obtenerIdBloque("if")  + "\n";
+            pilaLiteral.remove(pilaLiteral.size()-1);
+            code3d+="goto " + obtenerIdBloque("else")+ "\n";
+        }
+        
     
     }
     
     
     public void gotDoWhile(String endBloque){
-        code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ endBloque  + "\n";
-        pilaLiteral.remove(pilaLiteral.size()-1);
-        code3d+="goto " + "end_"+ endBloque + "\n";
+        if(activo){
+               code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ endBloque  + "\n";
+            pilaLiteral.remove(pilaLiteral.size()-1);
+            code3d+="goto " + "end_"+ endBloque + "\n";
+        }
+        
     }
     
     
     public void gotoWhile(String endBloque){
-        code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ "ciclo_"+endBloque   + "\n";
-        pilaLiteral.remove(pilaLiteral.size()-1);
-        code3d+="goto " + "end_"+ endBloque + "\n";
-        code3d+= "ciclo_"+endBloque + ":" + "\n";
+        if(activo){
+            code3d+="if "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ "ciclo_"+endBloque   + "\n";
+            pilaLiteral.remove(pilaLiteral.size()-1);
+            code3d+="goto " + "end_"+ endBloque + "\n";
+            code3d+= "ciclo_"+endBloque + ":" + "\n";
+        }
+        
     } 
     
     public void gotoUp(String bloque){
-        code3d+="goto "+bloque+ ":" + "\n";
+        if(activo){
+             code3d+="goto "+bloque+ ":" + "\n";
+        }
+       
     }
+    
+    
+    
+    public void escribir(){
+        if(activo){
+            String inpila=pilaLiteral.get(pilaLiteral.size()-1).getTn();
+            pilaLiteral.remove(pilaLiteral.size()-1);
+            String t="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos left= new cuadruplos(t,inpila,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
 
+            String print= "param "+ left.getTn();
+            code3d+=print + "\n";
+
+            String t2="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            String cargafunc= "call print 1 " ; 
+            cuadruplos left2= new cuadruplos(t2,cargafunc,current_Label);
+            tablaSimbolos.add(left2);
+            code3d+=left2.getLine() + "\n";
+        }
+        
+    }
+    
+    public void leer(String idvar){
+        if(activo){
+            cuadruplos left= new cuadruplos(idvar,"0",current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+
+            String t2="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            String cargafunc= "call input" ; 
+            cuadruplos left2= new cuadruplos(t2,cargafunc,current_Label);
+            tablaSimbolos.add(left2);
+            code3d+=left2.getLine() + "\n";
+
+
+            cuadruplos left3= new cuadruplos(idvar,left2.getTn(),current_Label);
+            tablaSimbolos.add(left3);
+            code3d+=left3.getLine() + "\n";
+        }
+        
+    }
+    
+    
+    public void retornar(){
+        if(activo){
+            String inpila=pilaLiteral.get(pilaLiteral.size()-1).getTn();
+            pilaLiteral.remove(pilaLiteral.size()-1);
+            String t="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            cuadruplos left= new cuadruplos(t,inpila,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+
+            String print= "return "+ left.getTn();
+            code3d+=print + "\n";
+        }
+        
+    }
+    
+    
     /*
     E:String con el codigo intermedio generado 
     S:Archivo de texto 

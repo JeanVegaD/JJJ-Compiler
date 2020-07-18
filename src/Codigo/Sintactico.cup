@@ -209,7 +209,7 @@ INICIO ::=
                                                                             }
                                                                                 //3D CODE
                                                                                 parser.generador3d.closeFunc();
-                                                                                parser.generador3d.escribirCodigo3D("pruebas");
+                                                                                parser.generador3d.escribirCodigo3D("realizado");
                                                                             :}
     |DEC_FUNCION INICIO; 
 
@@ -1656,12 +1656,14 @@ SWITCH_STAMENT::=
 CALL_PROC_CASE::=
     Dos_puntos {:
                 parser.analis_semantico.new_block("case");
+
             :};
 
 
 CALL_PROC_CASE_CIERRE::=
     Delimitador {:
                 parser.analis_semantico.backBlock();
+                
             :};
 
 
@@ -1679,16 +1681,23 @@ CALL_PROC_SWITCH::=
     PARAM_SWITCH:lit {: 
                         literal objectparam1=(literal)lit;
                         parser.analis_semantico.new_block_aux("switch",objectparam1.getTipo());
+
+                        //3dcode
+                        String res= parser.generador3d.nuevoBloque("switch");
+                        RESULT  = res;
                         :};
 
 CALL_PROC_SWITCH_CIERRE::=
     Llave_c {:
                 parser.analis_semantico.backBlock();
+
+                //3dcode
+                parser.generador3d.cierreBloque();
             :};
 
 
 SWITCH::=
-    Switch Parentesis_a CALL_PROC_SWITCH Parentesis_c Llave_a CASE_SWITCH CALL_PROC_SWITCH_CIERRE;
+    Switch Parentesis_a CALL_PROC_SWITCH:swt Parentesis_c Llave_a CASE_SWITCH CALL_PROC_SWITCH_CIERRE {:parser.generador3d.endEstrcutura(swt.toString());:};
 
 
 
@@ -1713,22 +1722,26 @@ TIPOS_PARAMETRO_FUNCION::=
 
 
 RETORNOS_FUNCION::=
-     Return LITERAL_CADENA:lit Delimitador {:RESULT = lit;:}
-    |Return LITERAL_NUMERICO:lit Delimitador {:RESULT = lit;:} 
+     Return LITERAL_CADENA:lit Delimitador {:RESULT = lit;   parser.generador3d.retornar(); :}
+    |Return LITERAL_NUMERICO:lit Delimitador {:RESULT = lit; parser.generador3d.retornar();:} 
     |Return EXP_ARITMETICA_BIN:lit Delimitador {:
                                                     literal litObject =  new literal();
                                                     litObject.setTipo("int");
                                                     litObject.setResultado(lit.toString());
                                                     litObject.setTextual(lit.toString());
-                                                    RESULT = litObject; :}
-    |Return EXP_ARITMETICA_UNA:lit Delimitador  {:RESULT = lit;:} 
+                                                    RESULT = litObject; 
+                                                    parser.generador3d.getExpToLit();
+                                                    parser.generador3d.retornar();:}
+    |Return EXP_ARITMETICA_UNA:lit Delimitador  {:RESULT = lit; parser.generador3d.retornar();:} 
     |Return EXP_LOGICA:lit Delimitador {:
                                             literal litObject =  new literal();
                                             litObject.setTipo("bool");
                                             litObject.setResultado(lit.toString());
                                             litObject.setTextual(lit.toString());
-                                            RESULT = litObject; :}
-    |Return EXP_LOGICA_UNA:lit Delimitador {:RESULT = lit;:} ;
+                                            RESULT = litObject; 
+                                            parser.generador3d.getExpToLit();
+                                            parser.generador3d.retornar();:}
+    |Return EXP_LOGICA_UNA:lit Delimitador {:RESULT = lit; parser.generador3d.retornar();:} ;
 
 
 CALL_PROC_ID_FUNC::=
@@ -1738,8 +1751,16 @@ CALL_PROC_ID_FUNC::=
                             if(!flag){
                                 String mensaje = "El identificador '" + id_func + "' ya está definido";
                                 parser.semantic_error(id_funcleft,id_funcright, mensaje);
-                                parser.analis_semantico.set_id_current_block("null");
+                            
+                                String temp= parser.analis_semantico.getUnkownblockId();
+                                parser.analis_semantico.dec_func(temp); 
+                                parser.analis_semantico.set_id_current_block(temp);
+                                parser.generador3d.newFunc(temp);
+                                //parser.generador3d.Activacion3d(false);
+                                
+
                             }else{
+                                //parser.generador3d.Activacion3d(true);
                                 parser.analis_semantico.set_id_current_block(id_func.toString());
                                 parser.generador3d.newFunc(id_func.toString());
                             }
@@ -1770,11 +1791,13 @@ DEC_FUNCION ::=
                                                                                                                     parser.semantic_error(id_funcleft,id_funcright, mensaje); 
                                                                                                                 }
                                                                                                                 else{
-                                                                                                                    //3DCODE
-                                                                                                                    parser.generador3d.closeFunc();
-
-
-                                                                                                                }
+                                                                                                                    boolean flag2= parser.analis_semantico.existeBloque(id_func.toString());
+                                                                                                                    if(flag2){
+                                                                                                                        //3DCODE
+                                                                                                                        parser.generador3d.closeFunc();
+                                                                                                                    }
+                                                                                                                    }
+                                                                                                                
                                                                                                                 
                                                                                                                 :}
 
@@ -1785,8 +1808,11 @@ DEC_FUNCION ::=
                                                                                                                     String mensaje = "Falta el retorno de la función";
                                                                                                                     parser.semantic_error(id_funcleft,id_funcright, mensaje); 
                                                                                                                 }else{
-                                                                                                                    //3DCODE
-                                                                                                                    parser.generador3d.closeFunc();
+                                                                                                                   boolean flag2= parser.analis_semantico.existeBloque(id_func.toString());
+                                                                                                                    if(flag2){
+                                                                                                                        //3DCODE
+                                                                                                                        parser.generador3d.closeFunc();
+                                                                                                                    }
 
                                                                                                                 }
 
@@ -1878,6 +1904,9 @@ LEER::=
                                                     String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
                                                     if(tipo_var.toString().equals("string")){
                                                         parser.analis_semantico.init_var(id_var.toString());
+
+                                                        //3dcode
+                                                        parser.generador3d.leer(id_var.toString());
                                                     }
                                                     else{
                                                         String mensaje = "Imposible convertir explícitamente de '" + "string" + "' a '"+tipo_var.toString()+"'";
@@ -1890,12 +1919,12 @@ LEER::=
                                                 :};
 
 ESCRIBIR::=
-     Print Parentesis_a LITERAL_CADENA  Parentesis_c 
-    |Print Parentesis_a LITERAL_NUMERICO Parentesis_c
+     Print Parentesis_a LITERAL_CADENA  Parentesis_c {: parser.generador3d.escribir();:}
+    |Print Parentesis_a LITERAL_NUMERICO Parentesis_c {: parser.generador3d.escribir();:}
     |Print Parentesis_a Null  Parentesis_c
-    |Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c     
-    |Print Parentesis_a EXP_LOGICA Parentesis_c 
-    |Print Parentesis_a EXP_LOGICA_UNA Parentesis_c 
-    |Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c ;
+    |Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  {: parser.generador3d.getExpToLit(); parser.generador3d.escribir();:}    
+    |Print Parentesis_a EXP_LOGICA Parentesis_c {: parser.generador3d.getExpToLit(); parser.generador3d.escribir();:}
+    |Print Parentesis_a EXP_LOGICA_UNA Parentesis_c {: parser.generador3d.escribir();:}
+    |Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c {: parser.generador3d.escribir();:};
     
 

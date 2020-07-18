@@ -516,5 +516,17 @@ public class analisis {
     }
     
     
+    public String getUnkownblockId(){
+        String res="unknown";
+        int n=0;
+        String compare= res+"_"+n;
+        while(existeBloque(compare)){
+            n+=1;
+            compare=res+"_" + n;
+            
+        }
+        return compare;
+    }
+    
    
 }

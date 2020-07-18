@@ -4,6 +4,8 @@ prueba2 = param[1]
 t0 = prueba
 t1 = prueba2
 t2 = 0
+t3 = t2
+return t3
 end func
 
 
@@ -19,25 +21,58 @@ t5 = t4&t1
 if t5 goto prueba2_doWhile0
 goto end_prueba2_doWhile0
 end_prueba2_doWhile0:
-t6 = 0
+t6 = true
+t7 = false
+t8 = true
+t9 = t7|t8
+t10 = t9&t6
+t11 = t10
+param t11
+t12 = call print 1 
+identificador = 0
+identificador = 0
+t13 = call input
+identificador = t13
+t14 = 0
+res = t14
+t15 = res
+t16 = t15
+return t16
 end func
 
 
 func begin prueba3
-t0 = true
-t1 = false
-t2 = true
-t3 = t1|t2
-t4 = t3&t0
-prueba3_While0:
-if t4 goto ciclo_prueba3_While0
-goto end_prueba3_While0
-ciclo_prueba3_While0:
-t5 = 0
-cont = t5
-goto prueba3_While0:
-end_prueba3_While0:
-t6 = 0
+t0 = 45
+contador = t0
+t1 = 5
+t2 = 2
+t3 = 5
+t4 = 3
+t5 = t3+t4
+t6 = t5+t2
+t7 = t6+t1
+t8 = t7
+return t8
+end func
+
+
+func begin unknown_0
+unknown_0_block0:
+t0 = 5
+contador = t0
+t1 = 3
+t2 = t1
+return t2
+end func
+
+
+func begin unknown_1
+unknown_1_block0:
+t0 = 5
+contador = t0
+t1 = 3
+t2 = t1
+return t2
 end func
 
 
@@ -76,6 +111,8 @@ variablenueva = t15
 goto end_main_if0:
 end_main_if0:
 t16 = 0
+t17 = t16
+return t17
 end func
 
 
