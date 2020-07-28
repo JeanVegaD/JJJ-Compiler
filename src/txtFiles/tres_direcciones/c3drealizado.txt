@@ -1,118 +1,150 @@
-func begin func2
-prueba = param[0]
-prueba2 = param[1]
-t0 = prueba
-t1 = prueba2
-t2 = 0
-t3 = t2
-return t3
-end func
-
-
-func begin prueba2
-prueba2_doWhile0:
-t0 = 0
-prueba = t0
-t1 = true
-t2 = false
-t3 = true
-t4 = t2|t3
-t5 = t4&t1
-if t5 goto prueba2_doWhile0
-goto end_prueba2_doWhile0
-end_prueba2_doWhile0:
-t6 = true
-t7 = false
-t8 = true
-t9 = t7|t8
-t10 = t9&t6
-t11 = t10
-param t11
-t12 = call print 1 
-identificador = 0
-identificador = 0
-t13 = call input
-identificador = t13
-t14 = 0
-res = t14
-t15 = res
-t16 = t15
-return t16
-end func
-
-
-func begin prueba3
-t0 = 45
-contador = t0
-t1 = 5
+func begin incremento
+num = param[0]
+t0 = num
+t1 = "hola"
 t2 = 2
-t3 = 5
-t4 = 3
-t5 = t3+t4
-t6 = t5+t2
-t7 = t6+t1
-t8 = t7
-return t8
+t3 = arr1[2]
+t4 = null
+t5 = arr1
+t6 = t4>t5
+t7 = 12
+t8 = 2
+t9 = arr1[2]
+t10 = t8!=t9
+t11 = t7&t10
+var2 = t11
+t12 = 23
+t13 = 4.5
+t14 = var2
+t15 = arr1
+t16 = t14-t15
+t17 = t16/t13
+t18 = t17*t12
+t19 = t18+t6
+arr3 = t19
+t20 = null
+t21 = t20
+param t21
+t22 = call print 1 
+t23 = null
+t24 = var
+param t24
+t25 = call cast 1
+t26 = 34
+t27 = 0
+t28 = arr1[0]
+t29 = t27+t28
+t30 = t29+t26
+t31 = 1
+t32 = t31
+return t32
 end func
 
 
 func begin unknown_0
-unknown_0_block0:
-t0 = 5
-contador = t0
-t1 = 3
-t2 = t1
-return t2
-end func
-
-
-func begin unknown_1
-unknown_1_block0:
-t0 = 5
-contador = t0
-t1 = 3
-t2 = t1
-return t2
+num = param[0]
+hola = param[1]
+aaaa = param[2]
+ok = param[3]
+t0 = num
+t1 = hola
+t2 = aaaa
+t3 = ok
+t4 = "hola"
+arr1 = t4
+t5 = 45
+t6 = "Holaamigos"
+t7 = true
+t8 = -34.76
+t9 = hola
+t10 = 45
+t11 = "Holaamigos"
+t12 = true
+t13 = -34.76
+t14 = hola
+param t10
+param t11
+param t12
+param t13
+param t14
+t15 = call gety 5
+t16 = 10
+t17 = 10.5
+t18 = 3
+t19 = t17^t18
+t20 = null
+t21 = null
+t22 = t20*t21
+t23 = t22+t16
+t24 = t23*t15
+t25 = 1
+t26 = null
+t27 = null
+t28 = numero
+t29 = numero
+param t28
+param t29
+t30 = call incremento2 2
+t31 = null
+t32 = 1
+t33 = t31*t32
+t34 = t33
+return t34
 end func
 
 
 func begin main
-t0 = 1
-cont = t0
-t1 = cont
-t2 = 1
-t3 = t1==t2
-if t3 goto main_if0
-goto main_else0
-main_if0:
-t4 = true
-t5 = false
-t6 = true
-t7 = t5|t6
-t8 = t7&t4
-if t8 goto main_if0_if0
-goto main_if0_else0
-main_if0_if0:
-t9 = 2
-t10 = 5
-t11 = t9<t10
-cont2 = t11
-goto end_main_if0_if0:
-main_if0_else0:
-end_main_if0_if0:
-t12 = 2
-t13 = 5
-t14 = t12<t13
-cont2 = t14
-goto end_main_if0:
-main_else0:
-t15 = 0
-variablenueva = t15
-goto end_main_if0:
-end_main_if0:
-t16 = 0
-t17 = t16
-return t17
+t0 = 25
+t1 = 10
+t2 = t0^t1
+temp = t2
+temp2 = 0
+t3 = 'a'
+temp2 = t3
+t4 = 50
+t5 = 100
+t6 = t4/t5
+numero = t6
+t7 = 'a'
+miChar = t7
+t8 = temp
+t9 = t8-1
+t10 = 34
+t11 = 10
+t12 = 10
+t13 = 14
+t14 = 80
+t15 = t13-t14
+t16 = t15+t12
+t17 = t16%t11
+t18 = t17/t10
+t19 = t18-t9
+numero = t19
+t20 = 1.0
+t21 = null
+t22 = temp
+t23 = "ok"
+t24 = t23
+param t24
+t25 = call print 1 
+t26 = numero
+t27 = t26
+param t27
+t28 = call print 1 
+t29 = null
+t30 = t29
+param t30
+t31 = call print 1 
+t32 = null
+t33 = miBoolean2
+param t33
+t34 = call read 1
+t35 = numero
+t36 = temp
+t37 = t35<=t36
+t38 = 1
+t39 = t38
+return t39
 end func
 
 

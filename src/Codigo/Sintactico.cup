@@ -571,7 +571,7 @@ DEC_VARIABLE ::=
     |TIPOS_VARIABLES:tipo_var Identificador:id_var Asignacion EXP_ARITMETICA_BIN:exp{:
                                                                                     boolean flag= parser.analis_semantico.existeVariable(id_var.toString());
                                                                                     if(!flag){
-                                                                                        if(tipo_var.toString().equals("int") || tipo_var.toString().equals("int")){
+                                                                                        if(tipo_var.toString().equals("int") || tipo_var.toString().equals("float")){
                                                                                             parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
                                                                                             
                                                                                             //3DCODE
