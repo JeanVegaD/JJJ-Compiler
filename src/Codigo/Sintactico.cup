@@ -166,9 +166,10 @@ non terminal INICIO,
     CALL_PROC_SWITCH,
     CALL_PROC_SWITCH_CIERRE,
     SWITCH_STAMENT,
+    CALL_PROC_CASE_SWITCH,
     CALL_PROC_CASE,
     CALL_PROC_CASE_CIERRE,
-
+    CALL_PROC_DEFAULT_SWITCH,
     CALL_PROC_MAIN;
    
 
@@ -189,7 +190,11 @@ CALL_PROC_MAIN::=
                     if(!flag){
                         String mensaje = "El identificador '" + id_func + "' ya está definida";
                         parser.semantic_error(id_funcleft,id_funcright, mensaje);
-                        parser.analis_semantico.set_id_current_block("null");
+                      
+                        String temp= parser.analis_semantico.getUnkownblockId();
+                        parser.analis_semantico.dec_func(temp); 
+                        parser.analis_semantico.set_id_current_block(temp);
+                        parser.generador3d.newFunc(temp);
                     }else{
                         parser.analis_semantico.set_id_current_block(id_func.toString());
                         parser.generador3d.newFunc(id_func.toString());
@@ -207,9 +212,9 @@ INICIO ::=
                                                                                 String mensaje = "Falta el retorno de la función";
                                                                                 parser.semantic_error(id_funcleft,id_funcright, mensaje); 
                                                                             }
-                                                                                //3D CODE
-                                                                                parser.generador3d.closeFunc();
-                                                                                parser.generador3d.escribirCodigo3D("realizado");
+                                                                            //3D CODE
+                                                                            parser.generador3d.closeFunc();
+                                                                            parser.generador3d.escribirCodigo3D("realizado");
                                                                             :}
     |DEC_FUNCION INICIO; 
 
@@ -386,7 +391,7 @@ TIPO_ARREGLO::=
                                                                                     litObject4.setTextual(id_arreglo+ "["+litObject4.getTextual()+"]");
                                                                                     //3dCode
                                                                                     parser.generador3d.setLit(id_arreglo+ "["+litObject4.getTextual()+"]"); 
-                                                                                
+                                                                                    
 
                                                                                 }
                                                                                 else{
@@ -653,6 +658,8 @@ DEC_VARIABLE ::=
                                                                                 if(!flag){
                                                                                     if(tipo_var.toString().equals("int")){
                                                                                             parser.analis_semantico.setVar(id_var.toString(),tipo_var.toString());
+                                                                                            //3dcode
+                                                                                            parser.generador3d.asginarVarCast(id_var.toString());
                                                                                         }
                                                                                         else{
                                                                                             String mensaje = "Imposible convertir explícitamente a '"+tipo_var.toString()+"'";
@@ -967,6 +974,9 @@ ASIG_VARIABLE ::=
                                                     String tipo_var=parser.analis_semantico.get_tipo_var(id_var.toString());
                                                     if(tipo_var.toString().equals("int")){
                                                         parser.analis_semantico.init_var(id_var.toString());
+
+                                                        //3DCODE
+                                                        parser.generador3d.asginarVarCast(id_var.toString());
                                                     }
                                                     else{
                                                         String mensaje = "Imposible convertir explícitamente de '" + tipo_var.toString() + "' a 'int'";
@@ -997,11 +1007,12 @@ ASIG_VARIABLE ::=
 
 /*Casteo de string a int*/
 CAST_STRING_INT::= 
-      String_to_int Parentesis_a LITERAL_CADENA Parentesis_c 
+      String_to_int Parentesis_a LITERAL_CADENA:lit Parentesis_c 
     | String_to_int Parentesis_a LITERAL_FUNID:lit Parentesis_c {:
                                                                      literal objectparam1=(literal)lit;
                                                                      if(!objectparam1.getTipo().equals("null")){
                                                                         if(objectparam1.getTipo().equals("string") || objectparam1.getTipo().equals("char")){
+                                                                           
 
                                                                         }else{
                                                                             String mensaje = "El identificador '" + objectparam1.getTextual() + "' no permite esta operación";
@@ -1615,22 +1626,32 @@ DO_WHILE ::=
 
 
 STATEMENT1 ::= 
-    DEC_VARIABLE
-    |ASIG_VARIABLE;
+    DEC_VARIABLE 
+    |ASIG_VARIABLE ;
 
 CALL_PROC_FOR ::=
     Llave_a {:
                 parser.analis_semantico.new_block("for");
+
+                //3dcode
+                
             :};
 
 CALL_PROC_FOR_CIERRE::=
     Llave_c {:
                 parser.analis_semantico.backBlock();
+                //3dcode
+                parser.generador3d.finFor();
+                parser.generador3d.cierreBloque();
             :};
 
 
+
+
 FOR::=
-    For Parentesis_a STATEMENT1 Delimitador CONDICION Delimitador ASIG_VARIABLE Parentesis_c CALL_PROC_FOR BLOQUE CALL_PROC_FOR_CIERRE ;
+    For Parentesis_a {:parser.generador3d.stamet1For();:} STATEMENT1 Delimitador {:String res= parser.generador3d.nuevoBloque("for");
+                                                                                    parser.generador3d.stament2For();
+                                                                                :} CONDICION {:parser.generador3d.stament2For_aux();:} Delimitador {:parser.generador3d.guardarStamentFor();:} ASIG_VARIABLE {:parser.generador3d.guardarStamentFor_aux();:} Parentesis_c CALL_PROC_FOR BLOQUE CALL_PROC_FOR_CIERRE ;
 
 PARAM_SWITCH::=
      LITERAL_NUMERICO:lit {:RESULT=lit; :}
@@ -1645,6 +1666,10 @@ SWITCH_STAMENT::=
                                 if(!objectparam1.getTipo().equals(parser.analis_semantico.get_tipo_currentBlock()) ){
                                     String mensaje = "Case: '" + objectparam1.getTextual() + "' no es compatible con el switch de tipo '" +parser.analis_semantico.get_tipo_currentBlock() + "'" ;
                                     parser.semantic_error(litleft,litright, mensaje); 
+                                }else{
+                                    //3dcode
+                                    parser.generador3d.condCaseStament();
+
                                 }
                         }else{
                             String mensaje = "El identificador '" + objectparam1.getTextual() + "' no se ha definido";
@@ -1663,19 +1688,27 @@ CALL_PROC_CASE::=
 CALL_PROC_CASE_CIERRE::=
     Delimitador {:
                 parser.analis_semantico.backBlock();
+                //3dcode
+                parser.generador3d.endcaseStatment();
                 
             :};
 
+CALL_PROC_CASE_SWITCH::=
+    Case {:parser.generador3d.caseStatment("case");:}; 
+
+CALL_PROC_DEFAULT_SWITCH::=
+    Default {:parser.generador3d.caseStatment("default");:}; 
+
 
 CASE_SWITCH::=
-    Case SWITCH_STAMENT CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE |
-    Case SWITCH_STAMENT CALL_PROC_CASE Break CALL_PROC_CASE_CIERRE |
-    Case SWITCH_STAMENT CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
-    Case SWITCH_STAMENT CALL_PROC_CASE  Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
-    Default CALL_PROC_CASE Break CALL_PROC_CASE_CIERRE|
-    Default CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE|
-    Default CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
-    Default CALL_PROC_CASE  Break CALL_PROC_CASE_CIERRE CASE_SWITCH   ;
+    CALL_PROC_CASE_SWITCH SWITCH_STAMENT CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE |
+    CALL_PROC_CASE_SWITCH SWITCH_STAMENT CALL_PROC_CASE Break CALL_PROC_CASE_CIERRE |
+    CALL_PROC_CASE_SWITCH SWITCH_STAMENT CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
+    CALL_PROC_CASE_SWITCH SWITCH_STAMENT CALL_PROC_CASE  Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
+    CALL_PROC_DEFAULT_SWITCH CALL_PROC_CASE Break CALL_PROC_CASE_CIERRE|
+    CALL_PROC_DEFAULT_SWITCH CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE|
+    CALL_PROC_DEFAULT_SWITCH CALL_PROC_CASE BLOQUE Break CALL_PROC_CASE_CIERRE CASE_SWITCH |
+    CALL_PROC_DEFAULT_SWITCH CALL_PROC_CASE  Break CALL_PROC_CASE_CIERRE CASE_SWITCH   ;
 
 CALL_PROC_SWITCH::=
     PARAM_SWITCH:lit {: 
@@ -1684,6 +1717,7 @@ CALL_PROC_SWITCH::=
 
                         //3dcode
                         String res= parser.generador3d.nuevoBloque("switch");
+                        parser.generador3d.initswitch();
                         RESULT  = res;
                         :};
 
@@ -1921,9 +1955,9 @@ LEER::=
 ESCRIBIR::=
      Print Parentesis_a LITERAL_CADENA  Parentesis_c {: parser.generador3d.escribir();:}
     |Print Parentesis_a LITERAL_NUMERICO Parentesis_c {: parser.generador3d.escribir();:}
-    |Print Parentesis_a Null  Parentesis_c
     |Print Parentesis_a EXP_ARITMETICA_BIN Parentesis_c  {: parser.generador3d.getExpToLit(); parser.generador3d.escribir();:}    
-    |Print Parentesis_a EXP_LOGICA Parentesis_c {: parser.generador3d.getExpToLit(); parser.generador3d.escribir();:}
+    /*|Print Parentesis_a Null  Parentesis_c
+    |Print Parentesis_a EXP_LOGICA Parentesis_c {: parser.generador3d.getExpToLit(); parser.generador3d.escribir();:}*/
     |Print Parentesis_a EXP_LOGICA_UNA Parentesis_c {: parser.generador3d.escribir();:}
     |Print Parentesis_a EXP_ARITMETICA_UNA Parentesis_c {: parser.generador3d.escribir();:};
     

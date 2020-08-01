@@ -170,7 +170,7 @@ public class analisis {
     
     
     public void dec_main(){
-        //System.out.println("Main");
+        System.out.println("Main");
     }
     
     

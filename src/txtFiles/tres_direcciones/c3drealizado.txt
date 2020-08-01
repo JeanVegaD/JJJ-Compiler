@@ -1,150 +1,42 @@
-func begin incremento
-num = param[0]
-t0 = num
-t1 = "hola"
-t2 = 2
-t3 = arr1[2]
-t4 = null
-t5 = arr1
-t6 = t4>t5
-t7 = 12
-t8 = 2
-t9 = arr1[2]
-t10 = t8!=t9
-t11 = t7&t10
-var2 = t11
-t12 = 23
-t13 = 4.5
-t14 = var2
-t15 = arr1
-t16 = t14-t15
-t17 = t16/t13
-t18 = t17*t12
-t19 = t18+t6
-arr3 = t19
-t20 = null
-t21 = t20
-param t21
-t22 = call print 1 
-t23 = null
-t24 = var
-param t24
-t25 = call cast 1
-t26 = 34
-t27 = 0
-t28 = arr1[0]
-t29 = t27+t28
-t30 = t29+t26
-t31 = 1
-t32 = t31
-return t32
-end func
-
-
-func begin unknown_0
-num = param[0]
-hola = param[1]
-aaaa = param[2]
-ok = param[3]
-t0 = num
-t1 = hola
-t2 = aaaa
-t3 = ok
-t4 = "hola"
-arr1 = t4
-t5 = 45
-t6 = "Holaamigos"
-t7 = true
-t8 = -34.76
-t9 = hola
-t10 = 45
-t11 = "Holaamigos"
-t12 = true
-t13 = -34.76
-t14 = hola
-param t10
-param t11
-param t12
-param t13
-param t14
-t15 = call gety 5
-t16 = 10
-t17 = 10.5
-t18 = 3
-t19 = t17^t18
-t20 = null
-t21 = null
-t22 = t20*t21
-t23 = t22+t16
-t24 = t23*t15
-t25 = 1
-t26 = null
-t27 = null
-t28 = numero
-t29 = numero
-param t28
-param t29
-t30 = call incremento2 2
-t31 = null
-t32 = 1
-t33 = t31*t32
-t34 = t33
-return t34
+func begin funcionnueva
+t0 = 5
+t1 = t0
+return t1
 end func
 
 
 func begin main
-t0 = 25
-t1 = 10
-t2 = t0^t1
-temp = t2
-temp2 = 0
-t3 = 'a'
-temp2 = t3
-t4 = 50
-t5 = 100
-t6 = t4/t5
-numero = t6
-t7 = 'a'
-miChar = t7
-t8 = temp
-t9 = t8-1
-t10 = 34
-t11 = 10
-t12 = 10
-t13 = 14
-t14 = 80
-t15 = t13-t14
-t16 = t15+t12
-t17 = t16%t11
-t18 = t17/t10
-t19 = t18-t9
-numero = t19
-t20 = 1.0
-t21 = null
-t22 = temp
-t23 = "ok"
-t24 = t23
-param t24
-t25 = call print 1 
-t26 = numero
-t27 = t26
-param t27
-t28 = call print 1 
-t29 = null
-t30 = t29
-param t30
-t31 = call print 1 
-t32 = null
-t33 = miBoolean2
-param t33
-t34 = call read 1
-t35 = numero
-t36 = temp
-t37 = t35<=t36
-t38 = 1
-t39 = t38
-return t39
+t0 = "5"
+t1 = call StringToInt
+variable = t1
+t2 = variable
+main_switch0:
+main_switch0_case0:
+t3 = 1
+ifFalse t3==t2 goto end_main_switch0_case0
+prueba = 0
+goto end_main_switch0
+end_main_switch0_case0:
+main_switch0_case1:
+t4 = 5
+ifFalse t4==t2 goto end_main_switch0_case1
+t5 = "hola mundo"
+t6 = t5
+param t6
+t7 = call print 1 
+goto end_main_switch0
+end_main_switch0_case1:
+main_switch0_default0:
+t8 = "hola mundo"
+t9 = t8
+param t9
+t10 = call print 1 
+goto end_main_switch0
+end_main_switch0_default0:
+end_main_switch0:
+t11 = 0
+t12 = t11
+return t12
 end func
 
 

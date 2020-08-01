@@ -36,6 +36,10 @@ public class codigo_tres_direcciones {
     
     private boolean activo=true;
     
+    private ArrayList<String> pilaForStaments = new ArrayList<String>();
+    private ArrayList<String> pilaCode3d = new ArrayList<String>();
+    
+    private ArrayList<String> pilaCase = new ArrayList<String>();
     public codigo_tres_direcciones(){
         
     }
@@ -258,7 +262,21 @@ public class codigo_tres_direcciones {
         }
         
      }
-     
+      public void asginarVarCast(String idvar){
+          if(activo){
+            String t="t"+contadorLabel_block;
+            contadorLabel_block+=1;
+            String cargafunc= "call " + "StringToInt"; 
+            cuadruplos left= new cuadruplos(t,cargafunc,current_Label);
+            tablaSimbolos.add(left);
+            code3d+=left.getLine() + "\n";
+              
+             
+            cuadruplos left2= new cuadruplos(idvar,left.getTn(),current_Label);
+            tablaSimbolos.add(left2);
+            code3d+=left2.getLine() + "\n";
+        }
+      }
      
      
      public void asignarFuncion(String id){
@@ -446,6 +464,102 @@ public class codigo_tres_direcciones {
        
     }
     
+    
+    public void stamet1For(){
+         if(activo){
+            String nuevoID = obtenerIdBloque("dec_for");
+            ArrayList<String> temp =  new ArrayList<>();
+            temp.add(nuevoID);
+            temp.add(current_Label);
+            tablaEtiquetas.add(temp);
+            code3d+=nuevoID+ ":" + "\n";
+            //current_Label=nuevoID;
+        } 
+    }
+    
+
+    
+    public void stament2For(){
+        if(activo){
+            String nuevoID = obtenerIdBloque("cond");
+            ArrayList<String> temp =  new ArrayList<>();
+            temp.add(nuevoID);
+            temp.add(current_Label);
+            tablaEtiquetas.add(temp);
+            code3d+=nuevoID+ ":" + "\n";
+        } 
+    }
+    
+   public void stament2For_aux(){
+       if(activo){
+            code3d+="ifFalse "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " goto "+ "end_"+ current_Label   + "\n";
+       }
+    }
+   
+    public void guardarStamentFor(){
+        if(activo){
+           pilaCode3d.add(code3d);
+           code3d="";
+           
+        }   
+   }
+   
+   public void guardarStamentFor_aux(){
+       if(activo){
+           pilaForStaments.add(code3d);
+           code3d = pilaCode3d.get(pilaCode3d.size()-1);
+           pilaCode3d.remove(pilaCode3d.size()-1);
+           //pilaForStaments.add
+                   
+       }
+   }
+   
+    public void finFor(){
+       if(activo){
+           code3d+= "aumento_"+current_Label + ":" + "\n";
+           code3d+= pilaForStaments.get(pilaForStaments.size()-1);
+           pilaForStaments.remove(pilaForStaments.size()-1);
+           code3d+="goto "+ current_Label   + "\n";
+           endEstrcutura(current_Label);
+            
+       }
+    }
+    
+    
+    public void initswitch(){
+        if(activo){
+            pilaCase.add(pilaLiteral.get(pilaLiteral.size()-1).getTn());
+            pilaLiteral.remove(pilaLiteral.size()-1);
+        } 
+    }
+    
+    public void caseStatment(String tipo){
+        if(activo){
+            String nuevoID = obtenerIdBloque(tipo);
+            ArrayList<String> temp =  new ArrayList<>();
+            temp.add(nuevoID);
+            temp.add(current_Label);
+            tablaEtiquetas.add(temp);
+            code3d+=nuevoID+ ":" + "\n";            
+            pilaCase.add(nuevoID);
+        } 
+    }
+    
+    public void condCaseStament(){
+         if(activo){
+            code3d+="ifFalse "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + "==" + pilaCase.get(pilaCase.size()-2) + " goto "+ "end_"+ pilaCase.get(pilaCase.size()-1)   + "\n";
+            pilaLiteral.remove(pilaLiteral.size()-1);
+        } 
+    }
+    
+    public void endcaseStatment(){
+        if(activo){
+           code3d+="goto " + "end_"+ current_Label + "\n";
+           String casestring = pilaCase.get(pilaCase.size()-1);
+           pilaCase.remove(pilaCase.size()-1);
+           endEstrcutura(casestring);
+        } 
+    }
     
     
     public void escribir(){
