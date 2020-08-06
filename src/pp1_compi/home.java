@@ -7,8 +7,10 @@
 package pp1_compi;
 
 import Codigo.archivo_ingresado;
+import destino.Analizador;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -347,8 +349,8 @@ public class home extends javax.swing.JFrame {
             archivoActual.analizarTokens();
             archivoActual.escribirTokensArchivo();
             archivoActual.analizarSintax();
+            archivoActual.generarCodigoDestino();
             
-           
             textArea_consola.setText(archivoActual.get_reporteConsola());
         }else{
             String errorTemporal="<h1 style='color:#f44336; font-family: Arial, Helvetica, sans-serif;'>"

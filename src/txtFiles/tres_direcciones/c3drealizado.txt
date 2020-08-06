@@ -1,42 +1,487 @@
-func begin funcionnueva
-t0 = 5
+func begin enteros
+t0 = 1
+enteroNor = t0
+t1 = 1
+t2 = enteroNor
+t3 = t1 + t2
+enteroVar = t3
+t4 = 1
+t5 = 1
+t6 = t4 + t5
+enteroSum = t6
+t7 = 1
+t8 = 1
+t9 = 1
+t10 = t8 + t9
+t11 = t10 + t7
+enteroSum1 = t11
+t12 = 2
+t13 = 1
+t14 = t12 - t13
+enteroRes = t14
+t15 = 1
+t16 = 1
+t17 = t15 * t16
+enteroMul = t17
+t18 = enteroMul
+t19 = 1
+t20 = t18 + t19
+enteroSum2 = t20
+t21 = 1
+t22 = 1
+t23 = t21 / t22
+enteroDiv = t23
+t24 = 1
+t25 = 1
+t26 = t24 ^ t25
+enteroPow = t26
+t27 = enteroSum
+t28 = enteroDiv
+t29 = t27 + t28
+enteroCom = t29
+t30 = 0
+t31 = t30
+return t31
+end func
+
+
+func begin flotantes
+t0 = 1.0
+flotanteNor = t0
+t1 = 1.0
+t2 = flotanteNor
+t3 = t1 + t2
+flotanteVar = t3
+t4 = 1.0
+t5 = 1.0
+t6 = t4 + t5
+flotanteSum = t6
+t7 = 1.0
+t8 = 1.0
+t9 = 1.0
+t10 = t8 + t9
+t11 = t10 + t7
+flotanteSum1 = t11
+t12 = 2.0
+t13 = 1.0
+t14 = t12 - t13
+flotanteRes = t14
+t15 = 1.0
+t16 = 1.0
+t17 = t15 * t16
+flotanteMul = t17
+t18 = 1.0
+t19 = 1.0
+t20 = t18 / t19
+flotanteDiv = t20
+t21 = 1.0
+t22 = 1.0
+t23 = t21 % t22
+flotanteMod = t23
+t24 = 0
+t25 = t24
+return t25
+end func
+
+
+func begin relacionales
+t0 = 1
+t1 = 1
+t2 = t0 == t1
+booleanoEeq = t2
+t3 = 1
+t4 = 1
+t5 = t3 == t4
+t6 = 2
+t7 = 1
+t8 = t6 > t7
+t9 = t5 & t8
+booleanoCombinado = t9
+t10 = 1
+t11 = 1
+t12 = t10 != t11
+booleanoNeq = t12
+t13 = 1
+t14 = 1
+t15 = t13 < t14
+booleanoLet = t15
+t16 = 1
+t17 = 1
+t18 = t16 > t17
+booleanoGet = t18
+t19 = 1
+t20 = 1
+t21 = t19 <= t20
+booleanoLeq = t21
+t22 = 1
+t23 = 1
+t24 = t22 >= t23
+booleanoGeq = t24
+t25 = 0
+t26 = t25
+return t26
+end func
+
+
+func begin logicas
+t0 = true
+booleanoT = t0
+t1 = false
+booleanoF = t1
+t2 = true
+t3 = true
+t4 = 1
+t5 = 2
+t6 = t4 == t5
+t7 = t3 | t6
+t8 = t7 & t2
+booleanoCombinado = t8
+t9 = true
+t10 = true
+t11 = t9 & t10
+booleanoCTT = t11
+t12 = true
+t13 = true
+t14 = t12 | t13
+booleanoDTT = t14
+t15 = false
+t16 = true
+t17 = t15 & t16
+booleanoCFT = t17
+t18 = false
+t19 = true
+t20 = t18 | t19
+booleanoDFT = t20
+t21 = booleanoT
+t22 = booleanoF
+t23 = t21 | t22
+booleanoVVV = t23
+t24 = 0
+t25 = t24
+return t25
+end func
+
+
+func begin stringsYchars
+t0 = "abc"
+cadena = t0
+t1 = cadena
+cadenaV = t1
+t2 = 'a'
+caracter = t2
+t3 = 0
+t4 = t3
+return t4
+end func
+
+
+func begin arrays
+t0 = 0
 t1 = t0
 return t1
 end func
 
 
-func begin main
-t0 = "5"
-t1 = call StringToInt
-variable = t1
-t2 = variable
-main_switch0:
-main_switch0_case0:
-t3 = 1
-ifFalse t3==t2 goto end_main_switch0_case0
-prueba = 0
-goto end_main_switch0
-end_main_switch0_case0:
-main_switch0_case1:
+func begin whileFoo
+t0 = 0
+num = t0
+t1 = num
+t2 = 5
+t3 = t1 < t2
+whileFoo_While0:
+if t3 goto ciclo_whileFoo_While0
+goto end_whileFoo_While0
+ciclo_whileFoo_While0:
+t4 = num
+t5 = 1
+t6 = t4 + t5
+num = t6
+goto whileFoo_While0:
+end_whileFoo_While0:
+t7 = num
+t8 = t7
+return t8
+end func
+
+
+func begin doWhileFoo
+t0 = 0
+num = t0
+doWhileFoo_doWhile0:
+t1 = num
+t2 = 1
+t3 = t1 + t2
+num = t3
+t4 = 2
+t5 = t4
+param t5
+t6 = call print 1 
+t7 = num
+t8 = 5
+t9 = t7 < t8
+t10 = num
+t11 = 4
+t12 = t10 < t11
+t13 = t9 & t12
+if t13 goto doWhileFoo_doWhile0
+goto end_doWhileFoo_doWhile0
+end_doWhileFoo_doWhile0:
+t14 = num
+t15 = t14
+return t15
+end func
+
+
+func begin switchFoo
+num = param[0]
+t0 = num
+t1 = num
+switchFoo_switch0:
+switchFoo_switch0_case0:
+t2 = 1
+ifFalse t2==t1 goto end_switchFoo_switch0_case0
+t3 = num
+t4 = 1
+t5 = t3 + t4
+num = t5
+goto end_switchFoo_switch0
+end_switchFoo_switch0_case0:
+switchFoo_switch0_case1:
+t6 = 2
+ifFalse t6==t1 goto end_switchFoo_switch0_case1
+t7 = num
+t8 = 1
+t9 = t7 - t8
+num = t9
+goto end_switchFoo_switch0
+end_switchFoo_switch0_case1:
+switchFoo_switch0_case2:
+t10 = 3
+ifFalse t10==t1 goto end_switchFoo_switch0_case2
+t11 = num
+t12 = 1
+t13 = t11 * t12
+num = t13
+goto end_switchFoo_switch0
+end_switchFoo_switch0_case2:
+switchFoo_switch0_case3:
+t14 = 4
+ifFalse t14==t1 goto end_switchFoo_switch0_case3
+t15 = num
+t16 = 1
+t17 = t15 / t16
+num = t17
+goto end_switchFoo_switch0
+end_switchFoo_switch0_case3:
+switchFoo_switch0_case4:
+t18 = 5
+ifFalse t18==t1 goto end_switchFoo_switch0_case4
+t19 = num
+t20 = 1
+t21 = t19 % t20
+num = t21
+goto end_switchFoo_switch0
+end_switchFoo_switch0_case4:
+switchFoo_switch0_default0:
+goto end_switchFoo_switch0
+end_switchFoo_switch0_default0:
+end_switchFoo_switch0:
+t22 = 0
+t23 = t22
+return t23
+end func
+
+
+func begin parametros
+cadena = param[0]
+entero = param[1]
+flotante = param[2]
+caracter = param[3]
+booleano = param[4]
+t0 = cadena
+t1 = entero
+t2 = flotante
+t3 = caracter
+t4 = booleano
+t5 = cadena
+miCadena = t5
+t6 = entero
+miEntero = t6
+t7 = flotante
+miFlotante = t7
+t8 = caracter
+miCaracter = t8
+t9 = booleano
+miBooleano = t9
+t10 = 0
+t11 = t10
+return t11
+end func
+
+
+func begin foo
+num = param[0]
+t0 = num
+t1 = 1
+t2 = 10
+t3 = t1 > t2
 t4 = 5
-ifFalse t4==t2 goto end_main_switch0_case1
-t5 = "hola mundo"
-t6 = t5
+t5 = 8
+t6 = t4 == t5
+t7 = t3 & t6
+t8 = true
+t9 = t7 | t8
+if t9 goto foo_if0
+goto foo_else0
+foo_if0:
+t10 = "GET"
+t11 = t10
+param t11
+t12 = call print 1 
+t13 = true
+t14 = false
+t15 = t13 & t14
+if t15 goto foo_if0_if0
+goto foo_if0_else0
+foo_if0_if0:
+t16 = "logica"
+t17 = t16
+param t17
+t18 = call print 1 
+goto end_foo_if0_if0:
+foo_if0_else0:
+t19 = num
+t20 = t19
+param t20
+t21 = call print 1 
+goto end_foo_if0_if0:
+end_foo_if0_if0:
+goto end_foo_if0:
+foo_else0:
+end_foo_if0:
+t22 = num
+t23 = 10
+t24 = t22 < t23
+if t24 goto foo_if1
+goto foo_else1
+foo_if1:
+t25 = "LET"
+t26 = t25
+param t26
+t27 = call print 1 
+t28 = 1
+t29 = 2
+t30 = t28 < t29
+if t30 goto foo_if1_if0
+goto foo_if1_else0
+foo_if1_if0:
+t31 = "relacional"
+t32 = t31
+param t32
+t33 = call print 1 
+goto end_foo_if1_if0:
+foo_if1_else0:
+end_foo_if1_if0:
+t34 = true
+t35 = false
+t36 = t34 | t35
+if t36 goto foo_if1_if1
+goto foo_if1_else1
+foo_if1_if1:
+t37 = "logica"
+t38 = t37
+param t38
+t39 = call print 1 
+goto end_foo_if1_if1:
+foo_if1_else1:
+end_foo_if1_if1:
+goto end_foo_if1:
+foo_else1:
+t40 = "EEQ"
+t41 = t40
+param t41
+t42 = call print 1 
+t43 = 1
+t44 = 1
+t45 = t43 + t44
+t46 = 5
+t47 = t45 < t46
+if t47 goto foo_else1_if0
+goto foo_else1_else0
+foo_else1_if0:
+t48 = "relacional aritmetico"
+t49 = t48
+param t49
+t50 = call print 1 
+t51 = 3
+t52 = 3
+param t52
+t53 = call foo 1
+goto end_foo_else1_if0:
+foo_else1_else0:
+end_foo_else1_if0:
+t54 = 1
+t55 = 1
+t56 = t54 + t55
+t57 = 5
+t58 = t56 < t57
+t59 = true
+t60 = t58 & t59
+if t60 goto foo_else1_if1
+goto foo_else1_else1
+foo_else1_if1:
+t61 = "relacional aritmetico logico"
+t62 = t61
+param t62
+t63 = call print 1 
+goto end_foo_else1_if1:
+foo_else1_else1:
+t64 = "queso rikota"
+t65 = t64
+param t65
+t66 = call print 1 
+goto end_foo_else1_if1:
+end_foo_else1_if1:
+goto end_foo_if1:
+end_foo_if1:
+t67 = 0
+t68 = t67
+return t68
+end func
+
+
+func begin main
+t0 = "hola"
+t1 = 1
+t2 = 1.0
+t3 = 'a'
+t4 = true
+t5 = "hola"
+t6 = 1
+t7 = 1.0
+t8 = 'a'
+t9 = true
+param t5
 param t6
-t7 = call print 1 
-goto end_main_switch0
-end_main_switch0_case1:
-main_switch0_default0:
-t8 = "hola mundo"
-t9 = t8
+param t7
+param t8
 param t9
-t10 = call print 1 
-goto end_main_switch0
-end_main_switch0_default0:
-end_main_switch0:
-t11 = 0
-t12 = t11
-return t12
+t10 = call parametros 5
+t11 = 10
+t12 = 10
+param t12
+t13 = call switchFoo 1
+t14 = 10
+t15 = 10
+param t15
+t16 = call foo 1
+t17 = 0
+n = t17
+t18 = call doWhileFoo
+n = t18
+t19 = 0
+t20 = t19
+return t20
 end func
 
 

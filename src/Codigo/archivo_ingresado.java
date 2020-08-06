@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Codigo;
+import destino.Analizador;
 import java_cup.runtime.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -51,6 +52,23 @@ public class archivo_ingresado {
     
     public archivo_ingresado(){
         
+    }
+    
+    public void generarCodigoDestino(){
+        
+        Analizador generador = new Analizador();
+            try {
+                generador.iniciar(nombre);
+                reporte_consola+= "<h2 class='textoVerde'> Generación de código destino realizado </h2>";
+                resultadoCompilacion();
+                reporte_consola += reporte_errores;
+                reporte_consola += "<br> <br>";
+            } catch (IOException ex) {
+                reporte_consola+= "<h3 class='textoRojo'> ERROR: Generación de código destino NO realizado </h3>";
+                resultadoCompilacion();
+                reporte_consola += reporte_errores;
+                reporte_consola += "<br> <br>";
+            }
     }
     
     /*
@@ -225,9 +243,6 @@ public class archivo_ingresado {
                 sin.parse();
                 reporte_consola+= "<h2 class='textoVerde'> Análisis sintáctico realizado </h2>";
                 reporte_consola+= "<h2 class='textoVerde'> Análisis semántico realizado </h2>";
-                resultadoCompilacion();
-                reporte_consola += reporte_errores;
-                reporte_consola += "<br> <br>";
                 
             } catch (Exception ex) {
                 //Symbol sym = sin.getS();
