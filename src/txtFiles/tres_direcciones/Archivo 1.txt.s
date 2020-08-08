@@ -30,10 +30,10 @@ li $t0, 1
 li $t1, 1
 li $t2, 1
 add $t3, $t1, $t2
-add $t4, $t3, $t0
+add $t1, $t3, $t0
 #Declaracion de variable enteroSum1 Stack position 5
 sub $sp, $sp, 4 
-sw $t4, 0($sp) 
+sw $t1, 0($sp) 
 
 li $t0, 2
 li $t1, 1
@@ -50,36 +50,36 @@ sub $sp, $sp, 4
 mflo $s0
 sw $s0, 0($sp) 
 
-lw $t0, 4(sp) 
-li $t1, 1
-add $t2, $t0, $t1
+lw $t2, 4(sp) 
+li $t3, 1
+add $t4, $t2, $t3
 #Declaracion de variable enteroSum2 Stack position 8
 sub $sp, $sp, 4 
-sw $t2, 0($sp) 
+sw $t4, 0($sp) 
 
-li $t0, 1
-li $t1, 1
-div $t0, $t1
+li $t2, 1
+li $t3, 1
+div $t2, $t3
 #Declaracion de variable enteroDiv Stack position 9
 sub $sp, $sp, 4 
 mflo $s0
 sw $s0, 0($sp) 
 
-li $t0, 1
-li $t1, 1
+li $t4, 1
+li $t5, 1
 #Declaracion de variable enteroPow Stack position 10
 sub $sp, $sp, 4 
 sw , 0($sp) 
 
-lw $t0, 28(sp) 
-lw $t1, 8(sp) 
-add $t2, $t0, $t1
+lw $t6, 28(sp) 
+lw $t7, 8(sp) 
+add , $t6, $t7
 #Declaracion de variable enteroCom Stack position 11
 sub $sp, $sp, 4 
-sw $t2, 0($sp) 
+sw , 0($sp) 
 
-li $t0, 0
-li $t1, $t0
+li $t6, 0
+li $t7, $t6
 addi $sp, $sp, 44
 lw $s0, 0($sp)
 move $ra, $s0
@@ -89,22 +89,22 @@ jr $ra
 flotantes:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t2, 1.0
-#Declaracion de variable flotanteNor Stack position 3
+li $t0, 1.0
+#Declaracion de variable flotanteNor Stack position 2
 sub $sp, $sp, 4 
-sw $t2, 0($sp) 
+sw $t0, 0($sp) 
 
 li $t0, 1.0
 lw $t1, 4(sp) 
 add $t2, $t0, $t1
-#Declaracion de variable flotanteVar Stack position 4
+#Declaracion de variable flotanteVar Stack position 3
 sub $sp, $sp, 4 
 sw $t2, 0($sp) 
 
 li $t0, 1.0
 li $t1, 1.0
 add $t2, $t0, $t1
-#Declaracion de variable flotanteSum Stack position 5
+#Declaracion de variable flotanteSum Stack position 4
 sub $sp, $sp, 4 
 sw $t2, 0($sp) 
 
@@ -112,42 +112,42 @@ li $t0, 1.0
 li $t1, 1.0
 li $t2, 1.0
 add $t3, $t1, $t2
-add $t4, $t3, $t0
-#Declaracion de variable flotanteSum1 Stack position 6
+add $t1, $t3, $t0
+#Declaracion de variable flotanteSum1 Stack position 5
 sub $sp, $sp, 4 
-sw $t4, 0($sp) 
+sw $t1, 0($sp) 
 
 li $t0, 2.0
 li $t1, 1.0
 sub $t2, $t0, $t1
-#Declaracion de variable flotanteRes Stack position 7
+#Declaracion de variable flotanteRes Stack position 6
 sub $sp, $sp, 4 
 sw $t2, 0($sp) 
 
 li $t0, 1.0
 li $t1, 1.0
 mul $t0, $t1
-#Declaracion de variable flotanteMul Stack position 8
+#Declaracion de variable flotanteMul Stack position 7
 sub $sp, $sp, 4 
 mflo $s0
 sw $s0, 0($sp) 
 
-li $t0, 1.0
-li $t1, 1.0
-div $t0, $t1
-#Declaracion de variable flotanteDiv Stack position 9
+li $t2, 1.0
+li $t3, 1.0
+div $t2, $t3
+#Declaracion de variable flotanteDiv Stack position 8
 sub $sp, $sp, 4 
 mflo $s0
 sw $s0, 0($sp) 
 
-li $t0, 1.0
-li $t1, 1.0
-#Declaracion de variable flotanteMod Stack position 10
+li $t4, 1.0
+li $t5, 1.0
+#Declaracion de variable flotanteMod Stack position 9
 sub $sp, $sp, 4 
 sw , 0($sp) 
 
-li $t0, 0
-li $t1, $t0
+li $t6, 0
+li $t7, $t6
 addi $sp, $sp, 36
 lw $s0, 0($sp)
 move $ra, $s0
@@ -157,49 +157,58 @@ jr $ra
 relacionales:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t2, 1
-li $t3, 1
-#Declaracion de variable booleanoEeq Stack position 4
+li $t0, 1
+li $t1, 1
+seq $t2, $t0, $t1
+#Declaracion de variable booleanoEeq Stack position 2
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
 li $t0, 1
 li $t1, 1
-li $t2, 2
-li $t3, 1
-#Declaracion de variable booleanoCombinado Stack position 5
+seq $t2, $t0, $t1
+li $t0, 2
+li $t1, 1
+sgt $t3, $t0, $t1
+and $t0, $t2, $t3
+#Declaracion de variable booleanoCombinado Stack position 3
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t0, 0($sp) 
 
 li $t0, 1
 li $t1, 1
-#Declaracion de variable booleanoNeq Stack position 6
+sne $t2, $t0, $t1
+#Declaracion de variable booleanoNeq Stack position 4
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
 li $t0, 1
 li $t1, 1
-#Declaracion de variable booleanoLet Stack position 7
+slt $t2, $t0, $t1
+#Declaracion de variable booleanoLet Stack position 5
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
 li $t0, 1
 li $t1, 1
-#Declaracion de variable booleanoGet Stack position 8
+sgt $t2, $t0, $t1
+#Declaracion de variable booleanoGet Stack position 6
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
 li $t0, 1
 li $t1, 1
-#Declaracion de variable booleanoLeq Stack position 9
+sle $t2, $t0, $t1
+#Declaracion de variable booleanoLeq Stack position 7
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
 li $t0, 1
 li $t1, 1
-#Declaracion de variable booleanoGeq Stack position 10
+sge $t2, $t0, $t1
+#Declaracion de variable booleanoGeq Stack position 8
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
 li $t0, 0
 li $t1, $t0
@@ -212,53 +221,61 @@ jr $ra
 logicas:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t2, true
-#Declaracion de variable booleanoT Stack position 5
-sub $sp, $sp, 4 
-sw $t2, 0($sp) 
-
-li $t0, false
-#Declaracion de variable booleanoF Stack position 6
+li $t0, 1 #Booleano true
+#Declaracion de variable booleanoT Stack position 2
 sub $sp, $sp, 4 
 sw $t0, 0($sp) 
 
-li $t0, true
-li $t1, true
+li $t0, 0 #Booleano false
+#Declaracion de variable booleanoF Stack position 3
+sub $sp, $sp, 4 
+sw $t0, 0($sp) 
+
+li $t0, 1 #Booleano true
+li $t1, 1 #Booleano true
 li $t2, 1
 li $t3, 2
-#Declaracion de variable booleanoCombinado Stack position 7
+seq $t4, $t2, $t3
+or $t2, $t1, $t4
+and $t1, $t2, $t0
+#Declaracion de variable booleanoCombinado Stack position 4
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t1, 0($sp) 
 
-li $t0, true
-li $t1, true
-#Declaracion de variable booleanoCTT Stack position 8
+li $t0, 1 #Booleano true
+li $t1, 1 #Booleano true
+and $t2, $t0, $t1
+#Declaracion de variable booleanoCTT Stack position 5
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
-li $t0, true
-li $t1, true
-#Declaracion de variable booleanoDTT Stack position 9
+li $t0, 1 #Booleano true
+li $t1, 1 #Booleano true
+or $t2, $t0, $t1
+#Declaracion de variable booleanoDTT Stack position 6
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
-li $t0, false
-li $t1, true
-#Declaracion de variable booleanoCFT Stack position 10
+li $t0, 0 #Booleano false
+li $t1, 1 #Booleano true
+and $t2, $t0, $t1
+#Declaracion de variable booleanoCFT Stack position 7
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
-li $t0, false
-li $t1, true
-#Declaracion de variable booleanoDFT Stack position 11
+li $t0, 0 #Booleano false
+li $t1, 1 #Booleano true
+or $t2, $t0, $t1
+#Declaracion de variable booleanoDFT Stack position 8
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
 lw $t0, 28(sp) 
 lw $t1, 24(sp) 
-#Declaracion de variable booleanoVVV Stack position 12
+or $t2, $t0, $t1
+#Declaracion de variable booleanoVVV Stack position 9
 sub $sp, $sp, 4 
-sw , 0($sp) 
+sw $t2, 0($sp) 
 
 li $t0, 0
 li $t1, $t0
@@ -271,18 +288,18 @@ jr $ra
 stringsYchars:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t2, "abc"
-#Declaracion de variable cadena Stack position 6
+li $t0, "abc"
+#Declaracion de variable cadena Stack position 2
 sub $sp, $sp, 4 
-sw $t2, 0($sp) 
+sw $t0, 0($sp) 
 
 lw $t0, 4(sp) 
-#Declaracion de variable cadenaV Stack position 7
+#Declaracion de variable cadenaV Stack position 3
 sub $sp, $sp, 4 
 sw $t0, 0($sp) 
 
 li $t0, 'a'
-#Declaracion de variable caracter Stack position 8
+#Declaracion de variable caracter Stack position 4
 sub $sp, $sp, 4 
 sw $t0, 0($sp) 
 
@@ -297,8 +314,8 @@ jr $ra
 arrays:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t2, 0
-li $t3, $t2
+li $t0, 0
+li $t1, $t0
 addi $sp, $sp, 4
 lw $s0, 0($sp)
 move $ra, $s0
@@ -308,23 +325,24 @@ jr $ra
 whileFoo:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t4, 0
-#Declaracion de variable num Stack position 8
+li $t0, 0
+#Declaracion de variable num Stack position 2
 sub $sp, $sp, 4 
-sw $t4, 0($sp) 
+sw $t0, 0($sp) 
 
 lw $t0, 4(sp) 
 li $t1, 5
+slt $t2, $t0, $t1
 whileFoo_While0:
-If 
+beq $t2, 1, ciclo_whileFoo_While0
 goto end_whileFoo_While0
 ciclo_whileFoo_While0:
-lw $t2, 4(sp) 
-li $t3, 1
-add $t4, $t2, $t3
-#Declaracion de variable num Stack position 9
+lw $t0, 4(sp) 
+li $t1, 1
+add $t2, $t0, $t1
+#Declaracion de variable num Stack position 3
 sub $sp, $sp, 4 
-sw $t4, 0($sp) 
+sw $t2, 0($sp) 
 
 goto whileFoo_While0:
 end_whileFoo_While0:
@@ -339,16 +357,16 @@ jr $ra
 doWhileFoo:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t2, 0
-#Declaracion de variable num Stack position 9
+li $t0, 0
+#Declaracion de variable num Stack position 2
 sub $sp, $sp, 4 
-sw $t2, 0($sp) 
+sw $t0, 0($sp) 
 
 doWhileFoo_doWhile0:
 lw $t0, 4(sp) 
 li $t1, 1
 add $t2, $t0, $t1
-#Declaracion de variable num Stack position 10
+#Declaracion de variable num Stack position 3
 sub $sp, $sp, 4 
 sw $t2, 0($sp) 
 
@@ -360,13 +378,16 @@ sub $sp, $sp, 4
 sw $ra, 0($sp)
 lw $t2, 12(sp) 
 li $t3, 5
-lw $t4, 12(sp) 
-li $t5, 4
-If 
+slt $t4, $t2, $t3
+lw $t2, 12(sp) 
+li $t3, 4
+slt $t5, $t2, $t3
+and $t2, $t4, $t5
+beq $t2, 1, doWhileFoo_doWhile0
 goto end_doWhileFoo_doWhile0
 end_doWhileFoo_doWhile0:
-lw $t6, 12(sp) 
-li $t7, $t6
+lw $t2, 12(sp) 
+li $t3, $t2
 addi $sp, $sp, 4
 lw $s0, 0($sp)
 move $ra, $s0
@@ -376,38 +397,38 @@ jr $ra
 switchFoo:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-lw $t8, 48(sp) 
-lw $t9, 16(sp) 
-lw $t10, 16(sp) 
+lw $t0, 16(sp) 
+lw $t1, 12(sp) 
+lw $t2, 12(sp) 
 switchFoo_switch0:
 switchFoo_switch0_case0:
-li $t11, 1
-lw $t12, 16(sp) 
-li $t13, 1
-add $t14, $t12, $t13
-#Declaracion de variable num Stack position 13
+li $t3, 1
+lw $t4, 12(sp) 
+li $t5, 1
+add $t6, $t4, $t5
+#Declaracion de variable num Stack position 5
 sub $sp, $sp, 4 
-sw $t14, 0($sp) 
+sw $t6, 0($sp) 
 
 goto end_switchFoo_switch0
 end_switchFoo_switch0_case0:
 switchFoo_switch0_case1:
-li $t0, 2
-lw $t1, 20(sp) 
-li $t2, 1
-sub $t3, $t1, $t2
-#Declaracion de variable num Stack position 14
+li $t4, 2
+lw $t5, 16(sp) 
+li $t6, 1
+sub $t7, $t5, $t6
+#Declaracion de variable num Stack position 6
 sub $sp, $sp, 4 
-sw $t3, 0($sp) 
+sw $t7, 0($sp) 
 
 goto end_switchFoo_switch0
 end_switchFoo_switch0_case1:
 switchFoo_switch0_case2:
-li $t0, 3
-lw $t1, 24(sp) 
-li $t2, 1
-mul $t1, $t2
-#Declaracion de variable num Stack position 15
+li $t5, 3
+lw $t6, 20(sp) 
+li $t7, 1
+mul $t6, $t7
+#Declaracion de variable num Stack position 7
 sub $sp, $sp, 4 
 mflo $s0
 sw $s0, 0($sp) 
@@ -415,11 +436,11 @@ sw $s0, 0($sp)
 goto end_switchFoo_switch0
 end_switchFoo_switch0_case2:
 switchFoo_switch0_case3:
-li $t0, 4
-lw $t1, 28(sp) 
-li $t2, 1
-div $t1, $t2
-#Declaracion de variable num Stack position 16
+li , 4
+lw , 24(sp) 
+li , 1
+div , 
+#Declaracion de variable num Stack position 8
 sub $sp, $sp, 4 
 mflo $s0
 sw $s0, 0($sp) 
@@ -427,10 +448,10 @@ sw $s0, 0($sp)
 goto end_switchFoo_switch0
 end_switchFoo_switch0_case3:
 switchFoo_switch0_case4:
-li $t0, 5
-lw $t1, 32(sp) 
-li $t2, 1
-#Declaracion de variable num Stack position 17
+li , 5
+lw , 28(sp) 
+li , 1
+#Declaracion de variable num Stack position 9
 sub $sp, $sp, 4 
 sw , 0($sp) 
 
@@ -440,8 +461,8 @@ switchFoo_switch0_default0:
 goto end_switchFoo_switch0
 end_switchFoo_switch0_default0:
 end_switchFoo_switch0:
-li $t0, 0
-li $t1, $t0
+li , 0
+li , t22
 addi $sp, $sp, 24
 lw $s0, 0($sp)
 move $ra, $s0
@@ -451,43 +472,43 @@ jr $ra
 parametros:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-lw $t2, 52(sp) 
-lw $t3, 52(sp) 
-lw $t4, 52(sp) 
-lw $t5, 52(sp) 
-lw $t6, 52(sp) 
-lw $t7, 52(sp) 
-lw $t8, 52(sp) 
-lw $t9, 52(sp) 
-lw $t10, 24(sp) 
-lw $t11, 52(sp) 
-lw $t12, 52(sp) 
-#Declaracion de variable miCadena Stack position 14
+lw $t0, 16(sp) 
+lw $t1, 16(sp) 
+lw $t2, 16(sp) 
+lw $t3, 16(sp) 
+lw $t4, 16(sp) 
+lw $t5, 16(sp) 
+lw $t6, 16(sp) 
+lw $t7, 16(sp) 
+lw , 16(sp) 
+lw , 16(sp) 
+lw , 16(sp) 
+#Declaracion de variable miCadena Stack position 5
 sub $sp, $sp, 4 
-sw $t12, 0($sp) 
+sw , 0($sp) 
 
-lw $t0, 56(sp) 
-#Declaracion de variable miEntero Stack position 15
+lw , 20(sp) 
+#Declaracion de variable miEntero Stack position 6
 sub $sp, $sp, 4 
-sw $t0, 0($sp) 
+sw , 0($sp) 
 
-lw $t0, 60(sp) 
-#Declaracion de variable miFlotante Stack position 16
+lw , 24(sp) 
+#Declaracion de variable miFlotante Stack position 7
 sub $sp, $sp, 4 
-sw $t0, 0($sp) 
+sw , 0($sp) 
 
-lw $t0, 36(sp) 
-#Declaracion de variable miCaracter Stack position 17
+lw , 28(sp) 
+#Declaracion de variable miCaracter Stack position 8
 sub $sp, $sp, 4 
-sw $t0, 0($sp) 
+sw , 0($sp) 
 
-lw $t0, 68(sp) 
-#Declaracion de variable miBooleano Stack position 18
+lw , 32(sp) 
+#Declaracion de variable miBooleano Stack position 9
 sub $sp, $sp, 4 
-sw $t0, 0($sp) 
+sw , 0($sp) 
 
-li $t0, 0
-li $t1, $t0
+li , 0
+li , t10
 addi $sp, $sp, 24
 lw $s0, 0($sp)
 move $ra, $s0
@@ -497,38 +518,48 @@ jr $ra
 foo:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-lw $t2, 56(sp) 
-lw $t3, 24(sp) 
-li $t4, 1
-li $t5, 10
-li $t6, 5
-li $t7, 8
-li $t8, true
-If 
+lw $t0, 16(sp) 
+lw $t1, 12(sp) 
+li $t2, 0
+#Declaracion de variable variable Stack position 5
+sub $sp, $sp, 4 
+sw $t2, 0($sp) 
+
+li $t2, 1
+li $t3, 10
+sgt $t4, $t2, $t3
+li $t2, 5
+li $t3, 8
+seq $t5, $t2, $t3
+and $t2, $t4, $t5
+li $t3, 1 #Booleano true
+or $t4, $t2, $t3
+beq $t4, 1, foo_if0
 goto foo_else0
 foo_if0:
-li $t9, "GET"
-li $t10, $t9
-param t11
+li $t2, "GET"
+li $t3, $t2
+param t12
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t11, true
-li $t12, false
-If 
+li $t4, 1 #Booleano true
+li $t5, 0 #Booleano false
+and $t6, $t4, $t5
+beq $t6, 1, foo_if0_if0
 goto foo_if0_else0
 foo_if0_if0:
-li $t13, "logica"
-li $t14, $t13
-param t17
+li $t4, "logica"
+li $t5, $t4
+param t18
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
 goto end_foo_if0_if0:
 foo_if0_else0:
-lw $t15, 32(sp) 
-li $t16, $t15
-param t20
+lw $t6, 24(sp) 
+li $t7, $t6
+param t21
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
@@ -537,39 +568,42 @@ end_foo_if0_if0:
 goto end_foo_if0:
 foo_else0:
 end_foo_if0:
-lw $t17, 36(sp) 
-li $t18, 10
-If 
+lw , 28(sp) 
+li , 10
+slt , , 
+beq , 1, foo_if1
 goto foo_else1
 foo_if1:
-li $t19, "LET"
-li $t20, $t19
-param t26
+li , "LET"
+li , t26
+param t27
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t21, 1
-li $t22, 2
-If 
+li , 1
+li , 2
+slt , , 
+beq , 1, foo_if1_if0
 goto foo_if1_else0
 foo_if1_if0:
-li $t23, "relacional"
-li $t24, $t23
-param t32
+li , "relacional"
+li , t32
+param t33
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
 goto end_foo_if1_if0:
 foo_if1_else0:
 end_foo_if1_if0:
-li $t25, true
-li $t26, false
-If 
+li , 1 #Booleano true
+li , 0 #Booleano false
+or , , 
+beq , 1, foo_if1_if1
 goto foo_if1_else1
 foo_if1_if1:
-li $t27, "logica"
-li $t28, $t27
-param t38
+li , "logica"
+li , t38
+param t39
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
@@ -578,50 +612,53 @@ foo_if1_else1:
 end_foo_if1_if1:
 goto end_foo_if1:
 foo_else1:
-li $t29, "EEQ"
-li $t30, $t29
-param t41
+li , "EEQ"
+li , t41
+param t42
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t31, 1
-li $t32, 1
-add $t33, $t31, $t32
-li $t34, 5
-If 
+li , 1
+li , 1
+add , , 
+li , 5
+slt , , 
+beq , 1, foo_else1_if0
 goto foo_else1_else0
 foo_else1_if0:
-li $t35, t48
-param t49
+li , t49
+param t50
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t36, 3
-li $t37, 3
-param t52
+li , 3
+li , 3
+param t53
 jal foo
 sub $sp, $sp, 4
 sw $ra, 0($sp)
 goto end_foo_else1_if0:
 foo_else1_else0:
 end_foo_else1_if0:
-li $t38, 1
-li $t39, 1
-add $t40, $t38, $t39
-li $t41, 5
-li $t42, true
-If 
+li , 1
+li , 1
+add , , 
+li , 5
+slt , , 
+li , 1 #Booleano true
+and , , 
+beq , 1, foo_else1_if1
 goto foo_else1_else1
 foo_else1_if1:
-li $t43, t61
-param t62
+li , t62
+param t63
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
 goto end_foo_else1_if1:
 foo_else1_else1:
-li $t44, t64
-param t65
+li , t65
+param t66
 jal print
 sub $sp, $sp, 4
 sw $ra, 0($sp)
@@ -629,8 +666,8 @@ goto end_foo_else1_if1:
 end_foo_else1_if1:
 goto end_foo_if1:
 end_foo_if1:
-li $t45, 0
-li $t46, $t45
+li , 0
+li , t68
 addi $sp, $sp, 4
 lw $s0, 0($sp)
 move $ra, $s0
@@ -640,53 +677,38 @@ jr $ra
 main:
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t47, "hola"
-li $t48, 1
-li $t49, 1.0
-li $t50, 'a'
-li $t51, true
-li $t52, "hola"
-li $t53, 1
-li $t54, 1.0
-li $t55, 'a'
-li $t56, true
-param t5
-param t6
-param t7
-param t8
-param t9
-jal parametros
-sub $sp, $sp, 4
-sw $ra, 0($sp)
-li $t57, 10
-li $t58, 10
-param t12
+li $t0, 10
+li $t1, 10
+param t1
 jal switchFoo
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t59, 10
-li $t60, 10
-param t15
+li $t2, 10
+li $t3, 10
+param t4
 jal foo
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-li $t61, 0
-#Declaracion de variable n Stack position 30
+li $t4, 0
+#Declaracion de variable n Stack position 19
 sub $sp, $sp, 4 
-sw $t61, 0($sp) 
+sw $t4, 0($sp) 
 
 jal doWhileFoo
 sub $sp, $sp, 4
 sw $ra, 0($sp)
-#Declaracion de variable n Stack position 32
+#Declaracion de variable n Stack position 21
 sub $sp, $sp, 4 
 sw , 0($sp) 
 
-li $t0, 0
-li $t1, $t0
+li $t4, 0
+li $t5, $t4
 addi $sp, $sp, 8
 lw $s0, 0($sp)
 move $ra, $s0
 jr $ra
 #Fin de funcion 
 
+end: 
+li $v0,10 
+syscall

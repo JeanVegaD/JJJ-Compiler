@@ -8,13 +8,24 @@ package destino;
 import java.util.ArrayList;
 
 /**
- *
+ * to do
+ * parametros al inicio de una funcion void foo(String param1, int param2, ...){}
+ * parametros al llamar una funcion foo(p1, p2, ...);
+ * liberar registros en el tipo de instruccion li $t0, $t1
+ * trabajar el 3d param t0
+ * Strings de todo tipo
+ * inputs
+ * prints
+ * arreglos, fuck this shit is crazy
+ * revisar que la pila se está controlando correctamente
+ * 
  * @author cano98
  */
 public class InstruccionesMips {
     
     private int rc = 0;
     private ArrayList<Elemento> registros = new ArrayList<Elemento>();
+    private ArrayList<Elemento> argumentos = new ArrayList<Elemento>();
     private ArrayList<Elemento> stack = new ArrayList<Elemento>();
     
     private boolean mul = false;
@@ -22,12 +33,99 @@ public class InstruccionesMips {
     private int ultimoRA = 0;
     
     public InstruccionesMips(){
-
+        cargarRegistrosT();
+        cargarRegistrosA();
+    }
+    
+    public String getIf(String line){
+        String mips = "";
+        mips = construirIf(line);
+        return mips;
+    }
+    
+    private String construirIf(String line){
+        String mips = "";
+        String[] arr = line.split(" ", 0);
+        //if t16 goto foo_if0_if0
+        mips += "beq " +getRegistro(arr[1])+", 1" + ", " + arr[3]+ "\n";
+        liberarRegistro(arr[1]);
+        return mips;
+    }
+    
+    
+    private void cargarRegistrosT(){
+        Elemento r = new Elemento();
+        r.arg1 = "$t0";
+        registros.add(r);
+        r = new Elemento();
+        r.arg1 = "$t1";
+        registros.add(r);
+        r = new Elemento();
+        r.arg1 = "$t2";
+        registros.add(r);
+        r = new Elemento();
+        r.arg1 = "$t3";
+        registros.add(r);
+        r = new Elemento();
+        r.arg1 = "$t4";
+        registros.add(r);
+        r = new Elemento();
+        r.arg1 = "$t5";
+        registros.add(r);
+        r = new Elemento();
+        r.arg1 = "$t6";
+        registros.add(r);
+        r = new Elemento();
+        r.arg1 = "$t7";
+        registros.add(r);
+    }
+    
+    private void cargarRegistrosA(){
+        Elemento r = new Elemento();
+        r.arg1 = "$a0";
+        argumentos.add(r);
+        r = new Elemento();
+        r.arg1 = "$a1";
+        argumentos.add(r);
+        r = new Elemento();
+        r.arg1 = "$a2";
+        argumentos.add(r);
+        r = new Elemento();
+        r.arg1 = "$a3";
+        argumentos.add(r);
+    }
+    
+    public String getParametro(String line){
+        String mips = "";
+        mips = construirParametro(line);
+        return mips;
+    }
+    
+    private String construirParametro(String line){
+        String mips = "";
+        String[] arr = line.split(" ", 0);
+        mips += "move "+ guardarArgumento("pparam")+ ", "+getRegistro(arr[1])+ "\n";
+        liberarRegistro(arr[1]);
+        return mips;
+    }
+    
+    private String guardarArgumento(String id){
+        String ar = "";
+        for(Elemento e : argumentos){
+            if(e.identificador.equals("")){
+                e.identificador = id;
+                ar = e.arg1;
+                return ar;
+            }   
+        }
+        return ar;
     }
     
     public String getCall(String line){
         String[] arr = line.split(" ", 0);
-        String instruccionMips = "jal "+arr[3] + "\n";      
+        String instruccionMips = "jal "+arr[3] + "\n";    
+        argumentos = new ArrayList<Elemento>();
+        cargarRegistrosA();
         return instruccionMips;
     }
     
@@ -38,10 +136,12 @@ public class InstruccionesMips {
     }
     
     private void eliminarScope(){
-        stack.subList(ultimoRA, stack.size()-1).clear();
+        stack.subList(ultimoRA, stack.size()).clear();
         int i = 0;
-        for(i = stack.size()-1; stack.get(i).identificador.equals("ra"); i--){
-            ultimoRA = stack.get(i).pos;
+        if(stack.size() != 0){
+            for(i = stack.size()-1; stack.get(i).identificador.equals("ra"); i--){
+                ultimoRA = stack.get(i).pos;
+            }
         }
     }
     
@@ -49,6 +149,7 @@ public class InstruccionesMips {
         String mips = "";
         mips = construirRetorno();
         eliminarScope();
+        resetRegistros();
         return mips;
     }
     
@@ -133,12 +234,13 @@ public class InstruccionesMips {
         else{
             mips += "sw " + getRegistro(arr[2]) + ", 0($sp) \n\n";
         }
-        resetRegistros();
+        liberarRegistro(arr[2]);
         return mips;
     }
     
     public void resetRegistros(){
         registros = new ArrayList<Elemento>();
+        cargarRegistrosT();
         rc = 0;
     }
     
@@ -168,11 +270,11 @@ public class InstruccionesMips {
         String[] arr = line.split(" ", 0);
         String op = arr[3];
         if(op.equals("+")){
-            mips = "add "+ guardarRegistro(arr[0]) + ", " +  getRegistro(arr[2]) + ", " +getRegistro(arr[4]) +  "\n";
+            mips = construirOperacion("add ",arr[0],arr[2],arr[4]);
             return mips;
         }
         if(op.equals("-")){
-            mips = "sub "+ guardarRegistro(arr[0]) + ", " + getRegistro(arr[2]) + ", " +getRegistro(arr[4]) +  "\n";
+            mips = construirOperacion("sub ",arr[0],arr[2],arr[4]);
             return mips;
         }
         if(op.equals("*")){
@@ -185,40 +287,101 @@ public class InstruccionesMips {
             div = true;
             return mips;
         }
+        if(op.equals("==")){
+            mips = construirOperacion("seq ",arr[0],arr[2],arr[4]);
+            return mips;
+        }
+        if(op.equals("<")){
+            mips = construirOperacion("slt ",arr[0],arr[2],arr[4]);
+            return mips;
+        }
+        if(op.equals(">")){
+            mips = construirOperacion("sgt ",arr[0],arr[2],arr[4]);
+            return mips;
+        }
+        if(op.equals(">=")){
+            mips = construirOperacion("sge ",arr[0],arr[2],arr[4]);
+            return mips;
+        }
+        if(op.equals("<=")){
+            mips = construirOperacion("sle ",arr[0],arr[2],arr[4]);
+            return mips;
+        }
+        if(op.equals("!=")){
+            mips = construirOperacion("sne ",arr[0],arr[2],arr[4]);
+            return mips;
+        }
+        if(op.equals("&")){
+            mips = construirOperacion("and ",arr[0],arr[2],arr[4]);
+            return mips;
+        }
+        if(op.equals("|")){
+            mips = construirOperacion("or ",arr[0],arr[2],arr[4]);
+            return mips;
+        }
         return mips;
     }
     
+    private String construirOperacion(String ins, String r1, String r2, String r3){
+        String mips = "";
+        mips = ins+ guardarRegistro(r1) +", " + getRegistro(r2) + ", " +getRegistro(r3) +  "\n";
+        liberarRegistro(r2);
+        liberarRegistro(r3);
+        return mips;
+    }
+    
+    private int liberarRegistro(String id){
+        for(int i = 0; i<8; i++){
+            if(registros.get(i).identificador.equals(id)){
+            registros.get(i).identificador = "";
+            return 0;
+            }
+        }
+        return 0;
+    }
     //Construlle una instruccion dependiendo si es una declaracion o 
     private String seleccionarPorValor(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
         String reg = getRegistro(arr[2]);
         if(reg.equals("")){ //Si el registro no existe se agregar uno nuevo en uso
-            mips = "li "+ guardarRegistro(arr[0]) + ", " + arr[2] +  "\n";
+            if(arr[2].equals("true")){
+                mips = "li "+ guardarRegistro(arr[0]) + ", 1 #Booleano true\n";
+            }
+            else if(arr[2].equals("false")){
+                mips = "li "+ guardarRegistro(arr[0]) + ", 0 #Booleano false\n";
+            }
+            else{
+                mips = "li "+ guardarRegistro(arr[0]) + ", " + arr[2] +  "\n";                
+            }
         }
         else{
-            mips = "li "+ guardarRegistro(arr[0]) + ", " + reg +  "\n";
+            mips = "move "+ guardarRegistro(arr[0]) + ", " + reg +  "\n";
+            liberarRegistro(arr[2]);
         }        
         return mips;
     }
     
     //reg = t1, t2, t3, ...
-    private String getRegistro(String reg){
+    private String getRegistro(String id){
         String registro = "";
         for (Elemento e : registros){
-            if(e.identificador.equals(reg)){
+            if(e.identificador.equals(id)){
                 registro = e.arg1;
             }
         }
         return registro;
     }
     
-    private String guardarRegistro(String reg){
+    private String guardarRegistro(String id){
         Elemento nr = new Elemento(); //Nuevo registro
-        nr.identificador=reg;
-        nr.arg1 = "$t" + String.valueOf(rc);
-        rc++;
-        registros.add(nr);
+        for (Elemento e : registros){
+            if(e.identificador.equals("")){
+                e.identificador = id;
+                nr = e;
+                return nr.arg1;
+            }
+        }
         return nr.arg1;
     }
 }

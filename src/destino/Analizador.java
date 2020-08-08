@@ -74,7 +74,16 @@ public class Analizador {
                     }
                 }
             }  
+            sb.append(crearMipsEnd());
             escribirBuffer(nombre);
+    }
+    
+    private String crearMipsEnd(){
+        String mips = "";
+        mips += "end: \n";
+	mips += "li $v0,10 \n";
+	mips += "syscall";
+        return mips;
     }
     
     private void prepararScopeDeFuncion(BufferedReader br) throws IOException{
@@ -164,7 +173,7 @@ public class Analizador {
     }
     
     private void crearParametro(String line){
-        sb.append(line+ "\n");
+        sb.append(instruccion.getParametro(line));
     }
     
     private void crearSalto(String line){
@@ -197,7 +206,7 @@ public class Analizador {
     }
 
     public void crearIf(String line){
-        sb.append("If \n");
+        sb.append(instruccion.getIf(line));
     }
     
     public void hacerRetorno(String line){
@@ -230,7 +239,6 @@ public class Analizador {
     
     
     private void crearInstruccion(String line){
-        String[] arr = line.split(" ", 0);
         sb.append(instruccion.getInstruccion(line));
 
     }

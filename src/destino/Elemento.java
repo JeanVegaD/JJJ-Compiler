@@ -13,7 +13,7 @@ package destino;
 public class Elemento {
     public String identificador = "";
     public String op = "";
-    public String arg1 = "";
+    public String arg1 = "";        //registro $t1, $t2, $t3
     public String arg2 = "";
     public String res = "";
     public int pos= 0;
