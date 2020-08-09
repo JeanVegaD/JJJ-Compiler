@@ -66,6 +66,8 @@ public class Analizador {
             BufferedReader br= abrirArchivo();  //creates a buffering character input stream  
             String line;  
             sb.append(instruccion.getHeader());
+            sb.append(instruccion.getFuncionPrint());
+            //sb.append(instruccion.getFuncionInput());
             while((line=br.readLine())!=null)  
             {  
                 if(esLineaValida(line)){
@@ -86,6 +88,17 @@ public class Analizador {
         return mips;
     }
     
+    private void imprimirPila(){
+        String pila = "";
+        for(Elemento e : instruccion.stack){
+            pila += e.identificador+ " | ";
+            pila += e.arg1+ " | ";
+            pila += e.pos+ " ||| " ;
+        }
+        System.out.println(pila);
+        System.out.println("------");
+    }
+    
     private void prepararScopeDeFuncion(BufferedReader br) throws IOException{
         //Aqui trabajo el segmento de una funcion y creo el codigo
         String line;
@@ -93,7 +106,9 @@ public class Analizador {
         guardarRA();
         while(noEsFinDeFuncion)  //Se inicia la lectura de loq ue hay dentro de una funcion
             {  
+                imprimirPila();
                 line=br.readLine();
+                System.out.println(line);
                 if(esLineaValida(line)){
                     if(esEndFuncion(line)){
                         noEsFinDeFuncion = false;
@@ -154,7 +169,6 @@ public class Analizador {
     
     private void crearCall(String line){
         sb.append(instruccion.getCall(line));
-        guardarRA();
     }
     
     

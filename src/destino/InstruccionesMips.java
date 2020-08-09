@@ -26,7 +26,7 @@ public class InstruccionesMips {
     private int rc = 0;
     private ArrayList<Elemento> registros = new ArrayList<Elemento>();
     private ArrayList<Elemento> argumentos = new ArrayList<Elemento>();
-    private ArrayList<Elemento> stack = new ArrayList<Elemento>();
+    public ArrayList<Elemento> stack = new ArrayList<Elemento>();
     
     private boolean mul = false;
     private boolean div = false;
@@ -121,12 +121,43 @@ public class InstruccionesMips {
         return ar;
     }
     
-    public String getCall(String line){
+    public String getFuncionPrint(){
+        String mips = "";
+        mips += "print:\n";
+        mips += "sub $sp, $sp, 4\n";
+        mips += "sw $ra, 0($sp)\n";
+        mips += "li $v0, 1 \n";
+        mips += "syscall\n";
+        mips += "addi $sp, $sp, 8\n";
+        mips += "lw $s0, 0($sp)\n";
+        mips += "move $ra, $s0\n";
+        mips += "jr $ra\n\n";
+        return mips;
+    }
+    
+    public String getFuncionInput(String line){
         String[] arr = line.split(" ", 0);
-        String instruccionMips = "jal "+arr[3] + "\n";    
+        String mips = "";
+        mips += "input:\n";
+        mips += "sub $sp, $sp, 4\n";
+        mips += "sw $ra, 0($sp)\n";
+        mips += "li $v0, 5";
+        mips += "syscall\n\n";
+        mips += "move " + guardarRegistro(arr[0])+ ", $v0 \n";
+        mips += "addi $sp, $sp, 8";
+        mips += "lw $s0, 0($sp)";
+        mips += "move $ra, $s0";
+        mips += "jr $ra";
+        return mips;
+    }
+    
+    public String getCall(String line){
+        String mips = "";
+        String[] arr = line.split(" ", 0);
+        mips = "jal "+arr[3] + "\n";    
         argumentos = new ArrayList<Elemento>();
         cargarRegistrosA();
-        return instruccionMips;
+        return mips;
     }
     
     public String getRASave(){
