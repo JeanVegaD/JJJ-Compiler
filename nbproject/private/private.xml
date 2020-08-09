@@ -13,10 +13,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/cano98/Documents/GitHub/JJJ-Compiler/src/destino/InstruccionesMips.java</file>
-            <file>file:/C:/Users/cano98/Documents/GitHub/JJJ-Compiler/src/txtFiles/tres_direcciones/c3drealizado.txt</file>
             <file>file:/C:/Users/cano98/Documents/GitHub/JJJ-Compiler/src/destino/Analizador.java</file>
-            <file>file:/C:/Users/cano98/Documents/GitHub/JJJ-Compiler/src/pp1_compi/home.java</file>
-            <file>file:/C:/Users/cano98/Documents/GitHub/JJJ-Compiler/src/destino/Elemento.java</file>
+            <file>file:/C:/Users/cano98/Documents/GitHub/JJJ-Compiler/src/Codigo/semantico/codigo_tres_direcciones.java</file>
         </group>
     </open-files>
 </project-private>

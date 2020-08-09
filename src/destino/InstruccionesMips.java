@@ -176,18 +176,20 @@ public class InstruccionesMips {
         }
     }
     
-    public String getRetorno(){
+    public String getRetorno(String line){
         String mips = "";
-        mips = construirRetorno();
+        mips = construirRetorno(line);
         eliminarScope();
         resetRegistros();
         return mips;
     }
     
-    private String construirRetorno(){
+    private String construirRetorno(String line){
         String mips = "";
-        mips += "addi $sp, $sp, " + String.valueOf(stack.size()*4 - ultimoRA*4) +"\n";
+        String[] arr = line.split(" ", 0);
+        mips += "addi $sp, $sp, " + String.valueOf((stack.size()-1)*4 - ultimoRA*4) +"\n";
         mips += "lw $s0, 0($sp)\n";
+        mips += "move $v0, "+getRegistro(arr[1])+"\n";
         mips += "move $ra, $s0\n";
         mips += "jr $ra\n";
         return mips;
@@ -223,7 +225,7 @@ public class InstruccionesMips {
     private String construirPop(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
-        mips += "lw " + guardarRegistro(arr[0]) + ", " + String.valueOf(stack.size()*4 - getVariable(arr[2]).pos*4) + "(sp) \n";
+        mips += "lw " + guardarRegistro(arr[0]) + ", " + String.valueOf((stack.size()-1)*4 - getVariable(arr[2]).pos*4) + "($sp) \n";
         return mips;
     }
     
@@ -244,29 +246,48 @@ public class InstruccionesMips {
         return instruccionMips;
     }
     
+    private int posicionEnPila(String id){
+        int posicion = -1;
+        for(Elemento e : stack){
+            if(e.identificador.equals(id)){
+                posicion = e.pos;
+                return posicion;
+            }
+        }
+        return posicion;
+    }
+    
     //Esto es un push en la pila
     public String construirDeclaracion(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
-        Elemento ne = new Elemento();
-        ne.identificador = arr[0];  //Identificador del elemento en la pila
-        ne.arg1 = arr[2];           //valor a asignar
-        ne.pos = stack.size();      //Posicion del elemento en la pila
-        stack.add(ne);
-        
-        mips += "#Declaracion de variable " + arr[0] +" Stack position " +String.valueOf(stack.size()) +  "\n";
-        mips += "sub $sp, $sp, 4 \n";
-        if(mul || div){
-            mips += "mflo $s0\n";
-            mips += "sw $s0, 0($sp) \n\n";
-            if(mul)mul=false;
-            if(div)div=false;
+        int variable = posicionEnPila(arr[0]);
+        if(variable == -1){
+            Elemento ne = new Elemento();
+            ne.identificador = arr[0];  //Identificador del elemento en la pila
+            ne.arg1 = arr[2];           //valor a asignar
+            ne.pos = stack.size();      //Posicion del elemento en la pila
+            stack.add(ne);
+
+            mips += "#Declaracion de variable " + arr[0] +" Stack position " +String.valueOf(stack.size()) +  "\n";
+            mips += "sub $sp, $sp, 4 \n";
+            if(mul || div){
+                mips += "mflo $s0\n";
+                mips += "sw $s0, 0($sp) \n\n";
+                if(mul)mul=false;
+                if(div)div=false;
+            }
+            else{
+                mips += "sw " + getRegistro(arr[2]) + ", 0($sp) \n\n";
+            }
+            liberarRegistro(arr[2]);
+            return mips;
         }
         else{
-            mips += "sw " + getRegistro(arr[2]) + ", 0($sp) \n\n";
+            mips += "sw "+getRegistro(arr[2])+", "+String.valueOf((stack.size()-1)*4 - variable*4)+"($sp) \n";
+            return mips;
+            //se debe modificar la variable en la pila
         }
-        liberarRegistro(arr[2]);
-        return mips;
     }
     
     public void resetRegistros(){

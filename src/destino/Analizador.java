@@ -224,8 +224,7 @@ public class Analizador {
     }
     
     public void hacerRetorno(String line){
-        String[] arr = line.split(" ", 0);
-        sb.append(instruccion.getRetorno());
+        sb.append(instruccion.getRetorno(line));
     }
     
     private boolean esCall(String line){
@@ -248,7 +247,6 @@ public class Analizador {
     
     private void crearDeclaracion(String line){
         sb.append(instruccion.getDeclaracion(line));
-        //aqui se reinicia el uso de los registros
     }
     
     

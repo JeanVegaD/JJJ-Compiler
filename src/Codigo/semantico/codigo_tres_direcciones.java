@@ -100,7 +100,7 @@ public class codigo_tres_direcciones {
             int cont=0;
             for (String p : params){
                 String[] unit_param = p.split(" ");
-                String tempcont="param["+cont+"]";
+                String tempcont="param "+cont;
                 cuadruplos newLoad =  new cuadruplos(unit_param[1], tempcont, current_Label);
                 tablaSimbolos.add(newLoad);
                 code3d+=newLoad.getLine() + "\n";

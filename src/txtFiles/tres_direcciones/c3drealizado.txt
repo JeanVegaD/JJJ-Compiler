@@ -1,150 +1,34 @@
-func begin foo
-num = param[0]
-t0 = num
-t1 = 0
-variable = t1
-t2 = 1
-t3 = 10
-t4 = t2 > t3
-t5 = 5
-t6 = 8
-t7 = t5 == t6
-t8 = t4 & t7
-t9 = true
-t10 = t8 | t9
-if t10 goto foo_if0
-goto foo_else0
-foo_if0:
-t11 = "GET"
-t12 = t11
-param t12
-t13 = call print 1 
-t14 = true
-t15 = false
-t16 = t14 & t15
-if t16 goto foo_if0_if0
-goto foo_if0_else0
-foo_if0_if0:
-t17 = "logica"
-t18 = t17
-param t18
-t19 = call print 1 
-goto end_foo_if0_if0:
-foo_if0_else0:
-t20 = num
-t21 = t20
-param t21
-t22 = call print 1 
-goto end_foo_if0_if0:
-end_foo_if0_if0:
-goto end_foo_if0:
-foo_else0:
-end_foo_if0:
-t23 = num
-t24 = 10
-t25 = t23 < t24
-if t25 goto foo_if1
-goto foo_else1
-foo_if1:
-t26 = "LET"
-t27 = t26
-param t27
-t28 = call print 1 
-t29 = 1
-t30 = 2
-t31 = t29 < t30
-if t31 goto foo_if1_if0
-goto foo_if1_else0
-foo_if1_if0:
-t32 = "relacional"
-t33 = t32
-param t33
-t34 = call print 1 
-goto end_foo_if1_if0:
-foo_if1_else0:
-end_foo_if1_if0:
-t35 = true
-t36 = false
-t37 = t35 | t36
-if t37 goto foo_if1_if1
-goto foo_if1_else1
-foo_if1_if1:
-t38 = "logica"
-t39 = t38
-param t39
-t40 = call print 1 
-goto end_foo_if1_if1:
-foo_if1_else1:
-end_foo_if1_if1:
-goto end_foo_if1:
-foo_else1:
-t41 = "EEQ"
-t42 = t41
-param t42
-t43 = call print 1 
-t44 = 1
-t45 = 1
-t46 = t44 + t45
-t47 = 5
-t48 = t46 < t47
-if t48 goto foo_else1_if0
-goto foo_else1_else0
-foo_else1_if0:
-t49 = "relacional aritmetico"
-t50 = t49
-param t50
-t51 = call print 1 
-t52 = 3
-t53 = 3
-param t53
-t54 = call foo 1
-goto end_foo_else1_if0:
-foo_else1_else0:
-end_foo_else1_if0:
-t55 = 1
-t56 = 1
-t57 = t55 + t56
-t58 = 5
-t59 = t57 < t58
-t60 = true
-t61 = t59 & t60
-if t61 goto foo_else1_if1
-goto foo_else1_else1
-foo_else1_if1:
-t62 = "relacional aritmetico logico"
-t63 = t62
-param t63
-t64 = call print 1 
-goto end_foo_else1_if1:
-foo_else1_else1:
-t65 = "queso rikota"
-t66 = t65
-param t66
-t67 = call print 1 
-goto end_foo_else1_if1:
-end_foo_else1_if1:
-goto end_foo_if1:
-end_foo_if1:
-t68 = 0
-t69 = t68
-return t69
+func begin funcionnueva
+t0 = 1
+numero = t0
+t1 = 123
+t2 = numero
+t3 = t1 + t2
+var = t3
+t4 = var
+t5 = numero
+t6 = t4 + t5
+super = t6
+t7 = 1
+t8 = 3
+t9 = t7 + t8
+numero = t9
+t10 = 1
+t11 = t10
+return t11
 end func
 
 
 func begin main
-t0 = 0
-n = t0
-t1 = n
-t2 = n
-param t2
-t3 = call foo 1
-t4 = 1
-t5 = 1
-param t5
-t6 = call foo 1
-t7 = 0
-t8 = t7
-return t8
+t0 = 5
+t1 = t0
+param t1
+t2 = call print 1 
+t3 = 0
+in = t3
+t4 = 0
+t5 = t4
+return t5
 end func
 
 
