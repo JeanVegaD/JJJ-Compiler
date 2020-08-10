@@ -1,34 +1,46 @@
 func begin funcionnueva
-t0 = 1
-numero = t0
-t1 = 123
-t2 = numero
-t3 = t1 + t2
-var = t3
-t4 = var
+num1 = param 0
+num2 = param 1
+num3 = param 2
+t0 = num1
+t1 = num2
+t2 = num3
+t3 = num1
+numero = t3
+t4 = 123
 t5 = numero
 t6 = t4 + t5
-super = t6
-t7 = 1
-t8 = 3
+var = t6
+t7 = var
+t8 = numero
 t9 = t7 + t8
-numero = t9
-t10 = 1
-t11 = t10
-return t11
+super = t9
+t10 = numero
+t11 = numero
+t12 = t10 * t11
+numero = t12
+t13 = 1
+t14 = t13
+return t14
 end func
 
 
 func begin main
-t0 = 5
-t1 = t0
-param t1
-t2 = call print 1 
-t3 = 0
-in = t3
-t4 = 0
-t5 = t4
-return t5
+t0 = 1
+t1 = 2
+t2 = t0 * t1
+in = t2
+t3 = 5
+var = t3
+t4 = var
+in = t4
+t5 = 5
+t6 = t5
+param t6
+t7 = call print 1 
+t8 = 0
+t9 = t8
+return t9
 end func
 
 

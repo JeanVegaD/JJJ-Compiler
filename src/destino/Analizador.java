@@ -26,6 +26,7 @@ public class Analizador {
     private  InstruccionesMips instruccion = new InstruccionesMips();
     private int stackPointer = 0;
     private int framePoiner = 0;
+    private boolean esMain=false;
     private StringBuffer sb=new StringBuffer(); //Aqui se va construyendo el codigo destino
     private int rc= 0; //Contador de registros
     
@@ -67,7 +68,8 @@ public class Analizador {
             String line;  
             sb.append(instruccion.getHeader());
             sb.append(instruccion.getFuncionPrint());
-            //sb.append(instruccion.getFuncionInput());
+            sb.append(instruccion.getSalvarRegistrosTemporales());
+            sb.append(instruccion.getCargarRegistrosTemporales());
             while((line=br.readLine())!=null)  
             {  
                 if(esLineaValida(line)){
@@ -95,8 +97,6 @@ public class Analizador {
             pila += e.arg1+ " | ";
             pila += e.pos+ " ||| " ;
         }
-        System.out.println(pila);
-        System.out.println("------");
     }
     
     private void prepararScopeDeFuncion(BufferedReader br) throws IOException{
@@ -106,7 +106,6 @@ public class Analizador {
         guardarRA();
         while(noEsFinDeFuncion)  //Se inicia la lectura de loq ue hay dentro de una funcion
             {  
-                imprimirPila();
                 line=br.readLine();
                 System.out.println(line);
                 if(esLineaValida(line)){
@@ -165,6 +164,28 @@ public class Analizador {
         if(esDeclaracion(line)){ 
             crearDeclaracion(line);
         }
+        if(esArgumento(line)){//esArgumento
+            crearArgumento(line);
+        }
+    }
+    
+    private boolean esArgumento(String line){
+        String[] arr = line.split(" ", 0);
+        if(arr.length == 4){
+            if(arr[2].equals("param")){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        return false;
+    }
+    
+    
+    
+    private void crearArgumento(String line){
+        sb.append(instruccion.getArgumento(line));
     }
     
     private void crearCall(String line){
@@ -174,7 +195,7 @@ public class Analizador {
     
     private boolean esPop(String line){
         String[] arr = line.split(" ", 0);
-        if(arr.length == 3 && Character.isLetter(arr[2].charAt(0)) && !arr[2].equals("true") && !arr[2].equals("false") && (arr[2].charAt(0) != 't')){
+        if(arr.length == 3 && Character.isLetter(arr[2].charAt(0)) && !arr[2].equals("true") && !arr[2].equals("false") && (arr[2].charAt(0) != 't') ){
             return true;
         }
         else{
@@ -224,7 +245,13 @@ public class Analizador {
     }
     
     public void hacerRetorno(String line){
-        sb.append(instruccion.getRetorno(line));
+        if(esMain){
+            sb.append("jal end\n");
+            esMain = false;
+        }
+        else{
+            sb.append(instruccion.getRetorno(line));
+        }
     }
     
     private boolean esCall(String line){
@@ -281,6 +308,7 @@ public class Analizador {
         String[] arr = line.split(" ", 0);
         if(arr[0].equals("func") && arr[1].equals("begin")){
             agregarLineaMips(line.split(" ")[2]+ ":" + "\n");
+            if(arr[2].equals("main"))esMain = true;
             return true;
         }
         else{
