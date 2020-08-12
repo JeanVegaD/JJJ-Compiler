@@ -15,33 +15,80 @@ public class InstruccionesMips {
     private int rc = 0;
     private ArrayList<Elemento> registros = new ArrayList<Elemento>();
     private ArrayList<Elemento> argumentos = new ArrayList<Elemento>();
+    private ArrayList<Elemento> salvados = new ArrayList<Elemento>();
     public ArrayList<Elemento> stack = new ArrayList<Elemento>();
     
     private boolean mul = false;
     private boolean div = false;
     private int ultimoRA = 0;
     
+	
+	/**
+	Las llamadas en el constructor es para preparar los registros
+	con los que se controla el flujo del programa
+	*/
     public InstruccionesMips(){
         cargarRegistrosT();
         cargarRegistrosA();
+        cargarRegistrosS();
     }
     
+	
+	/*
+		obtiene el equivalente en mips para una estructura de control IF
+	*/
     public String getIf(String line){
         String mips = "";
         mips = construirIf(line);
         return mips;
     }
     
+	/*
+		Construye el equivalente en mips para una estructura de control IF
+	*/
     private String construirIf(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
-        //if t16 goto foo_if0_if0
         mips += "beq " +getRegistro(arr[1])+", 1" + ", " + arr[3]+ "\n";
         liberarRegistro(arr[1]);
         return mips;
     }
     
+	/*
+		Inicializa los registros temporales de la lista -salvados
+		Esta lista simula los registros $s0 - $s7 que son usados en mips
+	*/
+    private void cargarRegistrosS(){
+        Elemento r = new Elemento();
+        r.arg1 = "$s0";
+        salvados.add(r);
+        r = new Elemento();
+        r.arg1 = "$s1";
+        salvados.add(r);
+        r = new Elemento();
+        r.arg1 = "$s2";
+        salvados.add(r);
+        r = new Elemento();
+        r.arg1 = "$s3";
+        salvados.add(r);
+        r = new Elemento();
+        r.arg1 = "$s4";
+        salvados.add(r);
+        r = new Elemento();
+        r.arg1 = "$s5";
+        salvados.add(r);
+        r = new Elemento();
+        r.arg1 = "$s6";
+        salvados.add(r);
+        r = new Elemento();
+        r.arg1 = "$s7";
+        salvados.add(r);
+    }
     
+    /*
+		Inicializa los registros temporales de la lista -registros
+		Esta lista simula los registros $t0 - $t7 que son usados en mips
+	*/
     private void cargarRegistrosT(){
         Elemento r = new Elemento();
         r.arg1 = "$t0";
@@ -69,6 +116,10 @@ public class InstruccionesMips {
         registros.add(r);
     }
     
+	/*
+		Inicializa los registros temporales de la lista -registros
+		Esta lista simula los registros $a0 - $a3 que son usados en mips
+	*/
     private void cargarRegistrosA(){
         Elemento r = new Elemento();
         r.arg1 = "$a0";
@@ -84,12 +135,20 @@ public class InstruccionesMips {
         argumentos.add(r);
     }
     
+	/*
+		Obtiene el equivalente en mips de obtencion de parametros de una
+		funcion y guardado en la pila
+	*/
     public String getParametro(String line){
         String mips = "";
         mips = construirParametro(line);
         return mips;
     }
     
+	/*
+		Construye el equivalente en mips de obtencion de parametros de una
+		funcion y guardado en la pila
+	*/
     private String construirParametro(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
@@ -98,6 +157,10 @@ public class InstruccionesMips {
         return mips;
     }
     
+	/*
+		Toma la lista de registros temporales y los libera de uso
+		esto permite que no sean reservados sin razón al iniciar una funcion en mips
+	*/
     void liberarRegistrosParametro(String aLiberar){
         String paraLiberar = String.valueOf(Integer.parseInt(aLiberar.substring(1)) - 1);
         int contador = Integer.parseInt(aLiberar.substring(1));
@@ -107,6 +170,10 @@ public class InstruccionesMips {
         }
     }
     
+	/*
+		Recibe un identificador y lo asigna al ultimo registro de argumento que aun
+		no ha sido reservado
+	*/
     private String guardarArgumento(String id){
         String ar = "";
         for(Elemento e : argumentos){
@@ -119,6 +186,9 @@ public class InstruccionesMips {
         return ar;
     }
     
+	/*
+		Construye y retorna una funcion predeterminada para imprimir en mips
+	*/
     public String getFuncionPrint(){
         String mips = "";
         mips += "print:\n";
@@ -134,24 +204,35 @@ public class InstruccionesMips {
     }
     
  
-    
+    /*
+		Construye y retorna el equivalente en mips para realizar una llamada
+		a una sub rutina
+	*/
     public String getCall(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
-        mips += "jal salvarTemporales\n";
+        mips += getSalvarRegistrosTemporales();
         mips += "jal "+arr[3] + "\n";    
-        mips += "jal cargarTemporales\n";
+        mips += getCargarRegistrosTemporales();
+        mips += "move "+guardarRegistro(arr[0])+", $v0 \n";
         argumentos = new ArrayList<Elemento>();
         cargarRegistrosA();
         return mips;
     }
     
+	/*
+		Obtiene el equivalente en mips para guardar el registro de retorno de función
+	*/
     public String getRASave(){
         String instruccionMips = "";
         instruccionMips = construirSave();        
         return instruccionMips;
     }
     
+	/*
+		Elimina elementos en el stack hasta encontrar el fp, y deja solamente el scope previo a una llamada
+		de subrutina
+	*/
     private void eliminarScope(){
         stack.subList(ultimoRA, stack.size()).clear();
         int i = 0;
@@ -162,6 +243,9 @@ public class InstruccionesMips {
         }
     }
     
+	/*
+		Obtiene el equivalente en mips de "return"
+	*/
     public String getRetorno(String line){
         String mips = "";
         mips = construirRetorno(line);
@@ -170,6 +254,10 @@ public class InstruccionesMips {
         return mips;
     }
     
+	
+	/*
+		Construye el equivalente en mips de "return"
+	*/
     private String construirRetorno(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
@@ -182,7 +270,9 @@ public class InstruccionesMips {
         return mips;
     }
     
-    
+    /*
+		Obtiene el las etiquetas del compilador de mips que son escnciales para el funcionamiento
+	*/
     public String getHeader(){
         String mips = "";
         mips += ".data\n\n";
@@ -191,6 +281,9 @@ public class InstruccionesMips {
         return mips;
     }
     
+	/*
+		Construye el el guardado del registtro de retorno en la pila para mips
+	*/
     private String construirSave(){
         String mips = "";
         mips += "sub $sp, $sp, 4\n";
@@ -203,17 +296,25 @@ public class InstruccionesMips {
         return mips;
     }
     
+	/*
+		
+		Obtiene el equivalente en mips de invocar una variable creada en un scope
+	*/
     public String getPop(String line){
         String instruccionMips = "";
         instruccionMips = construirPop(line);
         return instruccionMips;
     }
     
+	
+	/*
+		Obtiene el codigo mips para guardar los argumentos recibidos en una funcion en la pila
+	*/
     public String getArgumento(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
         mips += "sub $sp, $sp, 4\n";
-        mips += "sw $v"+arr[3]+", 0($sp)\n";
+        mips += "sw $a"+arr[3]+", 0($sp)\n";
         Elemento ne = new Elemento();
         ne.identificador = arr[0];  //Identificador del elemento en la pila
         ne.arg1 = arr[2];           //valor a asignar
@@ -222,6 +323,9 @@ public class InstruccionesMips {
         return mips;
     }
     
+	/*
+		Construye el codigo mips para poder sacar de la pila una variable que está siendo invocada
+	*/
     private String construirPop(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
@@ -229,6 +333,9 @@ public class InstruccionesMips {
         return mips;
     }
     
+	/*
+		Retorna el elemento en la pila (atributo de clase) que tiene el id pasado
+	*/
     private Elemento getVariable(String id){
         Elemento variable = new Elemento();
         for( Elemento e : stack){
@@ -246,6 +353,9 @@ public class InstruccionesMips {
         return instruccionMips;
     }
     
+	/*
+		Retorna la posicion del elemento en la pila que tiene el @id
+	*/
     private int posicionEnPila(String id){
         int posicion = -1;
         for(Elemento e : stack){
@@ -269,31 +379,43 @@ public class InstruccionesMips {
             ne.pos = stack.size();      //Posicion del elemento en la pila
             stack.add(ne);
             mips += "sub $sp, $sp, 4 \n";
-            if(mul || div){
-                mips += "mflo $v1\n";
-                mips += "sw $v1, 0($sp) \n\n";
-                if(mul)mul=false;
-                if(div)div=false;
-            }
-            else{
-                mips += "sw " + getRegistro(arr[2]) + ", 0($sp) \n\n";
+  
+                String r = getRegistro(arr[2]);
+                if(r.equals("")){ //Si no lo encuentra asume que viene de un retorno
+                    mips += "sw $v0, 0($sp) \n\n";
+                }else{
+                    mips += "sw " + getRegistro(arr[2]) + ", 0($sp) \n\n";
+                //}
             }
             liberarRegistro(arr[2]);
             return mips;
         }
         else{
-            if(mul || div){
-                mips += "mflo $v1\n";
-                mips += "sw $v1, "+String.valueOf((stack.size()-1)*4 - variable*4)+"($sp) \n";
-                if(mul)mul=false;
-                if(div)div=false;
-                return mips;
-            }
-            else{
+
                 mips += "sw "+getRegistro(arr[2])+", "+String.valueOf((stack.size()-1)*4 - variable*4)+"($sp) \n";
+                liberarRegistro(arr[2]);
                 return mips;
-            }
-            //se debe modificar la variable en la pila
+
+        }
+    }
+    
+	/*
+		Obtiene el equivalente en mips de una case y do while
+	*/
+    public String getEstructura(String line){
+        String mips = "";
+        String[] arr = line.split(" ", 0);
+        if(arr.length == 4){
+            mips += "bne " +getRegistro(arr[1])+", 1" + ", " + arr[3]+ "\n";
+            liberarRegistro(arr[1]);
+            return mips;
+        }
+        else{
+            mips = "seq "+ guardarRegistro(arr[0]) +", " + getRegistro(arr[1]) + ", " +getRegistro(arr[3]) +  "\n";
+            liberarRegistro(arr[1]);
+            mips += "bne " +getRegistro(arr[0])+", 1" + ", " + arr[5]+ "\n";
+            liberarRegistro(arr[0]);
+            return mips;
         }
     }
     
@@ -310,46 +432,43 @@ public class InstruccionesMips {
         return instruccionMips;
     }
     
+	/*
+		Obtiene EL CODIGO MIPS QUE SE ENCARGA DE SALVAR LOS REGISTROS TEMPORALES al llamar una subrutina
+	*/
     public String getSalvarRegistrosTemporales(){
         String mips = "";
-        mips += "salvarTemporales:\n";
-        mips += construirSave();
-        mips += "move $s0, $t0\n";
-        mips += "move $s1, $t1\n";
-        mips += "move $s2, $t2\n";
-        mips += "move $s3, $t3\n";
-        mips += "move $s4, $t4\n";
-        mips += "move $s5, $t5\n";
-        mips += "move $s6, $t6\n";
-        mips += "move $s7, $t7\n";
-        mips += "addi $sp, $sp, " + String.valueOf((stack.size()-1)*4 - ultimoRA*4) +"\n";
-        mips += "lw $t0, 0($sp)\n";
-        mips += "move $ra, $t0\n";
-        mips += "jr $ra\n\n";
-        eliminarScope();
+        int i = 0;
+        for(Elemento t : registros){
+            if(!t.identificador.equals("")){
+                salvados.get(i).identificador = t.identificador;
+                t.identificador = "";
+                mips += "move "+salvados.get(i).arg1+", "+t.arg1+"\n";
+                i++;
+            }
+        }
         return mips;
     }
     
+	/*
+		Obtiene EL CODIGO MIPS QUE SE ENCARGA DE cargar LOS REGISTROS TEMPORALES después de llamar una subrutina
+	*/
     public String getCargarRegistrosTemporales(){
         String mips = "";
-        mips += "cargarTemporales:\n";
-        mips += construirSave();
-        mips += "move $t0, $s0\n";
-        mips += "move $t1, $s1\n";
-        mips += "move $t2, $s2\n";
-        mips += "move $t3, $s3\n";
-        mips += "move $t4, $s4\n";
-        mips += "move $t5, $s5\n";
-        mips += "move $t6, $s6\n";
-        mips += "move $t7, $s7\n";
-        mips += "addi $sp, $sp, " + String.valueOf((stack.size()-1)*4 - ultimoRA*4) +"\n";
-        mips += "lw $t0, 0($sp)\n";
-        mips += "move $ra, $t0\n";
-        mips += "jr $ra\n\n";
-        eliminarScope();
+        int i = 0;
+        for(Elemento s : salvados){
+            if(!s.identificador.equals("")){
+                registros.get(i).identificador = s.identificador;
+                s.identificador = "";
+                mips += "move "+registros.get(i).arg1+", "+s.arg1+"\n";
+                i++;
+            }
+        }
         return mips;
     }
     
+	/*
+		Construye el codigo mips para una asignacion comun de registros o movimientos entre registros
+	*/
     private String construirInstruccion(String line){
         String tipo = "";
         String[] arr = line.split(" ", 0);
@@ -376,16 +495,26 @@ public class InstruccionesMips {
             return mips;
         }
         if(op.equals("*")){
-            mips = "mult "+ getRegistro(arr[2]) + ", " +getRegistro(arr[4]) +  "\n";
+            mips += "mult "+ getRegistro(arr[2]) + ", " +getRegistro(arr[4]) +  "\n";
             liberarRegistro(arr[2]);
             liberarRegistro(arr[4]);
+            mips += "mflo "+ guardarRegistro(arr[0]) + "\n";
             mul = true;
             return mips;
         }
         if(op.equals("/")){
-            mips = "div "+ getRegistro(arr[2]) + ", " +getRegistro(arr[4]) +  "\n";
+            mips += "div "+ getRegistro(arr[2]) + ", " +getRegistro(arr[4]) +  "\n";
             liberarRegistro(arr[2]);
             liberarRegistro(arr[4]);
+            mips += "mflo "+ guardarRegistro(arr[0])+ "\n";
+            div = true;
+            return mips;
+        }
+        if(op.equals("%")){
+            mips += "div "+ getRegistro(arr[2]) + ", " +getRegistro(arr[4]) +  "\n";
+            liberarRegistro(arr[2]);
+            liberarRegistro(arr[4]);
+            mips += "mfhi "+ guardarRegistro(arr[0])+ "\n";
             div = true;
             return mips;
         }
@@ -441,7 +570,7 @@ public class InstruccionesMips {
         }
         return 0;
     }
-    //Construlle una instruccion dependiendo si es una declaracion o 
+    //Construye una instruccion dependiendo si es una declaración o una asignacion
     private String seleccionarPorValor(String line){
         String mips = "";
         String[] arr = line.split(" ", 0);
@@ -464,7 +593,9 @@ public class InstruccionesMips {
         return mips;
     }
     
-    //reg = t1, t2, t3, ...
+    /*
+		Obtiene el id del registro en la pila con el conincide el id
+	*/
     private String getRegistro(String id){
         String registro = "";
         for (Elemento e : registros){
@@ -475,6 +606,9 @@ public class InstruccionesMips {
         return registro;
     }
     
+	/*
+		Almacena en la lista de registros un nuevo registro con id solicitado
+	*/
     private String guardarRegistro(String id){
         Elemento nr = new Elemento(); //Nuevo registro
         for (Elemento e : registros){

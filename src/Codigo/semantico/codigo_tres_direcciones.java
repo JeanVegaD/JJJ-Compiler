@@ -547,7 +547,7 @@ public class codigo_tres_direcciones {
     
     public void condCaseStament(){
          if(activo){
-            code3d+="ifFalse "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + "==" + pilaCase.get(pilaCase.size()-2) + " goto "+ "end_"+ pilaCase.get(pilaCase.size()-1)   + "\n";
+            code3d+="ifFalse "+pilaLiteral.get(pilaLiteral.size()-1).getTn() + " == " + pilaCase.get(pilaCase.size()-2) + " goto "+ "end_"+ pilaCase.get(pilaCase.size()-1)   + "\n";
             pilaLiteral.remove(pilaLiteral.size()-1);
         } 
     }

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package destino;
 
 import java.io.BufferedReader;
@@ -22,7 +18,6 @@ import java.util.logging.Logger;
  */
 public class Analizador {
     
-    private ArrayList<Elemento> stack = new ArrayList<Elemento>();
     private  InstruccionesMips instruccion = new InstruccionesMips();
     private int stackPointer = 0;
     private int framePoiner = 0;
@@ -50,7 +45,7 @@ public class Analizador {
     public void escribirBuffer(String nombre) {    
         BufferedWriter bwr = null;
         try {
-            bwr = new BufferedWriter(new FileWriter(new File("src\\txtFiles\\tres_direcciones\\"+ nombre+".s")));
+            bwr = new BufferedWriter(new FileWriter(new File("src\\txtFiles\\tres_direcciones\\"+ nombre.substring(0, nombre.length()-4)+".s")));
             //write contents of StringBuffer to a file
             bwr.write(sb.toString());
             //flush the stream
@@ -62,14 +57,15 @@ public class Analizador {
         }
     }
     
+	/*
+		Inicia la lectura linea por line del codigo 3d y construye su equivalente en mips
+	*/
     public void iniciar(String nombre) throws IOException 
     {  
             BufferedReader br= abrirArchivo();  //creates a buffering character input stream  
             String line;  
             sb.append(instruccion.getHeader());
             sb.append(instruccion.getFuncionPrint());
-            sb.append(instruccion.getSalvarRegistrosTemporales());
-            sb.append(instruccion.getCargarRegistrosTemporales());
             while((line=br.readLine())!=null)  
             {  
                 if(esLineaValida(line)){
@@ -82,6 +78,9 @@ public class Analizador {
             escribirBuffer(nombre);
     }
     
+	/*
+		Construye el equivalente en mips para terminar la funcion main
+	*/
     private String crearMipsEnd(){
         String mips = "";
         mips += "end: \n";
@@ -90,15 +89,9 @@ public class Analizador {
         return mips;
     }
     
-    private void imprimirPila(){
-        String pila = "";
-        for(Elemento e : instruccion.stack){
-            pila += e.identificador+ " | ";
-            pila += e.arg1+ " | ";
-            pila += e.pos+ " ||| " ;
-        }
-    }
-    
+	/*
+		Analiza y construye una funcion en mips, únicamente analiza el código considerado parte de una funcion
+	*/
     private void prepararScopeDeFuncion(BufferedReader br) throws IOException{
         //Aqui trabajo el segmento de una funcion y creo el codigo
         String line;
@@ -122,10 +115,16 @@ public class Analizador {
             }
     }
     
+	/*
+		Agregar al mips las instrucciones necesacira para guardar el registro $ra en la pila
+	*/
     private void guardarRA(){
         sb.append(instruccion.getRASave());
     }
     
+	/*
+		Determina si la linea del 3D que está siendo analizada está vacia o no.
+	*/
     private boolean esLineaValida(String line){
         if((line == null) || line.split(" ",0)[0].equals("") || line.equals("") ){
             return false;
@@ -136,39 +135,62 @@ public class Analizador {
         
     }
     
+	/*
+		Permite determinar el tipo de accion proveniente de el 3D, y realizar una acción en consecuencia
+	*/
     private void analizar3D(String line, BufferedReader br){
-        if(esPop(line)){
-            crearPop(line);
+        if(esEtiqueta(line)){
+            sb.append(line+"\n");
         }
-        if(esInstruccion(line)){
-            crearInstruccion(line);
-        }
-        if(esPalabra(line, "return")){
-            hacerRetorno(line);
-        }
-        if(esCall(line)){
+        else if(esCall(line)){
             crearCall(line);
         }
-        if(esPalabra(line, "if")){
-            crearIf(line);
+        else if(esPop(line)){
+            crearPop(line);
         }
-        if(esEtiqueta(line)){
-            crearEtiqueta(line);
-        }
-        if(esPalabra(line, "goto")){
+        else if(esPalabra(line, "goto")){
             crearSalto(line);
         }
-        if(esPalabra(line, "param")){
+        else if(esInstruccion(line)){
+            crearInstruccion(line);
+        }
+        else if(esPalabra(line, "return")){
+            hacerRetorno(line);
+        }
+        
+        else if(esPalabra(line, "if")){
+            crearIf(line);
+        }
+        else if(esEtiqueta(line)){
+            crearEtiqueta(line);
+        }
+        else if(esPalabra(line, "param")){
             crearParametro(line);
         }
-        if(esDeclaracion(line)){ 
+        else if(esDeclaracion(line)){ 
             crearDeclaracion(line);
         }
-        if(esArgumento(line)){//esArgumento
+        else if(esArgumento(line)){//esArgumento
             crearArgumento(line);
+        }
+        else if(esPalabra(line, "ifFalse")){
+            crearEstructura(line);
+        }
+        else{
+            sb.append("#Evento no capturado\n");
         }
     }
     
+	/*
+		Agrega al mips la estructura para construir un switch, do while
+	*/
+    private void crearEstructura(String line){
+        sb.append(instruccion.getEstructura(line));
+    }
+    
+	/*
+		Determina si el codigo mips que se analiza corresponde parametro de una función
+	*/
     private boolean esArgumento(String line){
         String[] arr = line.split(" ", 0);
         if(arr.length == 4){
@@ -183,38 +205,70 @@ public class Analizador {
     }
     
     
-    
+    /*
+		Agrega a la cadena de texto mips la estructura recibida del constructor de mips, un parametro de una función
+	*/
     private void crearArgumento(String line){
         sb.append(instruccion.getArgumento(line));
     }
     
+	/*
+		Agrega a la cadena de texto mips la estructura recibida del constructor de mips, una llamada a subrutina
+	*/
     private void crearCall(String line){
         sb.append(instruccion.getCall(line));
     }
     
-    
+    /*
+		Determina si el codigo mips que se analiza corresponde al casteo de una variable
+	*/
     private boolean esPop(String line){
         String[] arr = line.split(" ", 0);
-        if(arr.length == 3 && Character.isLetter(arr[2].charAt(0)) && !arr[2].equals("true") && !arr[2].equals("false") && (arr[2].charAt(0) != 't') ){
-            return true;
+        if(arr.length == 3 && Character.isLetter(arr[2].charAt(0))  && !arr[2].equals("true") && !arr[2].equals("false") ){
+            if(arr[2].length()>1)
+            {
+                if(Character.isLetter(arr[2].charAt(1)))return true;
+                else return false;
+            }
+            else{
+                return true;
+            }
         }
         else{
             return false;
         }
     }
     
+	/*
+		Agrega a la cadena de texto mips la estructura recibida del constructor de mips, invocación de variable
+	*/
     public void crearPop(String line){
         sb.append(instruccion.getPop(line));
     }
     
+	/*
+		Agrega a la cadena de texto mips la estructura recibida del constructor de mips, parametros
+	*/
     private void crearParametro(String line){
         sb.append(instruccion.getParametro(line));
     }
     
+	/*
+		Agregar el mips la estructura necesaria para saltar a una etiqueta
+	*/
     private void crearSalto(String line){
-        sb.append(line+"\n");
+        String[] arr = line.split(" ", 0);
+        if(arr[1].charAt(arr[1].length()-1) == ':'){
+            sb.append("j " + arr[1].substring(0, arr[1].length()-1) +"\n");
+        }
+        else{
+            sb.append("j " + arr[1] +"\n");
+        }
     }
     
+	/*
+		Determina si el 3D que está siendo analizado corresponde la etiqueta(palabra a comparar)
+	*/
     public boolean esPalabra(String line, String etiqueta){
         String[] arr = line.split(" ", 0);
         if(arr[0].equals(etiqueta)){
@@ -225,11 +279,16 @@ public class Analizador {
         }
     }
 
-    
+    /*
+		Agrega al codigo mips la etiqueta
+	*/
     public void crearEtiqueta(String line){
         sb.append(line+"\n");
     }
     
+	/*
+		Determina si el 3D que está siendo analizado corresponde a el nombre de una función
+	*/
     public boolean esEtiqueta(String line){
         String[] arr = line.split(" ", 0);
         if(arr.length == 1){
@@ -240,10 +299,16 @@ public class Analizador {
         }
     }
 
+	/*
+		Agrega a la cadena de texto mips la estructura recibida del constructor de mips, un if
+	*/
     public void crearIf(String line){
         sb.append(instruccion.getIf(line));
     }
     
+	/*
+		Construye el equivalente en mips para el retorno de el procedimiento main
+	*/
     public void hacerRetorno(String line){
         if(esMain){
             sb.append("jal end\n");
@@ -254,6 +319,9 @@ public class Analizador {
         }
     }
     
+	/*
+		Determina si el 3D que está siendo analizado corresponde a una llamada de subrutina
+	*/
     private boolean esCall(String line){
         String[] arr = line.split(" ", 0);
         if(arr.length>2){
@@ -271,20 +339,30 @@ public class Analizador {
     
     
     
-    
+    /*
+		Determina si el 3D que está siendo analizado corresponde a una declaracion
+	*/
     private void crearDeclaracion(String line){
         sb.append(instruccion.getDeclaracion(line));
     }
     
     
+	/*
+		Agrega a la cadena de texto mips la estructura recibida del constructor de mips
+	*/
     private void crearInstruccion(String line){
         sb.append(instruccion.getInstruccion(line));
 
     }
     
+	
+	/*
+		Determina si la linea 3D que está siendo analizada corresponde a una declaracion
+	*/
     private boolean esDeclaracion(String line){
         String[] arr = line.split(" ", 0);
-        if((arr.length == 3) && arr[2].substring(0,1).equals("t") && !arr[0].substring(0,1).equals("t")){
+        
+        if((arr.length == 3) && arr[2].substring(0,1).equals("t") ){
             return true;
         }
         else{
@@ -292,9 +370,13 @@ public class Analizador {
         }
     }
     
+	
+	/*
+		Determina si la linea 3D que está siendo analizada corresponde a una instrucción
+	*/
     private boolean esInstruccion(String line){
         String[] arr = line.split(" ", 0);
-        if(arr[0].substring(0,1).equals("t") && !esPop(line)){
+        if(arr[0].substring(0,1).equals("t") && !esPop(line) && !Character.isLetter(arr[0].charAt(1))){
             return true;
         }
         else{
@@ -302,7 +384,9 @@ public class Analizador {
         }
     }
     
-    
+    /*
+		Determina si es el inicio de una funcion en el 3D
+	*/
     private boolean esBeginFuncion(String line)
     {
         String[] arr = line.split(" ", 0);
@@ -316,6 +400,9 @@ public class Analizador {
         }
     }    
     
+	/*
+		Determina si es el final de una funcion en el 3D
+	*/
     private boolean esEndFuncion(String line)
     {
         String[] arr = line.split(" ", 0);
@@ -329,6 +416,9 @@ public class Analizador {
         }
     }  
     
+	/*
+		Agrega una nueva linea a la cadena de texto del codigo
+	*/
     private void agregarLineaMips(String mipsline){
         sb.append(mipsline);
     }
