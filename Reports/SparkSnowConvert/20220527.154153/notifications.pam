@@ -1,0 +1,2 @@
+Code,NotificationArgs,FileId,ProjectId,Line,Column
+SPRKSCL1000,"Source project spark-core version is spark-core_2.12:3.2.1, the spark-core version supported by snowpark is 2.12:3.1.2 so there may be functional differences between the existing mappings.¢Warning",,,,

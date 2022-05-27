@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300' rel='stylesheet' type='text/css'>
+    <style>
+        /* Global properties */
+:root {
+    --sc-dark-blue: #0085cd;
+    --sc-light-blue: #59b3e4;
+    --sc-light-blue-spark: #64B5F6;
+    --sc-medium-blue-spark: #0056AE;
+    --sc-green: #81c784;
+    --sc-pink: #ff4081;
+    --sc-salmon: #ff6354;
+    --sc-light-orange: #ffb74d;
+    --sc-orange: #f57c00;
+    --sc-orange-scala: #E39C00;
+    --sc-dark-orange: #ff9800;
+    --sc-grey: #C7C7C7;
+    --sc-blue: #2196F3;
+    --sc-background-color: #FAFAFA;
+    --sc-font-color: #808080;
+    --sc-separator-color: #E4E4E4;
+    --sc-light-blue-table: #D2E9F6;
+    --sc-light-blue-table-interline: #FFFFFF;
+}
+
+/* Loading div */
+.loader {
+    border: 8px solid var(--sc-grey);
+    border-radius: 50%;
+    border-top: 8px solid var(--sc-dark-blue);
+    width: 30px;
+    height: 30px;
+    -webkit-animation: spin 0.5s linear infinite; /* Safari */
+    animation: spin 0.5s linear infinite;
+    margin-left: 50%;
+    margin-top: 400px;
+}
+
+
+/* General */
+
+.report {
+    background-color: var(--sc-background-color);
+    font-family: 'Open Sans';
+    color: var(--sc-font-color);
+    font-size: 13px;
+    line-height: 0.2;
+}
+
+.card {
+    margin: 8px;
+    background-color: white;
+    border-radius: 0px;
+    box-shadow: 2px 2px 2px 2px var(--sc-grey);
+    border: 1px 1px 1px 1px;
+    border-left-width: 1px;
+}
+
+cardTable {
+    margin: 8px;
+    background-color: white;
+    border-radius: 0px;
+    box-shadow: 2px 2px 2px 2px var(--sc-grey);
+    border-left-width: 1px;
+    width: 820px;
+    height: 226px;
+}
+
+.card-content {
+    display: grid;
+    height: 75%;
+    margin-top: 15px;
+    margin-left: 80px;
+    margin-right: 80px;
+}
+
+.card-footer {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.link {
+    cursor: pointer;
+    color: var(--sc-dark-blue);
+    text-decoration: underline;
+    text-decoration-color: var(--sc-dark-blue);
+}
+
+
+#content {
+    height: auto;
+    min-width: 1200px;
+    max-width: 1200px;
+    margin: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.rectangle {
+    display: grid;
+    height: 59px;
+    width: 59px;
+    border-radius: 4px;
+    margin: auto;
+}
+
+.summary-item {
+    display: grid;
+    grid-template-columns: 100px auto;
+    align-content: center;
+    width: 225px;
+}
+
+.breakdown-item {
+    display: grid;
+    grid-template-columns: 70px 703px;
+    align-content: center;
+    align-items: center;
+    height: 75px;
+}
+
+.action-item {
+    display: grid;
+    width: 700px;
+    height: 110px;
+}
+
+.top-10-display {
+    display: grid;
+    width: 700px;
+}
+
+.action-lateral-item {
+    display: grid;
+    grid-template-columns: 90%;
+    align-content: center;
+    width: 460px;
+}
+
+.summary-icons {
+    display: grid;
+    margin: auto;
+    height: 24px;
+    width: 24px;
+}
+
+    .summary-icons > img {
+        margin: auto;
+    }
+
+.summary-item-info {
+    display: grid;
+}
+
+.breakdown-item-info {
+    display: grid;
+    line-height: 1;
+    width: 320px;
+}
+
+
+/* Header section */
+
+#header {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    height: 100px;
+    margin: 8px;
+}
+
+#logo > img {
+    float: right;
+}
+
+#summary {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    height: 360px;
+}
+
+#summary-right {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    margin: unset;
+    height: 50px;
+}
+
+#issues-breakdown-box {
+    display: grid;
+    grid-template-columns: 800px 380px;
+    margin: unset;
+    height: auto;
+    min-height: 150px;
+    margin-bottom: 50px;
+}
+#top-actions {
+    height: 100px;
+}
+#summary-left {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    margin: unset;
+    height: 50px;
+}
+
+#summary > div {
+    text-align: left;
+}
+
+#files {
+    height: 190px;
+}
+
+#conversion-chart {
+    height: 190px;
+}
+
+#conversion-chart-view {
+    height: 250px;
+}
+
+#total-files {
+    background-color: var(--sc-dark-blue);
+}
+
+#convertion-speed {
+    background-color: var(--sc-light-blue);
+}
+
+#convertion-time {
+    background-color: var(--sc-green);
+}
+
+#total-lines-code {
+    background-color: var(--sc-pink);
+}
+
+#total-sql-franment-analysis {
+    background-color: var(--sc-salmon);
+}
+
+#total-conversion-errors {
+    background-color: var(--sc-light-orange);
+}
+
+.conversion-errors {
+    background-color: var(--sc-light-orange);
+}
+
+.tab {
+    margin-left: 2.5em
+}
+
+.text-center {
+    text-align: center;
+}
+.categorizationzation-text-center {
+    text-align: center;
+    margin-top: 50px;
+}
+.after {
+    content: "\a";
+    white-space: pre;
+}
+
+#total-parsing-errors {
+    background-color: var(--sc-orange);
+}
+
+.parsing-errors {
+    background-color: var(--sc-orange);
+}
+
+#total-warnings {
+    background-color: var(--sc-dark-orange);
+}
+
+.warnings {
+    background-color: var(--sc-dark-orange);
+}
+
+#file-spark-usages-level-breakdown {
+    display: grid;
+    grid-template-columns: 33.3% 33.3% 33.3%;
+    margin: unset;
+}
+/*File and Spark usages Level Breakdown*/
+#total-files-spark {
+    background-color: var(--sc-dark-blue);
+}
+
+#scalaFiles {
+    height: 190px;
+}
+
+#fileAndSparkUsages {
+    height: 980px;
+}
+
+#spark-api-identified-usages {
+    height: 620px;
+}
+
+
+#scala-files {
+    background-color: var(--sc-light-blue-spark);
+}
+
+#project-build-files {
+    background-color: var(--sc-medium-blue-spark);
+}
+
+#scala-files-with-embedded-sql {
+    background-color: var(--sc-orange-scala);
+}
+
+.summary-item-value {
+    text-align: left;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.15px;
+    line-height: 1.5;
+    height: 20px;
+}
+
+.title-spark-app-conversion {
+    text-align: center;
+}
+
+.writer-legend-content {
+    display: flex;
+    justify-content: center;
+}
+
+.writer-legend {
+    text-align: justify;
+}
+
+.writer-legend-center {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.summary-item-value-sngle {
+    text-align: left;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.15px;
+    line-height: 1.5;
+    height: 0px;
+}
+
+
+.summary-item-name {
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 0.15px;
+    line-height: 1;
+}
+
+#first-step {
+    background-color: var(--sc-green);
+    color: white;
+}
+
+/* Objects inventory section */
+
+
+#object-inventory-button {
+    margin: auto;
+    width: 169px;
+    height: 36px;
+}
+
+/* Footer section */
+
+#footer {
+    text-align: center;
+    line-height: 1.5;
+    font-size: 12px;
+    margin: 8px;
+    height: 50px;
+}
+
+.divTable {
+    display: table;
+    width: 100%;
+    border-spacing: 5px; /*cellspacing:poor IE support for  this*/
+    height: 120px;
+}
+
+.divTableSpark {
+    display: grid;
+    grid-template-columns: repeat(2, 290px);
+    grid-auto-rows: 120px;
+    grid-gap: 10px;
+    width: 100%;
+    height: 550px;
+}
+
+.divRow {
+    display: table-row;
+    width: auto;
+}
+
+.divCell {
+    float: left; /*fix for  buggy browsers*/
+    display: table-column;
+    width: 30%;
+}
+
+.divCellTableRight {
+    float: left; /*fix for  buggy browsers*/
+    display: table-column;
+    width: 98%;
+}
+
+.divCellRight {
+    float: left;
+    display: table-column;
+    width: 0%
+}
+
+.divCell-icon {
+    float: left; /*fix for  buggy browsers*/
+    display: table-column;
+    width: 30%;
+    height: 20px
+}
+
+.big {
+    grid-row: 1 / 3;
+    grid-column: 2 / 4
+}
+
+.divCenter {
+    text-align: center;
+}
+
+#sparkApi {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+    #sparkApi td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        font-size: 14px;
+        height: 56px
+    }
+
+    #sparkApi tr:nth-child(even) {
+        background-color: var(--sc-light-blue-table);
+    }
+    /*-sc-light-blue-table-interline*/
+    #sparkApi tr:hover {
+        background-color: var(--sc-light-blue-spark);
+    }
+
+    #sparkApi th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: center;
+        background-color: var(--sc-dark-blue);
+        color: white;
+        font-size: 18px;
+        width: 25%;
+        height: 76px;
+    }
+
+
+.divCenter {
+    text-align: center;
+}
+
+#top10-issue-items {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-left: 40px;
+    margin-top: 20px;
+}
+
+    #top10-issue-items td {
+        /*border-bottom-color: grey;*/
+        padding: 8px;
+        font-size: 14px;
+        height: 23px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    /*    #top10-issue-items tr:nth-child(even) {
+        background-color: var(--sc-light-orange);
+    }*/
+
+    #top10-issue-items tr:hover {
+        background-color: var(--sc-light-orange);
+    }
+
+    #top10-issue-items th {
+        height: 76px;
+        border-bottom-color: grey;
+        text-align: left;
+    }
+
+.top10-issue-table {
+    margin: 8px;
+    border-radius: 0px;
+    border-left-width: 1px;
+    width: 746px;
+    height: 170px;
+}
+
+.top10-issue-table-rigth {
+    margin-left: 88px;
+    border-radius: 0px;
+    border-left-width: 1px;
+    width: 246px;
+    height: 170px;
+}
+
+.critical {
+    height: 20px;
+    width: 20px;
+    border-radius: 4px;
+    background-color: #FD8D3C;
+}
+
+.errors {
+    height: 20px;
+    width: 20px;
+    border-radius: 4px;
+    background-color: var(--sc-light-orange);
+}
+
+.warnings-indicate {
+    height: 20px;
+    width: 20px;
+    border-radius: 4px;
+    background-color: var(--sc-dark-orange);
+}
+
+.title-indication {
+    height: 20px;
+}
+
+.info-indication {
+    display: grid;
+    grid-template-columns: 25px auto;
+    align-content: center;
+    width: 35px;
+    height: 35px;
+}
+
+.value-indication {
+}
+
+#inidcate-issues-breakdown {
+
+}
+
+.indicate-item-info {
+    display: grid;
+}
+
+.indicate-item-name {
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 0.15px;
+    line-height: 1;
+}
+
+.table-number-issues {
+    display: table;
+    width: 190px;
+    border-spacing: 5px;
+    margin-top: 150px;
+}
+
+.number-of-issues {
+    line-height: 1;
+}
+
+.card-issues {
+    margin-left: 40px;
+    margin-top: 20px;
+}
+
+.view-complete-reports {
+    box-sizing: border-box;
+    height: 40px;
+    width: 248px;
+    border: 1px solid #0085CD;
+    border-radius: 4px;
+    text-align: center;
+    align-items: center;
+    line-height: 3;
+}
+
+.view-complete-message {
+    font-family: "Open Sans";
+    font-size: 14px;
+    letter-spacing: 0.15px;
+    line-height: 1;
+    width: 800px;
+}
+
+#view-complete-reports {
+    display: grid;
+    grid-template-columns: 212px 268px 280px 512px;
+    margin: unset;
+}
+
+#object-inventory-button {
+    margin: auto;
+    width: 248px;
+    height: 40px;
+}
+
+.top-10-issue-items {
+    width: 188px;
+    color: #606264;
+    font-family: "Open Sans";
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 26px;
+    margin-left: 20px;
+    margin-top: 30px;
+}
+
+.if-you-are-using-the {
+    height: 36px;
+    width: 624px;
+    color: #606264;
+    font-family: "Open Sans";
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 18px;
+}
+
+.button {
+    cursor: pointer;
+    color: var(--sc-dark-blue);
+    font-size: 12px;
+    background-color: transparent;
+    border-radius: 5px;
+    border: var(--sc-dark-blue) 1px solid;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+#top-actions-explanation {
+    display: grid;
+    grid-template-columns: 80px auto;
+    margin-bottom: 50px;
+}
+
+#explanation-text {
+    margin: auto;
+}
+.issues-breakdown-table {
+    display: grid;
+    grid-template-columns: 100px auto;
+}
+.issue-separator {
+    border-bottom: var(--sc-grey) 1px solid;
+    margin-bottom: 8px;
+}
+.card-content {
+    display: grid;
+    height: 75%;
+    margin-top: 35px;
+    margin-left: 80px;
+    margin-right: 80px;
+}
+.issues-breakdown {
+    display: grid;
+    grid-template-columns: 140px 25px 320px 100px;
+}
+.issue-description {
+    line-height: 1.5;
+}
+.title {
+    font-weight: bold;
+}
+
+.issues-title {
+    margin-left: 2.5em
+}
+
+.card-title {
+    line-height: 1;
+    border-bottom: var(--sc-separator-color);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-weight: 800;
+    text-align: center;
+    color: black;
+}
+
+.small-summary-item-value {
+    font-size: 14px;
+}
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body class="report">
+    <div id="app">
+        <div class="loader" id="loader"></div>
+        <div id="content" hidden>
+            <!-- Header section -->
+            <div id="header">
+                <div id="general-info">
+                    <h2>Assessment Report</h2>
+                    <br>
+                    <p>Run ID: {{migrationData.HeaderSection.Items[0].ItemValue}}</p>
+                    <p>{{migrationData.HeaderSection.Items[2].ItemValue}}</p>
+                    <p>Mobilize.net SnowConvert for Spark Scala version number {{migrationData.HeaderSection.Items[1].ItemValue}}</p>
+                </div>
+                <div id="logo">
+                    <img width="190" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/logoScala.svg">
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <!-- Summary section of main Assessment information  -->
+            <div class="tab">
+                <h1>Overall Assessment Summary</h1>
+            </div>
+            <br>
+            <br>
+            <div id="summary" class="card">
+                <div id="summary-right">
+                    <div class="card">
+                        <div class="summary-item">
+                            <div class="rectangle" id="total-files">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/TotalFiles.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.SummarySection.Items[0].ItemValue}}</p>
+                                <p class="summary-item-name">{{migrationData.SummarySection.Items[0].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="summary-item">
+                            <div class="rectangle" id="convertion-speed">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/ConversionSpeed.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.SummarySection.Items[1].ItemValue}} <small class="small-summary-item-value">lines/sec</small></p>
+                                <p class="summary-item-name">{{migrationData.SummarySection.Items[1].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="summary-item">
+                            <div class="rectangle" id="convertion-time">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snow/SnowContent/htmlreport/img/time.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.SummarySection.Items[2].ItemValue}}</p>
+                                <p class="summary-item-name">{{migrationData.SummarySection.Items[2].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="summary-left">
+                    <div class="card">
+                        <div class="summary-item">
+                            <div class="rectangle" id="total-lines-code">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/TotalConversion.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.SummarySection.Items[3].ItemValue}}</p>
+                                <p class="summary-item-name">{{migrationData.SummarySection.Items[3].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="display:none">
+                        <div class="summary-item">
+                            <div class="rectangle" id="total-sql-franment-analysis">
+                                <div id="lines-icon" class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/DataBase.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.SummarySection.Items[4].ItemValue}}%</p>
+                                <p class="summary-item-name">{{migrationData.SummarySection.Items[4].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Action Items Summary  -->
+                <div id="files" class="card">
+                    <div class="action-item">
+                        <br>
+                        <div class="tab">
+                            <h3>Action Items Summary</h3>
+                        </div>
+                        <div id="content-parsing-error">
+                            <div class="divTable">
+                                <div class="divRow">
+                                    <div class="divCell">
+                                        <div class="divCell-icon" align="left">
+                                            <div class="rectangle" id="total-conversion-errors">
+                                                <div class="summary-icons">
+                                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/TotalWarnings.svg">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divCell">
+                                        <div class="divCell-icon" align="left">
+                                            <div class="rectangle" id="total-parsing-errors">
+                                                <div class="summary-icons">
+                                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/ConversionErrors.svg">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divCellRight">
+                                        <div class="divCell-ico" align="left">
+                                            <div class="rectangle" id="total-warnings">
+                                                <div class="summary-icons">
+                                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/TotalParsingErrors.svg">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divRow">
+                                    <div class="divCell"><p class="summary-item-value-sngle">{{migrationData.SummarySection.Items[5].ItemValue}}</p></div>
+                                    <div class="divCell"><p class="summary-item-value-sngle">{{migrationData.SummarySection.Items[6].ItemValue}}</p></div>
+                                    <div class="divCell"><p class="summary-item-value-sngle">{{migrationData.SummarySection.Items[7].ItemValue}}</p></div>
+                                </div>
+                                <div class="divRow">
+                                    <div class="divCell"><p class="summary-item-name">{{migrationData.SummarySection.Items[5].ItemName}}</p></div>
+                                    <div class="divCell"><p class="summary-item-name">{{migrationData.SummarySection.Items[6].ItemName}}</p></div>
+                                    <div class="divCell"><p class="summary-item-name">{{migrationData.SummarySection.Items[7].ItemName}}</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="conversion-chart" class="card action-items-summary">
+                    <br>
+                    <div class="card-content" id="conversion-chart">
+                        <strong>Spark API Summary</strong>
+                        <div v-if="FillConversionInventories()">
+                            <top-level-conversion-chart>
+                            </top-level-conversion-chart>
+                            <div class="card-footer">
+                            </div>
+                        </div>
+                        <div v-else class="card-footer">
+                            No objects found
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="tab">
+                <h1>File and Spark Usages Level Breakdown</h1>
+            </div>
+            <br>
+            <br>
+            <div id="scalaFiles" class="card">
+                <br>
+                <br>
+                <div class="tab">
+                    <h2>Spark Usages</h2>
+                </div>
+                <div id="file-spark-usages-level-breakdown">
+                    <div class="card">
+                        <div class="summary-item">
+                            <div class="rectangle" id="total-files-spark">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/TotalFiles.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.ScalaFilesSummaryInformation.Items[0].ItemValue}}</p>
+                                <p class="summary-item-name">{{migrationData.ScalaFilesSummaryInformation.Items[0].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="summary-item">
+                            <div class="rectangle" id="scala-files">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/ScalaFiles.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.ScalaFilesSummaryInformation.Items[1].ItemValue}}</p>
+                                <p class="summary-item-name">{{migrationData.ScalaFilesSummaryInformation.Items[1].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="summary-item">
+                            <div class="rectangle" id="project-build-files">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/ProjectBuildFiles.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.ScalaFilesSummaryInformation.Items[2].ItemValue}}</p>
+                                <p class="summary-item-name">{{migrationData.ScalaFilesSummaryInformation.Items[2].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="display:none">
+                        <div class="summary-item">
+                            <div class="rectangle" id="scala-files-with-embedded-sql">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/DataBase.svg">
+                                </div>
+                            </div>
+                            <div class="summary-item-info">
+                                <p class="summary-item-value">{{migrationData.ScalaFilesSummaryInformation.Items[3].ItemValue}}</p>
+                                <p class="summary-item-name">{{migrationData.ScalaFilesSummaryInformation.Items[3].ItemName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h5>* The Project Build Files contain information about the project and configuration details to build the project</h5>
+            </div>
+            <br>
+            <br>
+            <div id="fileAndSparkUsages" class="card">
+                <br>
+                <br>
+                <div class="tab">
+                    <h2>Spark API Identified Usages</h2>
+                </div>
+                <div id="spark-api-identified-usages">
+                    <div class="divTableSpark">
+                        <div>
+                            <div class="card">
+                                <div class="summary-item">
+                                    <div class="rectangle" id="scala-files">
+                                        <div class="summary-icons">
+                                            <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/ScalaFiles.svg">
+                                        </div>
+                                    </div>
+                                    <div class="summary-item-info">
+                                        <p class="summary-item-value">{{migrationData.SparkApiIdentifiedUsagesSection.Items[0].ItemValue}}</p>
+                                        <p class="summary-item-name">{{migrationData.SparkApiIdentifiedUsagesSection.Items[0].ItemName}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="card">
+                                <div class="summary-item">
+                                    <div class="rectangle" id="scala-files">
+                                        <div class="summary-icons">
+                                            <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/SparkUsages.svg">
+                                        </div>
+                                    </div>
+                                    <div class="summary-item-info">
+                                        <p class="summary-item-value">{{migrationData.SparkApiIdentifiedUsagesSection.Items[1].ItemValue}}</p>
+                                        <p class="summary-item-name">{{migrationData.SparkApiIdentifiedUsagesSection.Items[1].ItemName}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="big">
+                            <div class="divCellTableRight">
+                                <div class="cardTable">
+                                    <table id="sparkApi">
+                                        <tr>
+                                            <th>Spark API Usages</th>
+                                            <th>Supported Usages</th>
+                                            <th>Unsupported Usages</th>
+                                            <th>Readiness Score</th>
+                                        </tr>
+                                        <tr>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[0].SparkAPIUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[0].SupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[0].UnsupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[0].ReadinessScore}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[1].SparkAPIUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[1].SupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[1].UnsupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[1].ReadinessScore}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[2].SparkAPIUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[2].SupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[2].UnsupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[2].ReadinessScore}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[3].SparkAPIUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[3].SupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[3].UnsupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[3].ReadinessScore}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[4].SparkAPIUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[4].SupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[4].UnsupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[4].ReadinessScore}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[5].SparkAPIUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[5].SupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[5].UnsupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[5].ReadinessScore}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[6].SparkAPIUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[6].SupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[6].UnsupportedUsages}}</td>
+                                            <td class="divCenter">{{migrationData.SparkApiIdentifiedUsagesSection.SparkApiUsagesRows[6].ReadinessScore}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="conversion-chart-over" class="card action-items-summary">
+                    <br>
+                    <div class="card-content" id="conversion-chart-view">
+                        <div class="title-spark-app-conversion">
+                            <h3>Readiness Rate</h3>
+                        </div>
+                        <div v-if="FillConversionInventoriesView()">
+                            <down-level-conversion-chart>
+                            </down-level-conversion-chart>
+                        </div>
+                        <div v-else class="card-footer">
+                            No objects found
+                        </div>
+                        <div class="writer-legend-content">
+                            <div class="writer-legend">
+                                <h5>•  The Readiness Rate is considering only identified Spark usages to determine its value. Code with parsing errors is not considered to calculate the rate.</h5>
+                                <h5>•  The data inside the “Spark API – Identified Usages” table shows only information about identified usages.</h5>
+                                <h5>•  If a hyphen (‘-’) is listed in the table above, it means no Spark Usages of that kind were found in the input folder.</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+            </div>
+            <div id="issuesBreakdown" class="card" v-if="FillTopActionItemDistributionInventories()">
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="issues-title">
+                    <h2>Issues Breakdown</h2>
+                </div>
+                <div class="categorizationzation-text-center">
+                    <h2>Error Categorization</h2>
+                </div>
+                <div id="file-spark-usages-level-breakdown">
+                    <div class="card">
+                        <div class="breakdown-item">
+                            <div class="rectangle conversion-errors">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/TotalWarnings.svg">
+                                </div>
+                            </div>
+                            <div class="breakdown-item-info">
+                                <h5>Warnings:<br>Code that is recognized and converted, but needs review.</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="breakdown-item">
+                            <div class="rectangle parsing-errors">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/ConversionErrors.svg">
+                                </div>
+                            </div>
+                            <div class="breakdown-item-info">
+                                <h5>Conversion Errors:<br>Code that is recognized, but not converted.</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="breakdown-item">
+                            <div class="rectangle warnings">
+                                <div class="summary-icons">
+                                    <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/TotalParsingErrors.svg">
+                                </div>
+                            </div>
+                            <div class="breakdown-item-info">
+                                <h5>Parsing Errros:<br>Code that is not recognized and not converted.</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="issues-breakdown-box">
+                    <div id="inidcate-issues-breakdown">
+                        <div class="top-10-display">
+                            <div class="card-issues">
+                                <div class="breakdown-item">
+                                    <div class="rectangle conversion-errors">
+                                        <div class="summary-icons">
+                                            <img width="25" height="25" src="https://mobilizeproduct.blob.core.windows.net/snowsparkcontent/images/TotalWarnings.svg">
+                                        </div>
+                                    </div>
+                                    <div class="breakdown-item-info">
+                                        <div class="top-10-issue-items">
+                                            <strong>
+                                                Top {{migrationData.ActionItemSection.ItemsCount}} issue items
+                                            </strong>
+                                            <br>
+                                            <div class="if-you-are-using-the">If you are using the full version of SnowConvert, you can find out the exact file and location of each error in the Issues Report in the output reports folder created by SnowConvert.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="top-actions-content" class="card-content">
+                            <div class="issues-breakdown">
+                                <div class="issue-description title"><strong>ACTION ITEMS</strong></div>
+                                <div></div>
+                                <div class="issue-description title"><strong>DESCRIPTION</strong></div>
+                                <div class="issue-description title"><strong>INSTANCES</strong></div>
+                            </div>
+                            <div class="issues-breakdown"
+                                 v-for="(item, index) in migrationData.ActionItemSection.Items"
+                                 v-bind:class="[index < (migrationData.ActionItemSection.ItemsCount - 1) ? 'issue-separator' : '']"
+                                 v-if="index < migrationData.ActionItemSection.ItemsCount">
+                                <div class="link issue-description" v-on:click="openLink(migrationData.ActionItemSection.Items[index].DocumentationUrl)">{{migrationData.ActionItemSection.Items[index].Code}}</div>
+                                <div class="critical"></div>
+                                <div class="issue-description">{{migrationData.ActionItemSection.Items[index].Description}}</div>
+                                <div class="issue-description">{{migrationData.ActionItemSection.Items[index].ReferencesQuantity}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="table-number-issues">
+                            <tr>
+                                <td colspan="3" class="number-of-issues">
+                                    Number of issues
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div class="critical"></div>
+                                            </td>
+                                            <td>
+                                                <p class="indicate-item-name">{{migrationData.SparkApiIdentifiedUsagesSection.NumberOfIssues[0].Warnings}}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div class="errors"></div>
+                                            </td>
+                                            <td>
+                                                <p class="indicate-item-name">{{migrationData.SparkApiIdentifiedUsagesSection.NumberOfIssues[0].ConversionErrors}}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div class="warnings-indicate"></div>
+                                            </td>
+                                            <td>
+                                                <p class="indicate-item-name">{{migrationData.SparkApiIdentifiedUsagesSection.NumberOfIssues[0].ParsingErrors}}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="number-of-issues">
+                                    Number of unique issues
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div class="critical"></div>
+                                            </td>
+                                            <td>
+                                                <p class="indicate-item-name">{{migrationData.SparkApiIdentifiedUsagesSection.NumberOfUniqueIssues[0].Warnings}}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div class="errors"></div>
+                                            </td>
+                                            <td>
+                                                <p class="indicate-item-name">{{migrationData.SparkApiIdentifiedUsagesSection.NumberOfUniqueIssues[0].ConversionErrors}}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div class="warnings-indicate"></div>
+                                            </td>
+                                            <td>
+                                                <p class="indicate-item-name">{{migrationData.SparkApiIdentifiedUsagesSection.NumberOfUniqueIssues[0].ParsingErrors}}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="writer-legend-content">
+                    <div class="writer-legend-center">
+                        <h5>For more information on the error codes and their severity, please visit our documentation page on errors:</h5>
+                        <span class="link" v-on:click="openLink(links.troubleshooting)">https://docs.mobilize.net/snowconvert/for-spark-scala/issues-and-troubleshooting</span>
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <div id="top-actions" class="card">
+                    <div class="card-title tab">Top Action Items</div>
+                    <div id="no-items-content" class="card-content">
+                        No action items requires manual work or inspection after running SparkSnowConvert.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div>
+            <div id="view-complete-reports">
+                <div>
+
+                </div>
+                <div>
+                    <button id="object-inventory-button" type="button" class="object-inventory-button button" v-on:click="openDirectory()">View complete reports</button>
+                </div>
+                <div class="view-complete-message">
+                    Review each object that was identified and marked for conversion in your source code here. Note that this is a csv file that will download. For more information on how to interpret this csv file,
+                    <span class="link" v-on:click="openLink(links.documentation)">visit our documentation site</span>.
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <br>
+            <br>
+            <br>
+            <div>
+                For a complete review of your action items, contact us at
+                <span class="link" v-on:click="openLink(links.support)">support@mobilize.net</span>.
+            </div>
+            <div>
+                You can also post a message to our
+                <span class="link" v-on:click="openLink(links.forum)">forums</span> if you have a question about a specific item.
+            </div>
+            <div>
+                <span class="link" v-on:click="openLink(links.guide)">How to read this report?</span>
+            </div>
+        </div>
+    </div>
+    <script src="https://mobilizeproduct.blob.core.windows.net/snow/SnowContent/htmlreport/src/vue.js"></script>
+    <script src="https://mobilizeproduct.blob.core.windows.net/snow/SnowContent/htmlreport/src/vuetify.js"></script>
+    <script src="https://mobilizeproduct.blob.core.windows.net/snow/SnowContent/htmlreport/src/chart.js"></script>
+    <script src="https://mobilizeproduct.blob.core.windows.net/snow/SnowContent/htmlreport/src/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://mobilizeproduct.blob.core.windows.net/snow/SnowContent/htmlreport/src/vue-chartjs.min.js"></script>
+    <script type="text/javascript">
+        // HTML report data
+var json = {"ConversionSection":{"Items":[{"ObjectName":"Usages","IdentifiedUsages":"5","PartiallyConvertedPercentage":"0","IdentifiedUsagesLabel":"Identified Usages: 5","FullyConvertedUsagesLabel":"Fully converted Usages: 5","SuccessConversionPercentage":"100"}]},"ConversionViewSection":{"Items":[{"ObjectName":"","IdentifiedUsages":"5","PartiallyConvertedPercentage":"0","IdentifiedUsagesLabel":"Successfully Supported","FullyConvertedUsagesLabel":"Percentage with Unsupported Items","SuccessConversionPercentage":"100"}]},"HeaderSection":{"Items":[{"ItemName":"RunId","ItemValue":"20220527.154153"},{"ItemName":"VersionNumber","ItemValue":"Not Provided"},{"ItemName":"Date","ItemValue":"2022/05/27"}]},"SummarySection":{"Items":[{"ItemName":"Total Files","ItemValue":"143"},{"ItemName":"Assessment Speed","ItemValue":"546"},{"ItemName":"Assessment Time","ItemValue":"00:00:05"},{"ItemName":"Total Lines Code","ItemValue":"2733"},{"ItemName":"Total Conversion Issues","ItemValue":"0"},{"ItemName":"Total Parsing Errors","ItemValue":"0"},{"ItemName":"Total Warnings","ItemValue":"1"},{"ItemName":"Total SQL fragment Analysis","ItemValue":"2733"}]},"ScalaFilesSummaryInformation":{"Items":[{"ItemName":"Total Files","ItemValue":"143"},{"ItemName":"Scala Files","ItemValue":"4"},{"ItemName":"Project Build Files*","ItemValue":"3"},{"ItemName":"Scala files with Embedded SQL","ItemValue":"-"}]},"SparkApiIdentifiedUsagesSection":{"SparkApiUsagesRows":[{"SparkAPIUsages":"DataFrame","SupportedUsages":"1","UnsupportedUsages":"-","ReadinessScore":"100%"},{"SparkAPIUsages":"Column","SupportedUsages":"1","UnsupportedUsages":"-","ReadinessScore":"100%"},{"SparkAPIUsages":"Functions","SupportedUsages":"1","UnsupportedUsages":"-","ReadinessScore":"100%"},{"SparkAPIUsages":"RDD","SupportedUsages":"-","UnsupportedUsages":"-","ReadinessScore":"-"},{"SparkAPIUsages":"SparkSession","SupportedUsages":"1","UnsupportedUsages":"-","ReadinessScore":"100%"},{"SparkAPIUsages":"Others","SupportedUsages":"1","UnsupportedUsages":"-","ReadinessScore":"100%"},{"SparkAPIUsages":"Total","SupportedUsages":"5","UnsupportedUsages":"-","ReadinessScore":"100%"}],"NumberOfIssues":[{"Warnings":"1","ConversionErrors":"0","ParsingErrors":"0"}],"NumberOfUniqueIssues":[{"Warnings":"1","ConversionErrors":"0","ParsingErrors":"0"}],"Sprkscl1100":[],"Sprkscl1101":[],"Sprkscl1102":[],"Items":[{"ItemName":"Scala Files with Spark Usages","ItemValue":"2"},{"ItemName":"Spark Usages ","ItemValue":"5"}]},"ActionItemSection":{"Items":[{"Code":"SPRKSCL1000","Description":"Source project spark-core version is spark-core_2.12:3.2.1, the spark-core version supported by snowpark is 2.12:3.1.2 so there may be functional differences between the existing mappings.","DocumentationUrl":"https://docs.mobilize.net/snowconvert/for-spark-scala/issues-and-troubleshooting/sprkscl1000","ReferencesQuantity":"1"}],"ItemsCount":1,"TopItemsDistribution":0}};
+
+// Links dictionary
+var links =
+{
+    default: 'https://www.mobilize.net/services/database-migrations/snowflake/get-info',
+    guide: 'https://docs.mobilize.net/snowconvert/general/reports/html-report',
+    forum: 'https://forums.mobilize.net/forum/23-snowconvert/',
+    support: 'mailto:support@mobilize.net',
+    topLevelDocumentation: 'https://docs.mobilize.net/snowconvert/general/reports/top-level-objects-report',
+    troubleshooting: 'https://docs.mobilize.net/snowconvert/for-spark-scala/issues-and-troubleshooting',
+    SPRKSCL1100: 'https://docs.mobilize.net/snowconvert/for-spark-scala/issues-and-troubleshooting/sprkscl1100',
+    SPRKSCL1101: 'https://docs.mobilize.net/snowconvert/for-spark-scala/issues-and-troubleshooting/sprkscl1101',
+    SPRKSCL1102: 'https://docs.mobilize.net/snowconvert/for-spark-scala/issues-and-troubleshooting/sprkscl1102',
+    documentation: 'https://docs.mobilize.net/snowconvert/for-teradata/getting-started/review-results/assessment.csv-report'
+};
+
+// Register chart data labels plugin to all charts
+Chart.register(ChartDataLabels);
+
+/* CONVERSION CHART*/
+
+// Conversion Chart inventories
+var conversionChartLabels = [];
+var conversionChartSuccessConvertedPercentages = [];
+var conversionChartPartiallyConvertedPercentages = [];
+var conversionIdentifiedUsages = [];
+var conversionFullyConvertedUsages = [];
+
+
+// Uses the JSON to fill the conversion inventories
+function FillConversionInventories() {
+    for (var i = 0; i < json.ConversionSection.Items.length; i++) {
+        conversionChartLabels.push(json.ConversionSection.Items[i].ObjectName);
+        conversionChartSuccessConvertedPercentages.push(json.ConversionSection.Items[i].SuccessConversionPercentage);
+        conversionChartPartiallyConvertedPercentages.push(json.ConversionSection.Items[i].PartiallyConvertedPercentage);
+        conversionIdentifiedUsages.push(json.ConversionSection.Items[i].IdentifiedUsagesLabel);
+        conversionFullyConvertedUsages.push(json.ConversionSection.Items[i].FullyConvertedUsagesLabel);
+    }
+    return conversionChartLabels.length > 0;
+}
+// Conversion Chart inventories
+var conversionChartLabelsView = [];
+var conversionChartSuccessConvertedPercentagesView = [];
+var conversionChartPartiallyConvertedPercentagesView = [];
+var conversionIdentifiedUsagesView = [];
+var conversionFullyConvertedUsagesView = [];
+
+// Uses the JSON to fill the conversion inventories
+function FillConversionInventoriesView() {
+    for (var i = 0; i < json.ConversionViewSection.Items.length; i++) {
+        conversionChartLabelsView.push(json.ConversionViewSection.Items[i].ObjectName);
+        conversionChartSuccessConvertedPercentagesView.push(json.ConversionViewSection.Items[i].SuccessConversionPercentage);
+        conversionChartPartiallyConvertedPercentagesView.push(json.ConversionViewSection.Items[i].PartiallyConvertedPercentage);
+        conversionIdentifiedUsagesView.push(json.ConversionViewSection.Items[i].IdentifiedUsagesLabel);
+        conversionFullyConvertedUsagesView.push(json.ConversionViewSection.Items[i].FullyConvertedUsagesLabel);
+    }
+    return conversionChartLabelsView.length > 0;
+}
+
+// Dynamically sets the height size of the conversion chart
+function SetConversionChartSize() {
+    conversionChartBarHeight = 120;
+    conversionChartSize = conversionChartLabels.length * conversionChartBarHeight;
+    document.querySelector("#conversion-chart canvas").style = "height: " + conversionChartSize + "px";
+}
+
+
+function SetConversionChartSizeView() {
+    conversionChartBarHeight = 120;
+    conversionChartSize = conversionChartLabels.length * conversionChartBarHeight;
+    document.querySelector("#conversion-chart-view canvas").style = "height: " + conversionChartSize + "px";
+}
+
+
+// Formats the datalabels for the conversion chart
+function CustomFormatter(value, context) {
+    var value = context.dataset.data[context.dataIndex];
+    return value != 0 ? value + "%" : "";
+}
+
+// Data Labels style
+labels = {
+    title: {
+        font: {
+            size: 12,
+            family: 'Open Sans'
+        }
+    },
+}
+
+// Datalabels configuration for the conversion chart
+dataLabelConfig =
+{
+    formatter: CustomFormatter,
+    align: 'top',
+    color: '#808080',
+    labels: labels
+}
+
+// Definition of the Vue component containing the conversion chart
+Vue.component('top-level-conversion-chart', {
+    extends: VueChartJs.Bar,
+    data: function () {
+        return {
+            datacollection: {
+                labels: conversionChartLabels,
+                datasets: [
+                    {
+                        label: conversionIdentifiedUsages,
+                        backgroundColor: '#9FDA7F',
+                        data: conversionChartSuccessConvertedPercentages,
+                        datalabels: dataLabelConfig
+                    },
+                    {
+                        label: conversionFullyConvertedUsages,
+                        backgroundColor: '#FFB74D',
+                        data: conversionChartPartiallyConvertedPercentages,
+                        datalabels: dataLabelConfig
+                    }
+                ]
+            },
+            options: {
+                barThickness: 22,
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid:
+                        {
+                            display: false
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        grid:
+                        {
+                            display: false
+                        }
+                    }
+                }
+            }
+        }
+    },
+    mounted() {
+        this.renderChart(this.datacollection, this.options)
+    }
+});
+
+
+// Definition of the Vue component containing the conversion chart
+Vue.component('down-level-conversion-chart', {
+    extends: VueChartJs.Bar,
+    data: function () {
+        return {
+            datacollection: {
+                labels: conversionChartLabelsView,
+                datasets: [
+                    {
+                        label: conversionIdentifiedUsagesView,
+                        backgroundColor: '#9FDA7F',
+                        data: conversionChartSuccessConvertedPercentagesView,
+                        datalabels: dataLabelConfig
+                    },
+                    {
+                        label: conversionFullyConvertedUsagesView,
+                        backgroundColor: '#FFB74D',
+                        data: conversionChartPartiallyConvertedPercentagesView,
+                        datalabels: dataLabelConfig
+                    }
+                ]
+            },
+            options: {
+                barThickness: 22,
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid:
+                        {
+                            display: false
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        grid:
+                        {
+                            display: false
+                        }
+                    }
+                }
+            }
+        }
+    },
+    mounted() {
+        this.renderChart(this.datacollection, this.options)
+    }
+});
+
+// Top action items distribution Chart inventories
+var actionItemsData = [];
+var distributionColors = ['#77c1fd', '#0085CD', '#2196F3', '#C7C7C7'];
+
+// Uses the JSON to fill the top action items distribution inventories
+function FillTopActionItemDistributionInventories() {
+    return json.ActionItemSection.Items.length > 0;
+}
+
+
+// Gets the max size of the elements of an array
+function MaxElementSize(stringArray) {
+    var maxElementLength = 0;
+
+    for (i = 0; i < stringArray.length; i++) {
+        var ewiLength = stringArray[i].Recommendation.length;
+        if (ewiLength > maxElementLength) maxElementLength = ewiLength;
+    }
+
+    return maxElementLength;
+}
+
+// Gets the new font size based on the largest EWI length 
+function GetSizeBasedOnLabelLength(largestEWILength) {
+    // Precalculated font ranges
+    var labelFontRanges = [{ length: 14, size: 14 }, { length: 51, size: 13 }, { length: 88, size: 12 }];
+    var fontSize = 11;
+
+    for (i = 0; i < labelFontRanges.length; i++) {
+        if (largestEWILength <= labelFontRanges[i]["length"]) {
+            fontSize = labelFontRanges[i]["size"];
+            break;
+        }
+    }
+
+    return fontSize;
+}
+
+// Changes the font size of the labels in the top action distribution section
+function ChangeLabelsFontSize(newFontSize) {
+    var labelObjects = document.getElementsByClassName('label-text');
+    for (i = 0; i < labelObjects.length; i++) {
+        labelObjects[i].style.fontSize = newFontSize + "px";
+    }
+}
+
+
+// Definition of the Vue component containing the top action items distribution chart
+Vue.component('action-items-distribution-chart', {
+    extends: VueChartJs.Pie,
+    data: function () {
+        return {
+            datacollection: {
+                datasets: [
+                    {
+                        backgroundColor: distributionColors,
+                        data: actionItemsData,
+                        datalabels:
+                        {
+                            formatter: CustomFormatter,
+                            anchor: 'end',
+                            align: 'end',
+                            color: '#808080',
+                            labels: labels
+                        }
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                radius: 60,
+                animation:
+                {
+                    duration: 0
+                },
+                plugins:
+                {
+                    legend: {
+                        display: false
+                    }
+                }
+            },
+        }
+    },
+    mounted() {
+        this.renderChart(this.datacollection, this.options)
+    }
+});
+
+// Vue application
+var app = new Vue({
+    el: '#app',
+    vuetify: new Vuetify(),
+    data: {
+        migrationData: json,
+        links: links
+    },
+    methods: {
+        openLink: function (link = links.default) {
+            window.open(link);
+        },
+        openDirectory: function () {
+            var location = window.location.pathname;
+            var directory = location.substring(0, location.lastIndexOf('/'));
+            this.openLink(directory);
+        },
+        FillConversionInventories: FillConversionInventories,
+        FillConversionInventoriesView: FillConversionInventoriesView,
+        FillTopActionItemDistributionInventories: FillTopActionItemDistributionInventories
+    },
+    mounted() {
+        document.getElementById("content").hidden = false;
+        document.getElementById("loader").hidden = true;
+        SetConversionChartSize();
+        SetConversionChartSizeView();
+    }
+});
+
+    </script>
+</body>
+</html>

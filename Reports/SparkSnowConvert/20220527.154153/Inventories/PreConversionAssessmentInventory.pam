@@ -1,0 +1,6 @@
+Element,ProjectId,FileId,Count,ClassName,FileName,FullQualifiedName,Kind,Line,PackageName,Supported,MappingStatus,Statement
+org.apache.spark.sql,,,1,Column,/tmp/Repo-eb6613b2-0c68-4d3a-82c6-5e14b03fb869/Sources/src/main/scala/com/mobilize/spark/Main.scala,org.apache.spark.sql.Column,Import,5,com.mobilize.spark,True,,"import org.apache.spark.sql.{Column, DataFrame}"
+org.apache.spark.sql,,,1,functions._,/tmp/Repo-eb6613b2-0c68-4d3a-82c6-5e14b03fb869/Sources/src/main/scala/com/mobilize/spark/Main.scala,org.apache.spark.sql.functions._,Import,3,com.mobilize.spark,True,,import org.apache.spark.sql.functions._
+org.apache.spark.sql,,,1,DataFrame,/tmp/Repo-eb6613b2-0c68-4d3a-82c6-5e14b03fb869/Sources/src/main/scala/com/mobilize/spark/Main.scala,org.apache.spark.sql.DataFrame,Import,5,com.mobilize.spark,True,,"import org.apache.spark.sql.{Column, DataFrame}"
+org.apache.spark.sql,,,1,SparkSession,/tmp/Repo-eb6613b2-0c68-4d3a-82c6-5e14b03fb869/Sources/src/main/scala/com/mobilize/spark/SessionDriver.scala,org.apache.spark.sql.SparkSession,Import,3,com.mobilize.spark,True,,import org.apache.spark.sql.SparkSession
+org.apache.spark.sql,,,1,types._,/tmp/Repo-eb6613b2-0c68-4d3a-82c6-5e14b03fb869/Sources/src/main/scala/com/mobilize/spark/Main.scala,org.apache.spark.sql.types._,Import,4,com.mobilize.spark,True,,import org.apache.spark.sql.types._

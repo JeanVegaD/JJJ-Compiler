@@ -1,0 +1,2 @@
+ExecutionId,ToolName,ToolVersion,AssemblyName,LogFile,FinalResult,ExceptionReport,StartTime,EndTime,SystemName
+34857bab-8913-4b99-9918-c7b200ad06e5,SparkSnowConvert,0.1.19.0,"Mobilize.SparkSnow.CodeProcessor, Version=0.1.19.0, Culture=neutral, PublicKeyToken=070ab5b93fb7d833",,,,637892629131823273,0,554dd106-46ea-443b-bdde-0817d2adf66c-7033-convert-ns9q4
