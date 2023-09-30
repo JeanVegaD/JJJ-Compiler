@@ -1,5 +1,0 @@
-##plain-list-of-relative-files
-src/test/scala/com/mobilize/spark/test.scala
-src/main/scala/com/mobilize/spark/Credentials.scala
-src/main/scala/com/mobilize/spark/Main.scala
-src/main/scala/com/mobilize/spark/SessionDriver.scala
